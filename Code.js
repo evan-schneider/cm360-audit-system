@@ -5,7 +5,7 @@ const EXCLUSIONS_SHEET_NAME = 'CM360 Audit Exclusions'; // Name of the sheet con
 const THRESHOLDS_SHEET_NAME = 'CM360 Audit Thresholds'; // Name of the sheet containing flag thresholds
 const RECIPIENTS_SHEET_NAME = 'CM360 Audit Recipients'; // Name of the sheet containing email recipients
 
-const BATCH_SIZE = 3;
+const BATCH_SIZE = 2;
 const TRASH_ROOT_PATH = ['Project Log Files', 'CM360 Daily Audits', 'To Trash After 60 Days'];
 const DELETION_LOG_PATH = [...TRASH_ROOT_PATH, 'Deletion Log'];
 const MASTER_LOG_NAME = 'CM360 Deleted Files Log';
@@ -146,7 +146,7 @@ function safeConvertExcelToSheet(blob, filename, parentFolderId, context = '') {
       return file;
     } catch (err) {
       Logger.log(`⚠️ [${context}] Excel convert failed (attempt ${attempt}): ${err.message}`);
-      if (attempt < 3) Utilities.sleep(2000); // wait before retry
+      if (attempt < 3) Utilities.sleep(1000); // Reduced from 2000ms to 1000ms for faster retries
     }
   }
   throw new Error(`❌ [${context}] Failed to convert Excel to Sheet after 3 attempts`);
@@ -407,7 +407,7 @@ function mergeDailyAuditExcels(folderId, mergedFolderPath, configName = 'Unknown
 
   const mergedSheetName = `Merged_CM360_${new Date().toISOString().slice(0, 10)}`;
   const mergedSpreadsheet = SpreadsheetApp.create(mergedSheetName);
-  Utilities.sleep(1000); // Ensure file is created
+  Utilities.sleep(500); // Reduced from 1000ms - just need brief pause for file creation
   const mergedFile = DriveApp.getFileById(mergedSpreadsheet.getId());
   destFolder.addFile(mergedFile);
   DriveApp.getRootFolder().removeFile(mergedFile);
@@ -529,15 +529,13 @@ function executeAudit(config) {
   try {
     Logger.log(`🔍 [${configName}] Audit started`);
 
-    // Load exclusions data at the start of audit
+    // Load configuration data for this specific config
     const exclusionsData = loadExclusionsFromSheet();
     Logger.log(`📋 [${configName}] Loaded exclusions for ${Object.keys(exclusionsData).length} configs`);
-    
-    // Load thresholds data at the start of audit
+
     const thresholdsData = loadThresholdsFromSheet();
     Logger.log(`📊 [${configName}] Loaded thresholds for ${Object.keys(thresholdsData).length} configs`);
-    
-    // Load recipients data at the start of audit
+
     const recipientsData = loadRecipientsFromSheet();
     Logger.log(`📧 [${configName}] Loaded recipients for ${Object.keys(recipientsData).length} configs`);
 
@@ -674,7 +672,7 @@ function executeAudit(config) {
     });
 
     sheet.getRange(headerRowIndex + 2, 1, updatedDataRows.length, headers.length).setValues(updatedDataRows);
-    SpreadsheetApp.flush();
+    // Flush moved to end of formatting section for better performance
 
 
     // Sort flagged rows by highest volume (clicks or impressions)
@@ -705,7 +703,7 @@ function executeAudit(config) {
     if (reorderedUnflagged.length > 0) {
       sheet.getRange(reorderedFlagged.length + 2, 1, reorderedUnflagged.length, headers.length).setValues(reorderedUnflagged);
     }
-    SpreadsheetApp.flush();
+    // Flush moved to end of formatting section for better performance
 
     // Apply yellow highlights per flag (batched for export compatibility)
     const finalData = sheet.getDataRange().getValues();
@@ -1086,7 +1084,17 @@ function runDailyAuditsBatch2() {
 function runDailyAuditsBatch3() {
   const batches = getAuditConfigBatches(BATCH_SIZE);
   runAuditBatch(batches[2]);
-  cleanupOldAuditFiles();
+}
+
+function runDailyAuditsBatch4() {
+  const batches = getAuditConfigBatches(BATCH_SIZE);
+  runAuditBatch(batches[3]);
+}
+
+function runDailyAuditsBatch5() {
+  const batches = getAuditConfigBatches(BATCH_SIZE);
+  runAuditBatch(batches[4]);
+  cleanupOldAuditFiles(); // Run cleanup on final batch
 }
 
 function generateMissingBatchStubs() {
