@@ -2,6 +2,7 @@
 const ADMIN_EMAIL = 'evschneider@horizonmedia.com';
 const STAGING_MODE = 'Y'; // Set to 'Y' for staging mode, 'N' for production
 const EXCLUSIONS_SHEET_NAME = 'CM360 Audit Exclusions'; // Name of the sheet containing exclusions
+const THRESHOLDS_SHEET_NAME = 'CM360 Audit Thresholds'; // Name of the sheet containing flag thresholds
 
 const BATCH_SIZE = 3;
 const TRASH_ROOT_PATH = ['Project Log Files', 'CM360 Daily Audits', 'To Trash After 60 Days'];
@@ -535,6 +536,10 @@ function executeAudit(config) {
     // Load exclusions data at the start of audit
     const exclusionsData = loadExclusionsFromSheet();
     Logger.log(`📋 [${configName}] Loaded exclusions for ${Object.keys(exclusionsData).length} configs`);
+    
+    // Load thresholds data at the start of audit
+    const thresholdsData = loadThresholdsFromSheet();
+    Logger.log(`📊 [${configName}] Loaded thresholds for ${Object.keys(thresholdsData).length} configs`);
 
     const folderId = fetchDailyAuditAttachments(config);
     if (!folderId) {
@@ -604,18 +609,7 @@ function executeAudit(config) {
 
       const clicks = Number(row[fullCol.Clicks] || 0);
       const impressions = Number(row[fullCol.Impressions] || 0);
-      const minImpressions = config.flags?.minImpThreshold ?? config.flags?.minVolumeThreshold ?? 0;
-      const minClicks = config.flags?.minClickThreshold ?? config.flags?.minVolumeThreshold ?? 0;
-
-      let hasMinVolume = false;
-      if (impressions > clicks) {
-        hasMinVolume = impressions >= minImpressions;
-      } else if (clicks > impressions) {
-        hasMinVolume = clicks >= minClicks;
-      } else {
-        hasMinVolume = impressions >= minImpressions; // if equal, defer to impression threshold
-      }
-
+      
       const startDate = new Date(row[fullCol.Start]);
       const endDate = new Date(row[fullCol.End]);
       const today = new Date(row[fullCol.Date]);
@@ -626,23 +620,36 @@ function executeAudit(config) {
       const siteName = String(row[fullCol.Site] || '');
       const placementId = String(row[fullCol.PlacementID] || '');
 
-      // Check each potential flag and add only if not excluded
-      if (hasMinVolume && clicks > impressions && 
+      // Check each potential flag with its specific thresholds
+      
+      // Clicks > Impressions check
+      const clicksThreshold = getThresholdForFlag(thresholdsData, configName, 'clicks_greater_than_impressions');
+      const hasMinVolumeForClicks = impressions >= clicksThreshold.minImpressions || clicks >= clicksThreshold.minClicks;
+      if (hasMinVolumeForClicks && clicks > impressions && 
           !isPlacementExcludedForFlag(exclusionsData, configName, placementId, 'clicks_greater_than_impressions', placementName, siteName)) {
         flags.push('Clicks > Impressions');
       }
       
-      if (hasMinVolume && (startDate > today || endDate < today) && 
+      // Out of flight dates check
+      const flightThreshold = getThresholdForFlag(thresholdsData, configName, 'out_of_flight_dates');
+      const hasMinVolumeForFlight = impressions >= flightThreshold.minImpressions || clicks >= flightThreshold.minClicks;
+      if (hasMinVolumeForFlight && (startDate > today || endDate < today) && 
           !isPlacementExcludedForFlag(exclusionsData, configName, placementId, 'out_of_flight_dates', placementName, siteName)) {
         flags.push('Out of flight dates');
       }
       
-      if (hasMinVolume && placementPixel && creativePixel && placementPixel !== creativePixel && 
+      // Pixel size mismatch check
+      const pixelThreshold = getThresholdForFlag(thresholdsData, configName, 'pixel_size_mismatch');
+      const hasMinVolumeForPixel = impressions >= pixelThreshold.minImpressions || clicks >= pixelThreshold.minClicks;
+      if (hasMinVolumeForPixel && placementPixel && creativePixel && placementPixel !== creativePixel && 
           !isPlacementExcludedForFlag(exclusionsData, configName, placementId, 'pixel_size_mismatch', placementName, siteName)) {
         flags.push('Pixel size mismatch');
       }
       
-      if (hasMinVolume && adType.includes('default') && 
+      // Default ad serving check
+      const defaultThreshold = getThresholdForFlag(thresholdsData, configName, 'default_ad_serving');
+      const hasMinVolumeForDefault = impressions >= defaultThreshold.minImpressions || clicks >= defaultThreshold.minClicks;
+      if (hasMinVolumeForDefault && adType.includes('default') && 
           !isPlacementExcludedForFlag(exclusionsData, configName, placementId, 'default_ad_serving', placementName, siteName)) {
         flags.push('Default ad serving');
       }
@@ -1111,8 +1118,10 @@ function onOpen() {
   ui.createMenu('CM360 Audit')
     // 🔧 Setup & One-Time Actions
     .addItem('🛠️ Prepare Audit Environment', 'prepareAuditEnvironment')
-    .addItem('📋 Create/Open Exclusions Sheet', 'getOrCreateExclusionsSheet')
+    .addItem('� Create/Open Thresholds Sheet', 'getOrCreateThresholdsSheet')
+    .addItem('�📋 Create/Open Exclusions Sheet', 'getOrCreateExclusionsSheet')
     .addItem('🧪 Test Enhanced Exclusions', 'testEnhancedExclusions')
+    .addItem('📊 Test Thresholds System', 'testThresholdsSystem')
     .addItem('🔄 Update Placement Names', 'updatePlacementNamesFromReports')
     .addItem('🔐 Check Authorization', 'checkAuthorizationStatus')
     .addItem('📋 Validate Configs', 'debugValidateAuditConfigs')
@@ -1404,7 +1413,191 @@ function checkAuthorizationStatus() {
 }
 
 
-// === 📋 EXCLUSIONS MANAGEMENT ===
+// === � THRESHOLDS MANAGEMENT ===
+function getOrCreateThresholdsSheet() {
+  try {
+    const spreadsheet = SpreadsheetApp.getActiveSpreadsheet();
+    let sheet = spreadsheet.getSheetByName(THRESHOLDS_SHEET_NAME);
+    
+    if (!sheet) {
+      Logger.log(`Creating new thresholds sheet: ${THRESHOLDS_SHEET_NAME}`);
+      sheet = spreadsheet.insertSheet(THRESHOLDS_SHEET_NAME);
+      
+      // Set up the header row
+      const headers = [
+        'Config Name',
+        'Flag Type',
+        'Min Impressions',
+        'Min Clicks',
+        'Active',
+        '',
+        'INSTRUCTIONS'
+      ];
+      
+      Logger.log('Setting headers...');
+      sheet.getRange(1, 1, 1, headers.length).setValues([headers]);
+      
+      // Format the main headers
+      const mainHeaderRange = sheet.getRange(1, 1, 1, 5);
+      mainHeaderRange.setFontWeight('bold');
+      mainHeaderRange.setBackground('#4285f4');
+      mainHeaderRange.setFontColor('#ffffff');
+      
+      // Format the instructions header
+      const instructionsHeaderRange = sheet.getRange(1, 7, 1, 1);
+      instructionsHeaderRange.setFontWeight('bold');
+      instructionsHeaderRange.setBackground('#ff9900');
+      instructionsHeaderRange.setFontColor('#ffffff');
+      
+      Logger.log('Setting up dropdowns...');
+      
+      // Add dropdown validation for Flag Type column (column B) - starting from row 2
+      const flagTypeRange = sheet.getRange('B2:B');
+      const flagTypeOptions = [
+        'clicks_greater_than_impressions',
+        'out_of_flight_dates',
+        'pixel_size_mismatch',
+        'default_ad_serving'
+      ];
+      
+      const flagTypeRule = SpreadsheetApp.newDataValidation()
+        .requireValueInList(flagTypeOptions)
+        .setAllowInvalid(false)
+        .setHelpText('Select the flag type for this threshold configuration.')
+        .build();
+      
+      flagTypeRange.setDataValidation(flagTypeRule);
+      
+      // Add dropdown validation for Active column (column E) - starting from row 2
+      const activeRange = sheet.getRange('E2:E');
+      const activeRule = SpreadsheetApp.newDataValidation()
+        .requireValueInList(['TRUE', 'FALSE'])
+        .setAllowInvalid(false)
+        .setHelpText('Set to TRUE to activate threshold, FALSE to deactivate.')
+        .build();
+      
+      activeRange.setDataValidation(activeRule);
+      
+      // Add instructions
+      const instructions = [
+        ['Config Name:', 'Enter the exact config name (PST01, PST02, NEXT01, etc.)'],
+        ['Flag Type:', 'Select which flag type this threshold applies to'],
+        ['Min Impressions:', 'Minimum impressions required for this flag to trigger'],
+        ['Min Clicks:', 'Minimum clicks required for this flag to trigger'],
+        ['Active:', 'TRUE to enable, FALSE to disable this threshold'],
+        ['', ''],
+        ['Logic:', 'A placement must meet EITHER impression OR click threshold to be evaluated'],
+        ['Flag Types:', ''],
+        ['• clicks_greater_than_impressions', 'Flags when clicks exceed impressions'],
+        ['• out_of_flight_dates', 'Flags when placement is outside flight dates'],
+        ['• pixel_size_mismatch', 'Flags when creative and placement pixels differ'],
+        ['• default_ad_serving', 'Flags when ad type contains "default"'],
+        ['', ''],
+        ['Examples:', 'See rows below for different threshold configurations']
+      ];
+      
+      sheet.getRange(2, 7, instructions.length, 2).setValues(instructions);
+      
+      // Add default threshold rows for each config
+      const defaultThresholds = [];
+      auditConfigs.forEach(config => {
+        const currentFlags = config.flags || {};
+        const minImpressions = currentFlags.minImpThreshold || currentFlags.minVolumeThreshold || 0;
+        const minClicks = currentFlags.minClickThreshold || currentFlags.minVolumeThreshold || 0;
+        
+        // Add a row for each flag type
+        flagTypeOptions.forEach(flagType => {
+          defaultThresholds.push([
+            config.name,
+            flagType,
+            minImpressions,
+            minClicks,
+            'TRUE'
+          ]);
+        });
+      });
+      
+      if (defaultThresholds.length > 0) {
+        sheet.getRange(2, 1, defaultThresholds.length, 5).setValues(defaultThresholds);
+      }
+      
+      // Format instructions
+      const instructionsRange = sheet.getRange(2, 7, instructions.length, 2);
+      instructionsRange.setFontSize(10);
+      instructionsRange.setVerticalAlignment('top');
+      
+      // Auto-resize columns
+      sheet.autoResizeColumns(1, 5);
+      
+      Logger.log('Thresholds sheet created successfully');
+    } else {
+      Logger.log(`Thresholds sheet already exists: ${THRESHOLDS_SHEET_NAME}`);
+    }
+    
+    return sheet;
+    
+  } catch (error) {
+    Logger.log(`❌ Error creating thresholds sheet: ${error.message}`);
+    throw new Error(`Failed to create thresholds sheet: ${error.message}`);
+  }
+}
+
+function loadThresholdsFromSheet() {
+  try {
+    const sheet = getOrCreateThresholdsSheet();
+    const data = sheet.getDataRange().getValues();
+    const thresholds = {};
+    
+    // Skip header row (index 0)
+    for (let i = 1; i < data.length; i++) {
+      const row = data[i];
+      const configName = String(row[0] || '').trim();
+      const flagType = String(row[1] || '').trim();
+      const minImpressions = Number(row[2] || 0);
+      const minClicks = Number(row[3] || 0);
+      const active = String(row[4] || '').trim().toUpperCase();
+      
+      // Skip empty rows, instruction rows, or inactive thresholds
+      if (!configName || !flagType || active !== 'TRUE' ||
+          configName.includes('INSTRUCTIONS') || 
+          configName.includes('•') ||
+          configName.includes('Config Name:') ||
+          configName.includes('Examples:')) {
+        continue;
+      }
+      
+      // Initialize config if not exists
+      if (!thresholds[configName]) {
+        thresholds[configName] = {};
+      }
+      
+      // Store threshold data for this config and flag type
+      thresholds[configName][flagType] = {
+        minImpressions: Math.max(0, minImpressions),
+        minClicks: Math.max(0, minClicks)
+      };
+    }
+    
+    Logger.log(`Loaded thresholds for ${Object.keys(thresholds).length} configs`);
+    return thresholds;
+    
+  } catch (error) {
+    Logger.log(`❌ Error loading thresholds: ${error.message}`);
+    return {};
+  }
+}
+
+// Helper function to get threshold for a specific config and flag type
+function getThresholdForFlag(thresholdsData, configName, flagType) {
+  if (!thresholdsData || !thresholdsData[configName] || !thresholdsData[configName][flagType]) {
+    // Return default fallback thresholds if not found in sheet
+    return { minImpressions: 0, minClicks: 0 };
+  }
+  
+  return thresholdsData[configName][flagType];
+}
+
+// === �📋 EXCLUSIONS MANAGEMENT ===
 function getOrCreateExclusionsSheet() {
   try {
     const spreadsheet = SpreadsheetApp.getActiveSpreadsheet();
@@ -2029,6 +2222,62 @@ function testEnhancedExclusions() {
     
   } catch (error) {
     Logger.log(`❌ Error testing enhanced exclusions: ${error.message}`);
+    throw error;
+  }
+}
+
+// === 🧪 THRESHOLDS TESTING ===
+function testThresholdsSystem() {
+  try {
+    Logger.log('🧪 Testing Thresholds System...');
+    
+    // Create/update thresholds sheet
+    const sheet = getOrCreateThresholdsSheet();
+    Logger.log('✅ Thresholds sheet created/updated successfully');
+    
+    // Test loading thresholds
+    const thresholdsData = loadThresholdsFromSheet();
+    Logger.log(`✅ Loaded thresholds data: ${JSON.stringify(thresholdsData, null, 2)}`);
+    
+    // Test threshold retrieval for different scenarios
+    const testCases = [
+      {
+        description: 'PST01 clicks threshold',
+        configName: 'PST01',
+        flagType: 'clicks_greater_than_impressions'
+      },
+      {
+        description: 'PST02 pixel threshold',
+        configName: 'PST02',
+        flagType: 'pixel_size_mismatch'
+      },
+      {
+        description: 'Non-existent config (should use defaults)',
+        configName: 'INVALID',
+        flagType: 'out_of_flight_dates'
+      }
+    ];
+    
+    testCases.forEach(testCase => {
+      const threshold = getThresholdForFlag(
+        thresholdsData,
+        testCase.configName,
+        testCase.flagType
+      );
+      Logger.log(`${testCase.description}: Min Impressions=${threshold.minImpressions}, Min Clicks=${threshold.minClicks}`);
+    });
+    
+    // Open the thresholds sheet for review
+    SpreadsheetApp.getActiveSpreadsheet().setActiveSheet(sheet);
+    
+    Logger.log('✅ Thresholds system test completed successfully!');
+    Logger.log('📊 Please review the thresholds sheet and adjust values as needed:');
+    Logger.log('   • Each config has separate thresholds for each flag type');
+    Logger.log('   • Min Impressions OR Min Clicks threshold triggers evaluation');
+    Logger.log('   • Set Active to FALSE to disable specific threshold rules');
+    
+  } catch (error) {
+    Logger.log(`❌ Error testing thresholds system: ${error.message}`);
     throw error;
   }
 }
