@@ -625,10 +625,9 @@ function executeAudit(config) {
       const placementName = String(row[fullCol.Placement] || '').toLowerCase();
       const siteName = String(row[fullCol.Site] || '');
       const placementId = String(row[fullCol.PlacementID] || '');
-      const isSocialOrNewsletter = placementName.includes('_soc_') || placementName.includes('_nl_') || placementName.includes('facebook') || placementName.includes('P2ZLYG3');
 
       // Check each potential flag and add only if not excluded
-      if (hasMinVolume && clicks > impressions && !isSocialOrNewsletter && 
+      if (hasMinVolume && clicks > impressions && 
           !isPlacementExcludedForFlag(exclusionsData, configName, placementId, 'clicks_greater_than_impressions', placementName, siteName)) {
         flags.push('Clicks > Impressions');
       }
