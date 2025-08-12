@@ -532,6 +532,10 @@ function executeAudit(config) {
   try {
     Logger.log(`🔍 [${configName}] Audit started`);
 
+    // Load exclusions data at the start of audit
+    const exclusionsData = loadExclusionsFromSheet();
+    Logger.log(`📋 [${configName}] Loaded exclusions for ${Object.keys(exclusionsData).length} configs`);
+
     const folderId = fetchDailyAuditAttachments(config);
     if (!folderId) {
       Logger.log(`⚠️ [${configName}] No files found today. Sending notification...`);
@@ -619,12 +623,30 @@ function executeAudit(config) {
       const creativePixel = String(row[fullCol['Creative Pixel Size']] || '');
       const adType = String(row[fullCol['Ad Type']] || '').toLowerCase();
       const placementName = String(row[fullCol.Placement] || '').toLowerCase();
+      const siteName = String(row[fullCol.Site] || '');
+      const placementId = String(row[fullCol.PlacementID] || '');
       const isSocialOrNewsletter = placementName.includes('_soc_') || placementName.includes('_nl_') || placementName.includes('facebook') || placementName.includes('P2ZLYG3');
 
-      if (hasMinVolume && clicks > impressions && !isSocialOrNewsletter) flags.push('Clicks > Impressions');
-      if (hasMinVolume && (startDate > today || endDate < today)) flags.push('Out of flight dates');
-      if (hasMinVolume && placementPixel && creativePixel && placementPixel !== creativePixel) flags.push('Pixel size mismatch');
-      if (hasMinVolume && adType.includes('default')) flags.push('Default ad serving');
+      // Check each potential flag and add only if not excluded
+      if (hasMinVolume && clicks > impressions && !isSocialOrNewsletter && 
+          !isPlacementExcludedForFlag(exclusionsData, configName, placementId, 'clicks_greater_than_impressions', placementName, siteName)) {
+        flags.push('Clicks > Impressions');
+      }
+      
+      if (hasMinVolume && (startDate > today || endDate < today) && 
+          !isPlacementExcludedForFlag(exclusionsData, configName, placementId, 'out_of_flight_dates', placementName, siteName)) {
+        flags.push('Out of flight dates');
+      }
+      
+      if (hasMinVolume && placementPixel && creativePixel && placementPixel !== creativePixel && 
+          !isPlacementExcludedForFlag(exclusionsData, configName, placementId, 'pixel_size_mismatch', placementName, siteName)) {
+        flags.push('Pixel size mismatch');
+      }
+      
+      if (hasMinVolume && adType.includes('default') && 
+          !isPlacementExcludedForFlag(exclusionsData, configName, placementId, 'default_ad_serving', placementName, siteName)) {
+        flags.push('Default ad serving');
+      }
 
       if (flags.length > 0) {
         row[flagColIndex] = flags.join(', ');
@@ -1091,6 +1113,7 @@ function onOpen() {
     // 🔧 Setup & One-Time Actions
     .addItem('🛠️ Prepare Audit Environment', 'prepareAuditEnvironment')
     .addItem('📋 Create/Open Exclusions Sheet', 'getOrCreateExclusionsSheet')
+    .addItem('🧪 Test Enhanced Exclusions', 'testEnhancedExclusions')
     .addItem('🔄 Update Placement Names', 'updatePlacementNamesFromReports')
     .addItem('🔐 Check Authorization', 'checkAuthorizationStatus')
     .addItem('📋 Validate Configs', 'debugValidateAuditConfigs')
@@ -1397,6 +1420,9 @@ function getOrCreateExclusionsSheet() {
         'Config Name',
         'Placement ID', 
         'Placement Name',
+        'Site Name',
+        'Name Fragment',
+        'Apply to All Configs',
         'Flag Type',
         'Reason',
         'Added By',
@@ -1410,13 +1436,13 @@ function getOrCreateExclusionsSheet() {
       sheet.getRange(1, 1, 1, headers.length).setValues([headers]);
       
       // Format the main headers
-      const mainHeaderRange = sheet.getRange(1, 1, 1, 8);
+      const mainHeaderRange = sheet.getRange(1, 1, 1, 11);
       mainHeaderRange.setFontWeight('bold');
       mainHeaderRange.setBackground('#4285f4');
       mainHeaderRange.setFontColor('#ffffff');
       
       // Format the instructions header
-      const instructionsHeaderRange = sheet.getRange(1, 10, 1, 1);
+      const instructionsHeaderRange = sheet.getRange(1, 13, 1, 1);
       instructionsHeaderRange.setFontWeight('bold');
       instructionsHeaderRange.setBackground('#ff9900');
       instructionsHeaderRange.setFontColor('#ffffff');
@@ -1430,8 +1456,18 @@ function getOrCreateExclusionsSheet() {
       
       Logger.log('Setting up dropdowns...');
       
-      // Add dropdown validation for Flag Type column (column D) - starting from row 2
-      const flagTypeRange = sheet.getRange('D2:D');
+      // Add dropdown validation for Apply to All Configs column (column F) - starting from row 2
+      const applyAllRange = sheet.getRange('F2:F');
+      const applyAllRule = SpreadsheetApp.newDataValidation()
+        .requireValueInList(['TRUE', 'FALSE'])
+        .setAllowInvalid(false)
+        .setHelpText('Set to TRUE to apply this exclusion to ALL config teams, FALSE to apply only to specified config.')
+        .build();
+      
+      applyAllRange.setDataValidation(applyAllRule);
+      
+      // Add dropdown validation for Flag Type column (column G) - starting from row 2
+      const flagTypeRange = sheet.getRange('G2:G');
       const flagTypeOptions = [
         'clicks_greater_than_impressions',
         'out_of_flight_dates',
@@ -1448,8 +1484,8 @@ function getOrCreateExclusionsSheet() {
       
       flagTypeRange.setDataValidation(rule);
       
-      // Add dropdown validation for Active column (column H) - starting from row 2
-      const activeRange = sheet.getRange('H2:H');
+      // Add dropdown validation for Active column (column K) - starting from row 2
+      const activeRange = sheet.getRange('K2:K');
       const activeRule = SpreadsheetApp.newDataValidation()
         .requireValueInList(['TRUE', 'FALSE'])
         .setAllowInvalid(false)
@@ -1460,14 +1496,22 @@ function getOrCreateExclusionsSheet() {
       
       // Add instructions
       const instructions = [
-        ['Config Name:', 'Enter the exact config name (PST01, PST02, NEXT01, etc.)'],
-        ['Placement ID:', 'Enter the CM360 Placement ID number'],
+        ['Config Name:', 'Enter the exact config name (PST01, PST02, NEXT01, etc.) OR leave blank if using "Apply to All Configs"'],
+        ['Placement ID:', 'Enter the CM360 Placement ID number (leave blank if using Site Name or Name Fragment)'],
         ['Placement Name:', 'Auto-populated - use "Update Placement Names" button'],
+        ['Site Name:', 'Enter exact site name as it appears in CM360 reporting (alternative to Placement ID)'],
+        ['Name Fragment:', 'Enter text fragment that appears in placement names (matches any placement containing this text)'],
+        ['Apply to All Configs:', 'TRUE = applies to ALL config teams, FALSE = applies only to specified config'],
         ['Flag Type:', 'Select which flag type to exclude'],
         ['Reason:', 'Brief explanation for the exclusion'],
         ['Added By:', 'Your name or email'],
         ['Date Added:', 'Date this exclusion was added'],
         ['Active:', 'TRUE to enable, FALSE to disable'],
+        ['', ''],
+        ['Exclusion Types:', ''],
+        ['• Placement ID', 'Excludes specific placement by ID'],
+        ['• Site Name', 'Excludes all placements from a specific site'],
+        ['• Name Fragment', 'Excludes placements with names containing the fragment'],
         ['', ''],
         ['Flag Types:', ''],
         ['• clicks_greater_than_impressions', 'Excludes clicks > impressions flags'],
@@ -1476,17 +1520,22 @@ function getOrCreateExclusionsSheet() {
         ['• default_ad_serving', 'Excludes default ad serving flags'],
         ['• all_flags', 'Excludes from ALL flag types'],
         ['', ''],
-        ['Example:', 'See row 2 below for format']
+        ['Examples:', 'See rows 2-4 below for different exclusion types']
       ];
       
-      sheet.getRange(2, 10, instructions.length, 2).setValues(instructions);
+      sheet.getRange(2, 13, instructions.length, 2).setValues(instructions);
       
-      // Add example row separately (in the main data area)
-      const exampleRow = ['PST01', '424138145', '', 'clicks_greater_than_impressions', 'Social media placement', 'your.name@company.com', '2025-08-12', 'TRUE'];
-      sheet.getRange(2, 1, 1, exampleRow.length).setValues([exampleRow]);
+      // Add example rows separately (in the main data area)
+      const exampleRows = [
+        ['PST01', '424138145', '', '', '', 'FALSE', 'clicks_greater_than_impressions', 'Specific placement exclusion', 'your.name@company.com', '2025-08-12', 'TRUE'],
+        ['', '', '', 'YouTube', '', 'TRUE', 'all_flags', 'Exclude all YouTube placements from all configs', 'your.name@company.com', '2025-08-12', 'TRUE'],
+        ['PST02', '', '', '', 'Social Media', 'FALSE', 'pixel_size_mismatch', 'Exclude placements with "Social Media" in name', 'your.name@company.com', '2025-08-12', 'TRUE']
+      ];
+      
+      sheet.getRange(2, 1, exampleRows.length, exampleRows[0].length).setValues(exampleRows);
       
       // Format instructions
-      const instructionsRange = sheet.getRange(2, 10, instructions.length, 2);
+      const instructionsRange = sheet.getRange(2, 13, instructions.length, 2);
       instructionsRange.setFontSize(10);
       instructionsRange.setVerticalAlignment('top');
       
@@ -1559,30 +1608,65 @@ function loadExclusionsFromSheet() {
       const row = data[i];
       const configName = String(row[0] || '').trim();
       const placementId = String(row[1] || '').trim();
-      const flagType = String(row[3] || '').trim();
-      const active = String(row[7] || '').trim().toUpperCase();
+      const placementName = String(row[2] || '').trim();
+      const siteName = String(row[3] || '').trim();
+      const nameFragment = String(row[4] || '').trim();
+      const applyToAllConfigs = String(row[5] || '').trim().toUpperCase();
+      const flagType = String(row[6] || '').trim();
+      const active = String(row[10] || '').trim().toUpperCase();
       
       // Skip empty rows, instruction rows, or inactive exclusions
-      if (!configName || !placementId || !flagType || 
-          active !== 'TRUE' ||
+      if (!flagType || active !== 'TRUE' ||
           configName.includes('INSTRUCTIONS') || 
           configName.includes('•') ||
-          configName.includes('Config Name:')) {
+          configName.includes('Config Name:') ||
+          configName.includes('Examples:')) {
         continue;
       }
       
-      // Initialize config if not exists
-      if (!exclusions[configName]) {
-        exclusions[configName] = {};
+      // Must have at least one identification method
+      if (!placementId && !siteName && !nameFragment) {
+        continue;
       }
       
-      // Initialize flag type array if not exists
-      if (!exclusions[configName][flagType]) {
-        exclusions[configName][flagType] = [];
+      // If "Apply to All Configs" is TRUE, apply to all known configs
+      const configsToApply = [];
+      if (applyToAllConfigs === 'TRUE') {
+        // Add all known config names
+        configsToApply.push('PST01', 'PST02', 'PST03', 'PST04', 'PST05', 'PST06', 'PST07', 'PST08', 'NEXT01');
+      } else if (configName) {
+        configsToApply.push(configName);
+      } else {
+        continue; // No config specified and not applying to all
       }
       
-      // Add placement ID to exclusions
-      exclusions[configName][flagType].push(placementId);
+      // Process each config
+      for (const config of configsToApply) {
+        // Initialize config if not exists
+        if (!exclusions[config]) {
+          exclusions[config] = {};
+        }
+        
+        // Initialize flag type object if not exists
+        if (!exclusions[config][flagType]) {
+          exclusions[config][flagType] = {
+            placementIds: [],
+            siteNames: [],
+            nameFragments: []
+          };
+        }
+        
+        // Add exclusion data based on type
+        if (placementId) {
+          exclusions[config][flagType].placementIds.push(placementId);
+        }
+        if (siteName) {
+          exclusions[config][flagType].siteNames.push(siteName);
+        }
+        if (nameFragment) {
+          exclusions[config][flagType].nameFragments.push(nameFragment);
+        }
+      }
     }
     
     Logger.log(`Loaded exclusions for ${Object.keys(exclusions).length} configs`);
@@ -1594,25 +1678,63 @@ function loadExclusionsFromSheet() {
   }
 }
 
-// Helper function to check if a placement ID should be excluded for a specific flag type
-function isPlacementExcludedForFlag(exclusionsData, configName, placementId, flagType) {
+// Helper function to check if a placement should be excluded for a specific flag type
+function isPlacementExcludedForFlag(exclusionsData, configName, placementId, flagType, placementName = '', siteName = '') {
   if (!exclusionsData || !exclusionsData[configName]) {
     return false;
   }
   
   const trimmedId = String(placementId || '').trim();
+  const trimmedPlacementName = String(placementName || '').trim().toLowerCase();
+  const trimmedSiteName = String(siteName || '').trim().toLowerCase();
   const configExclusions = exclusionsData[configName];
   
   // Check if excluded from all flags
-  if (configExclusions.all_flags && 
-      configExclusions.all_flags.some(id => String(id).trim() === trimmedId)) {
-    return true;
+  if (configExclusions.all_flags) {
+    const allFlagsExclusions = configExclusions.all_flags;
+    
+    // Check placement ID exclusions
+    if (allFlagsExclusions.placementIds && 
+        allFlagsExclusions.placementIds.some(id => String(id).trim() === trimmedId)) {
+      return true;
+    }
+    
+    // Check site name exclusions
+    if (allFlagsExclusions.siteNames && trimmedSiteName &&
+        allFlagsExclusions.siteNames.some(site => String(site).trim().toLowerCase() === trimmedSiteName)) {
+      return true;
+    }
+    
+    // Check name fragment exclusions
+    if (allFlagsExclusions.nameFragments && trimmedPlacementName &&
+        allFlagsExclusions.nameFragments.some(fragment => 
+          trimmedPlacementName.includes(String(fragment).trim().toLowerCase()))) {
+      return true;
+    }
   }
   
   // Check if excluded from specific flag type
-  if (configExclusions[flagType] && 
-      configExclusions[flagType].some(id => String(id).trim() === trimmedId)) {
-    return true;
+  if (configExclusions[flagType]) {
+    const flagExclusions = configExclusions[flagType];
+    
+    // Check placement ID exclusions
+    if (flagExclusions.placementIds && 
+        flagExclusions.placementIds.some(id => String(id).trim() === trimmedId)) {
+      return true;
+    }
+    
+    // Check site name exclusions
+    if (flagExclusions.siteNames && trimmedSiteName &&
+        flagExclusions.siteNames.some(site => String(site).trim().toLowerCase() === trimmedSiteName)) {
+      return true;
+    }
+    
+    // Check name fragment exclusions
+    if (flagExclusions.nameFragments && trimmedPlacementName &&
+        flagExclusions.nameFragments.some(fragment => 
+          trimmedPlacementName.includes(String(fragment).trim().toLowerCase()))) {
+      return true;
+    }
   }
   
   return false;
@@ -1843,3 +1965,71 @@ function runNEXT03Audit()   { runDailyAuditByName('NEXT03'); }
 function runSPTM01Audit()   { runDailyAuditByName('SPTM01'); }
 function runNFL01Audit()   { runDailyAuditByName('NFL01'); }
 function runENT02Audit()   { runDailyAuditByName('ENT02'); }
+
+// === 🧪 ENHANCED EXCLUSIONS TESTING ===
+function testEnhancedExclusions() {
+  try {
+    Logger.log('🧪 Testing Enhanced Exclusions System...');
+    
+    // Create/update exclusions sheet
+    const sheet = getOrCreateExclusionsSheet();
+    Logger.log('✅ Exclusions sheet created/updated successfully');
+    
+    // Test loading exclusions
+    const exclusionsData = loadExclusionsFromSheet();
+    Logger.log(`✅ Loaded exclusions data: ${JSON.stringify(exclusionsData, null, 2)}`);
+    
+    // Test exclusion checking with different scenarios
+    const testCases = [
+      {
+        description: 'Placement ID exclusion',
+        configName: 'PST01',
+        placementId: '424138145',
+        flagType: 'clicks_greater_than_impressions',
+        placementName: 'Test Placement',
+        siteName: 'Test Site'
+      },
+      {
+        description: 'Site name exclusion',
+        configName: 'PST02',
+        placementId: '123456789',
+        flagType: 'all_flags',
+        placementName: 'YouTube Video Ad',
+        siteName: 'YouTube'
+      },
+      {
+        description: 'Name fragment exclusion',
+        configName: 'PST02',
+        placementId: '987654321',
+        flagType: 'pixel_size_mismatch',
+        placementName: 'Social Media Campaign',
+        siteName: 'Facebook'
+      }
+    ];
+    
+    testCases.forEach(testCase => {
+      const isExcluded = isPlacementExcludedForFlag(
+        exclusionsData,
+        testCase.configName,
+        testCase.placementId,
+        testCase.flagType,
+        testCase.placementName,
+        testCase.siteName
+      );
+      Logger.log(`${testCase.description}: ${isExcluded ? 'EXCLUDED' : 'NOT EXCLUDED'}`);
+    });
+    
+    // Open the exclusions sheet for review
+    SpreadsheetApp.getActiveSpreadsheet().setActiveSheet(sheet);
+    
+    Logger.log('✅ Enhanced exclusions system test completed successfully!');
+    Logger.log('📋 Please review the exclusions sheet and test the new features:');
+    Logger.log('   • Site Name column for excluding by site');
+    Logger.log('   • Name Fragment column for partial name matching');
+    Logger.log('   • Apply to All Configs for global exclusions');
+    
+  } catch (error) {
+    Logger.log(`❌ Error testing enhanced exclusions: ${error.message}`);
+    throw error;
+  }
+}
