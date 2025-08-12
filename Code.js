@@ -1995,8 +1995,8 @@ function loadExclusionsFromSheet() {
       // If "Apply to All Configs" is TRUE, apply to all known configs
       const configsToApply = [];
       if (applyToAllConfigs === 'TRUE') {
-        // Add all known config names
-        configsToApply.push('PST01', 'PST02', 'PST03', 'PST04', 'PST05', 'PST06', 'PST07', 'PST08', 'NEXT01');
+        // Add all known config names from auditConfigs
+        configsToApply.push(...auditConfigs.map(c => c.name));
       } else if (configName) {
         configsToApply.push(configName);
       } else {
@@ -2024,10 +2024,10 @@ function loadExclusionsFromSheet() {
           exclusions[config][flagType].placementIds.push(placementId);
         }
         if (siteName) {
-          exclusions[config][flagType].siteNames.push(siteName);
+          exclusions[config][flagType].siteNames.push(siteName.toLowerCase());
         }
         if (nameFragment) {
-          exclusions[config][flagType].nameFragments.push(nameFragment);
+          exclusions[config][flagType].nameFragments.push(nameFragment.toLowerCase());
         }
       }
     }
@@ -2088,14 +2088,14 @@ function isPlacementExcludedForFlag(exclusionsData, configName, placementId, fla
     
     // Check site name exclusions
     if (flagExclusions.siteNames && trimmedSiteName &&
-        flagExclusions.siteNames.some(site => String(site).trim().toLowerCase() === trimmedSiteName)) {
+        flagExclusions.siteNames.some(site => String(site).trim() === trimmedSiteName)) {
       return true;
     }
     
     // Check name fragment exclusions
     if (flagExclusions.nameFragments && trimmedPlacementName &&
         flagExclusions.nameFragments.some(fragment => 
-          trimmedPlacementName.includes(String(fragment).trim().toLowerCase()))) {
+          trimmedPlacementName.includes(String(fragment).trim()))) {
       return true;
     }
   }
