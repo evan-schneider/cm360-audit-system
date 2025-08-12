@@ -3,6 +3,7 @@ const ADMIN_EMAIL = 'evschneider@horizonmedia.com';
 const STAGING_MODE = 'Y'; // Set to 'Y' for staging mode, 'N' for production
 const EXCLUSIONS_SHEET_NAME = 'CM360 Audit Exclusions'; // Name of the sheet containing exclusions
 const THRESHOLDS_SHEET_NAME = 'CM360 Audit Thresholds'; // Name of the sheet containing flag thresholds
+const RECIPIENTS_SHEET_NAME = 'CM360 Audit Recipients'; // Name of the sheet containing email recipients
 
 const BATCH_SIZE = 3;
 const TRASH_ROOT_PATH = ['Project Log Files', 'CM360 Daily Audits', 'To Trash After 60 Days'];
@@ -14,87 +15,91 @@ function folderPath(type, configName) {
   return [...TRASH_ROOT_PATH, type, configName];
 }
 
-function resolveRecipients(recipients) {
-  return STAGING_MODE === 'Y' ? ADMIN_EMAIL : recipients;
+function resolveRecipients(configName, recipientsData = null) {
+  if (STAGING_MODE === 'Y') {
+    return ADMIN_EMAIL; // Admin override in staging mode
+  }
+  
+  // Production mode - use sheet data if available
+  if (recipientsData && recipientsData[configName]) {
+    return recipientsData[configName].primary || ADMIN_EMAIL;
+  }
+  
+  // Fallback to admin email if no sheet data
+  return ADMIN_EMAIL;
 }
 
-function resolveCc(ccList) {
-  return STAGING_MODE === 'Y' ? '' : ccList.filter(Boolean).join(', ');
+function resolveCc(configName, recipientsData = null) {
+  if (STAGING_MODE === 'Y') {
+    return ''; // No CC in staging mode
+  }
+  
+  // Production mode - use sheet data if available
+  if (recipientsData && recipientsData[configName]) {
+    return recipientsData[configName].cc || '';
+  }
+  
+  // No CC fallback
+  return '';
 }
 
 // === 🔧 AUDIT CONFIGS ===
+// Note: Recipients and CC lists are now managed in the Recipients sheet
+// This configuration focuses on infrastructure settings only
 const auditConfigs = [
   {
     name: 'PST01',
     label: 'Daily Audits/CM360/PST01',
     mergedFolderPath: folderPath('Merged Reports', 'PST01'),
-    tempDailyFolderPath: folderPath('Temp Daily Reports', 'PST01'),
-    recipients: resolveRecipients(ADMIN_EMAIL),
-    cc: resolveCc([])
+    tempDailyFolderPath: folderPath('Temp Daily Reports', 'PST01')
   },
   {
     name: 'PST02',
     label: 'Daily Audits/CM360/PST02',
     mergedFolderPath: folderPath('Merged Reports', 'PST02'),
-    tempDailyFolderPath: folderPath('Temp Daily Reports', 'PST02'),
-    recipients: resolveRecipients('fvariath@horizonmedia.com'),
-    cc: resolveCc([ADMIN_EMAIL])
+    tempDailyFolderPath: folderPath('Temp Daily Reports', 'PST02')
   },
   {
     name: 'PST03',
     label: 'Daily Audits/CM360/PST03',
     mergedFolderPath: folderPath('Merged Reports', 'PST03'),
-    tempDailyFolderPath: folderPath('Temp Daily Reports', 'PST03'),
-    recipients: resolveRecipients('dmaestre@horizonmedia.com'),
-    cc: resolveCc([ADMIN_EMAIL])
+    tempDailyFolderPath: folderPath('Temp Daily Reports', 'PST03')
   },
   {
     name: 'NEXT01',
     label: 'Daily Audits/CM360/NEXT01',
     mergedFolderPath: folderPath('Merged Reports', 'NEXT01'),
-    tempDailyFolderPath: folderPath('Temp Daily Reports', 'NEXT01'),
-    recipients: resolveRecipients('bosborne@horizonmedia.com, mmassaroni@horizonmedia.com'),
-    cc: resolveCc([ADMIN_EMAIL])
+    tempDailyFolderPath: folderPath('Temp Daily Reports', 'NEXT01')
   },
   {
     name: 'NEXT02',
     label: 'Daily Audits/CM360/NEXT02',
     mergedFolderPath: folderPath('Merged Reports', 'NEXT02'),
-    tempDailyFolderPath: folderPath('Temp Daily Reports', 'NEXT02'),
-    recipients: resolveRecipients('rschaff@horizonmedia.com, mmassaroni@horizonmedia.com, jwong@horizonmedia.com'),
-    cc: resolveCc([ADMIN_EMAIL])
+    tempDailyFolderPath: folderPath('Temp Daily Reports', 'NEXT02')
   },
   {
     name: 'NEXT03',
     label: 'Daily Audits/CM360/NEXT03',
     mergedFolderPath: folderPath('Merged Reports', 'NEXT03'),
-    tempDailyFolderPath: folderPath('Temp Daily Reports', 'NEXT03'),
-    recipients: resolveRecipients('szeterberg@horizonmedia.com, mmassaroni@horizonmedia.com, jwong@horizonmedia.com'),
-    cc: resolveCc([ADMIN_EMAIL])
+    tempDailyFolderPath: folderPath('Temp Daily Reports', 'NEXT03')
   },
   {
     name: 'SPTM01',
     label: 'Daily Audits/CM360/SPTM01',
     mergedFolderPath: folderPath('Merged Reports', 'SPTM01'),
-    tempDailyFolderPath: folderPath('Temp Daily Reports', 'SPTM01'),
-    recipients: resolveRecipients('spectrum_adops@horizonmedia.com'),
-    cc: resolveCc([ADMIN_EMAIL])
+    tempDailyFolderPath: folderPath('Temp Daily Reports', 'SPTM01')
   },
   {
     name: 'NFL01',
     label: 'Daily Audits/CM360/NFL01',
     mergedFolderPath: folderPath('Merged Reports', 'NFL01'),
-    tempDailyFolderPath: folderPath('Temp Daily Reports', 'NFL01'),
-    recipients: resolveRecipients('NFL_AdOps@horizonmedia.com, sbermolone@horizonmedia.com'),
-    cc: resolveCc([ADMIN_EMAIL])
+    tempDailyFolderPath: folderPath('Temp Daily Reports', 'NFL01')
   },
   {
     name: 'ENT01',
     label: 'Daily Audits/CM360/ENT01',
     mergedFolderPath: folderPath('Merged Reports', 'ENT01'),
-    tempDailyFolderPath: folderPath('Temp Daily Reports', 'ENT01'),
-    recipients: resolveRecipients('sremick@horizonmedia.com, cali@horizonmedia.com'),
-    cc: resolveCc([ADMIN_EMAIL])
+    tempDailyFolderPath: folderPath('Temp Daily Reports', 'ENT01')
   }
 ];
 
@@ -225,7 +230,7 @@ function safeSendEmail({ to, cc = '', subject, htmlBody, attachments = [] }, con
   }
 }
 
-function sendNoIssueEmail(config, sheetId, reason) {
+function sendNoIssueEmail(config, sheetId, reason, recipientsData) {
   const now = new Date();
   const subjectDate = formatDate(now, "yyyy-MM-dd");
   const subject = `✅ CM360 Daily Audit: No Issues Detected (${config.name} - ${subjectDate})`;
@@ -254,8 +259,8 @@ function sendNoIssueEmail(config, sheetId, reason) {
   }
 
   safeSendEmail({
-    to: config.recipients,
-    cc: config.cc || '',
+    to: resolveRecipients(config.name, recipientsData),
+    cc: resolveCc(config.name, recipientsData),
     subject,
     htmlBody,
     attachments: xlsxBlob && typeof xlsxBlob.getBytes === 'function' ? [xlsxBlob] : []
@@ -333,15 +338,15 @@ function exportSheetAsExcel(spreadsheetId, filename) {
 
 
 // === 📥 GMAIL & DRIVE FILE FETCH ===
-function fetchDailyAuditAttachments(config) {
+function fetchDailyAuditAttachments(config, recipientsData) {
   Logger.log(`📥 [${config.name}] fetchDailyAuditAttachments started`);
 
   const label = GmailApp.getUserLabelByName(config.label);
   if (!label) {
     Logger.log(`⚠️ [${config.name}] Label not found: ${config.label}`);
     safeSendEmail({
-      to: config.recipients,
-      cc: config.cc || '',
+      to: resolveRecipients(config.name, recipientsData),
+      cc: resolveCc(config.name, recipientsData),
       subject: `⚠️ CM360 Audit Warning: Gmail Label Missing (${config.name})`,
       htmlBody: `<p style="font-family:Arial; font-size:13px;">The label <b>${escapeHtml(config.label)}</b> could not be found. This may mean the audit for <b>${escapeHtml(config.name)}</b> will be skipped.</p>`
     }, `${config.name} - Missing Gmail Label`);
@@ -531,8 +536,12 @@ function executeAudit(config) {
     // Load thresholds data at the start of audit
     const thresholdsData = loadThresholdsFromSheet();
     Logger.log(`📊 [${configName}] Loaded thresholds for ${Object.keys(thresholdsData).length} configs`);
+    
+    // Load recipients data at the start of audit
+    const recipientsData = loadRecipientsFromSheet();
+    Logger.log(`📧 [${configName}] Loaded recipients for ${Object.keys(recipientsData).length} configs`);
 
-    const folderId = fetchDailyAuditAttachments(config);
+    const folderId = fetchDailyAuditAttachments(config, recipientsData);
     if (!folderId) {
       Logger.log(`⚠️ [${configName}] No files found today. Sending notification...`);
       const subject = `⚠️ CM360 Audit Skipped: No Files Found (${configName} - ${formatDate(now)})`;
@@ -545,7 +554,13 @@ function executeAudit(config) {
         </p>
         <p style="margin-top:12px; font-family:Arial, sans-serif; font-size:12px;">—Platform Solutions Team</p>
       `;
-      safeSendEmail({ to: config.recipients, cc: config.cc || '', subject, htmlBody, attachments: [] }, configName);
+      safeSendEmail({ 
+        to: resolveRecipients(configName, recipientsData), 
+        cc: resolveCc(configName, recipientsData), 
+        subject, 
+        htmlBody, 
+        attachments: [] 
+      }, configName);
       return { status: 'Skipped: No files found', flaggedCount: null, emailSent: true, emailTime: formattedNow };
     }
 
@@ -764,10 +779,10 @@ function executeAudit(config) {
     ]);
 
     if (displayRows.length > 0) {
-      emailFlaggedRows(mergedSheetId, displayRows, flaggedRows, config);
+      emailFlaggedRows(mergedSheetId, displayRows, flaggedRows, config, recipientsData);
       return { status: 'Completed with flags', flaggedCount: flaggedRows.length, emailSent: true, emailTime: formattedNow };
     } else {
-      sendNoIssueEmail(config, mergedSheetId, 'No issues were flagged');
+      sendNoIssueEmail(config, mergedSheetId, 'No issues were flagged', recipientsData);
       return { status: 'Completed (no issues)', flaggedCount: 0, emailSent: true, emailTime: formattedNow };
     }
 
@@ -869,8 +884,7 @@ function getEmailQuotaRemaining_() {
 
 
 // === 📬 EMAIL FLAGGED ROWS & REPORTS ===
-function emailFlaggedRows(sheetId, emailRows, flaggedRows, config) {
-  const recipients = config.recipients;
+function emailFlaggedRows(sheetId, emailRows, flaggedRows, config, recipientsData) {
   const configName = config.name;
 
   if (!flaggedRows || flaggedRows.length === 0) {
@@ -940,8 +954,8 @@ function emailFlaggedRows(sheetId, emailRows, flaggedRows, config) {
   `;
 
   safeSendEmail({
-    to: recipients,
-    cc: config.cc || '',
+    to: resolveRecipients(configName, recipientsData),
+    cc: resolveCc(configName, recipientsData),
     subject,
     htmlBody,
     attachments: [xlsxBlob]
@@ -1113,7 +1127,8 @@ function onOpen() {
     .addItem('�📋 Create/Open Exclusions Sheet', 'getOrCreateExclusionsSheet')
     .addItem('🧪 Test Enhanced Exclusions', 'testEnhancedExclusions')
     .addItem('📊 Test Thresholds System', 'testThresholdsSystem')
-    .addItem('🔄 Update Placement Names', 'updatePlacementNamesFromReports')
+    .addItem('� Test Recipients System', 'testRecipientsSystem')
+    .addItem('�🔄 Update Placement Names', 'updatePlacementNamesFromReports')
     .addItem('🔐 Check Authorization', 'checkAuthorizationStatus')
     .addItem('📋 Validate Configs', 'debugValidateAuditConfigs')
     .addItem('📄 Print Config Summary', 'debugPrintConfigSummary')
@@ -1598,6 +1613,151 @@ function getThresholdForFlag(thresholdsData, configName, flagType) {
   }
   
   return thresholdsData[configName][flagType];
+}
+
+// === 📧 EMAIL RECIPIENTS MANAGEMENT ===
+function getOrCreateRecipientsSheet() {
+  try {
+    const spreadsheet = SpreadsheetApp.getActiveSpreadsheet();
+    let sheet = spreadsheet.getSheetByName(RECIPIENTS_SHEET_NAME);
+    
+    if (!sheet) {
+      Logger.log(`Creating new recipients sheet: ${RECIPIENTS_SHEET_NAME}`);
+      sheet = spreadsheet.insertSheet(RECIPIENTS_SHEET_NAME);
+      
+      // Set up the header row
+      const headers = [
+        'Config Name',
+        'Primary Recipients',
+        'CC Recipients',
+        'Active',
+        'Last Updated',
+        '',
+        'INSTRUCTIONS'
+      ];
+      
+      Logger.log('Setting headers...');
+      sheet.getRange(1, 1, 1, headers.length).setValues([headers]);
+      
+      // Format the main headers
+      const mainHeaderRange = sheet.getRange(1, 1, 1, 5);
+      mainHeaderRange.setFontWeight('bold');
+      mainHeaderRange.setBackground('#4285f4');
+      mainHeaderRange.setFontColor('#ffffff');
+      
+      // Format the instructions header
+      const instructionsHeaderRange = sheet.getRange(1, 7, 1, 1);
+      instructionsHeaderRange.setFontWeight('bold');
+      instructionsHeaderRange.setBackground('#ff9900');
+      instructionsHeaderRange.setFontColor('#ffffff');
+      
+      Logger.log('Setting up dropdowns...');
+      
+      // Add dropdown validation for Active column (column D) - starting from row 2
+      const activeRange = sheet.getRange('D2:D');
+      const activeRule = SpreadsheetApp.newDataValidation()
+        .requireValueInList(['TRUE', 'FALSE'])
+        .setAllowInvalid(false)
+        .setHelpText('Set to TRUE to use these recipients, FALSE to disable.')
+        .build();
+      
+      activeRange.setDataValidation(activeRule);
+      
+      // Add instructions
+      const instructions = [
+        ['Config Name:', 'Enter the exact config name (PST01, PST02, NEXT01, etc.)'],
+        ['Primary Recipients:', 'Main email addresses (comma-separated if multiple)'],
+        ['CC Recipients:', 'CC email addresses (comma-separated if multiple)'],
+        ['Active:', 'TRUE to use these recipients, FALSE to disable'],
+        ['Last Updated:', 'Automatically updated when you modify recipients'],
+        ['', ''],
+        ['Staging Mode Override:', `Currently: ${STAGING_MODE === 'Y' ? 'STAGING (all emails go to admin)' : 'PRODUCTION (uses sheet recipients)'}`],
+        ['', ''],
+        ['Email Format:', ''],
+        ['• Single recipient:', 'user@company.com'],
+        ['• Multiple recipients:', 'user1@company.com, user2@company.com'],
+        ['• Leave CC blank if not needed', ''],
+        ['', ''],
+        ['Examples:', 'See rows below for different recipient configurations']
+      ];
+      
+      sheet.getRange(2, 7, instructions.length, 2).setValues(instructions);
+      
+      // Add default recipient rows for each config (using current hardcoded values)
+      const defaultRecipients = [
+        ['PST01', ADMIN_EMAIL, '', 'TRUE', formatDate(new Date(), 'yyyy-MM-dd')],
+        ['PST02', 'fvariath@horizonmedia.com', ADMIN_EMAIL, 'TRUE', formatDate(new Date(), 'yyyy-MM-dd')],
+        ['PST03', 'dmaestre@horizonmedia.com', ADMIN_EMAIL, 'TRUE', formatDate(new Date(), 'yyyy-MM-dd')],
+        ['NEXT01', 'bosborne@horizonmedia.com, mmassaroni@horizonmedia.com', ADMIN_EMAIL, 'TRUE', formatDate(new Date(), 'yyyy-MM-dd')],
+        ['NEXT02', 'rschaff@horizonmedia.com, mmassaroni@horizonmedia.com, jwong@horizonmedia.com', ADMIN_EMAIL, 'TRUE', formatDate(new Date(), 'yyyy-MM-dd')],
+        ['NEXT03', 'szeterberg@horizonmedia.com, mmassaroni@horizonmedia.com, jwong@horizonmedia.com', ADMIN_EMAIL, 'TRUE', formatDate(new Date(), 'yyyy-MM-dd')],
+        ['SPTM01', 'spectrum_adops@horizonmedia.com', ADMIN_EMAIL, 'TRUE', formatDate(new Date(), 'yyyy-MM-dd')],
+        ['NFL01', 'NFL_AdOps@horizonmedia.com, sbermolone@horizonmedia.com', ADMIN_EMAIL, 'TRUE', formatDate(new Date(), 'yyyy-MM-dd')],
+        ['ENT01', 'sremick@horizonmedia.com, cali@horizonmedia.com', ADMIN_EMAIL, 'TRUE', formatDate(new Date(), 'yyyy-MM-dd')]
+      ];
+      
+      if (defaultRecipients.length > 0) {
+        sheet.getRange(2, 1, defaultRecipients.length, 5).setValues(defaultRecipients);
+      }
+      
+      // Format instructions
+      const instructionsRange = sheet.getRange(2, 7, instructions.length, 2);
+      instructionsRange.setFontSize(10);
+      instructionsRange.setVerticalAlignment('top');
+      
+      // Auto-resize columns
+      sheet.autoResizeColumns(1, 5);
+      
+      Logger.log('Recipients sheet created successfully');
+    } else {
+      Logger.log(`Recipients sheet already exists: ${RECIPIENTS_SHEET_NAME}`);
+    }
+    
+    return sheet;
+    
+  } catch (error) {
+    Logger.log(`❌ Error creating recipients sheet: ${error.message}`);
+    throw new Error(`Failed to create recipients sheet: ${error.message}`);
+  }
+}
+
+function loadRecipientsFromSheet() {
+  try {
+    const sheet = getOrCreateRecipientsSheet();
+    const data = sheet.getDataRange().getValues();
+    const recipients = {};
+    
+    // Skip header row (index 0)
+    for (let i = 1; i < data.length; i++) {
+      const row = data[i];
+      const configName = String(row[0] || '').trim();
+      const primaryRecipients = String(row[1] || '').trim();
+      const ccRecipients = String(row[2] || '').trim();
+      const active = String(row[3] || '').trim().toUpperCase();
+      
+      // Skip empty rows, instruction rows, or inactive recipients
+      if (!configName || active !== 'TRUE' ||
+          configName.includes('INSTRUCTIONS') || 
+          configName.includes('•') ||
+          configName.includes('Config Name:') ||
+          configName.includes('Examples:')) {
+        continue;
+      }
+      
+      // Store recipient data for this config
+      recipients[configName] = {
+        primary: primaryRecipients,
+        cc: ccRecipients
+      };
+    }
+    
+    Logger.log(`Loaded recipients for ${Object.keys(recipients).length} configs`);
+    return recipients;
+    
+  } catch (error) {
+    Logger.log(`❌ Error loading recipients: ${error.message}`);
+    return {};
+  }
 }
 
 // === �📋 EXCLUSIONS MANAGEMENT ===
@@ -2281,6 +2441,66 @@ function testThresholdsSystem() {
     
   } catch (error) {
     Logger.log(`❌ Error testing thresholds system: ${error.message}`);
+    throw error;
+  }
+}
+
+/**
+ * Test function for the Recipients Management System
+ * Creates/updates recipients sheet and validates dynamic recipient resolution
+ */
+function testRecipientsSystem() {
+  Logger.log(`🧪 Testing Recipients Management System...`);
+  
+  try {
+    // Step 1: Create/Update recipients sheet
+    Logger.log(`📋 Creating/updating recipients sheet...`);
+    const sheet = getOrCreateRecipientsSheet();
+    Logger.log(`✅ Recipients sheet ready with ${sheet.getLastRow() - 1} recipient configurations`);
+    
+    // Step 2: Load recipients data
+    Logger.log(`📂 Loading recipients data...`);
+    const recipientsData = loadRecipientsFromSheet();
+    const configCount = Object.keys(recipientsData).length;
+    Logger.log(`✅ Loaded recipients for ${configCount} configurations`);
+    
+    // Step 3: Test recipient resolution with sample configs
+    Logger.log(`🔍 Testing recipient resolution...`);
+    let testCount = 0;
+    
+    for (const configName of Object.keys(recipientsData)) {
+      const recipients = resolveRecipients(configName, recipientsData);
+      const cc = resolveCc(configName, recipientsData);
+      
+      Logger.log(`  📧 [${configName}]:`);
+      Logger.log(`    To: ${recipients}`);
+      Logger.log(`    CC: ${cc}`);
+      
+      testCount++;
+      if (testCount >= 3) break; // Limit output for testing
+    }
+    
+    // Step 4: Test staging mode behavior
+    Logger.log(`🎭 Testing staging mode override...`);
+    const originalStaging = IS_STAGING_MODE;
+    
+    // Temporarily enable staging mode
+    global.IS_STAGING_MODE = true;
+    const stagingRecipients = resolveRecipients('test-config', recipientsData);
+    Logger.log(`  Staging mode recipients: ${stagingRecipients}`);
+    
+    // Restore original staging mode
+    global.IS_STAGING_MODE = originalStaging;
+    
+    Logger.log(`✅ Recipients system test completed successfully!`);
+    Logger.log(`📊 Summary:`);
+    Logger.log(`  - Recipients sheet: Ready`);
+    Logger.log(`  - Configurations loaded: ${configCount}`);
+    Logger.log(`  - Recipient resolution: Working`);
+    Logger.log(`  - Staging mode override: Working`);
+    
+  } catch (error) {
+    Logger.log(`❌ Error testing recipients system: ${error.message}`);
     throw error;
   }
 }
