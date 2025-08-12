@@ -30,8 +30,7 @@ const auditConfigs = [
     mergedFolderPath: folderPath('Merged Reports', 'PST01'),
     tempDailyFolderPath: folderPath('Temp Daily Reports', 'PST01'),
     recipients: resolveRecipients(ADMIN_EMAIL),
-    cc: resolveCc([]),
-    flags: { minImpThreshold: 50, minClickThreshold: 10 }
+    cc: resolveCc([])
   },
   {
     name: 'PST02',
@@ -39,8 +38,7 @@ const auditConfigs = [
     mergedFolderPath: folderPath('Merged Reports', 'PST02'),
     tempDailyFolderPath: folderPath('Temp Daily Reports', 'PST02'),
     recipients: resolveRecipients('fvariath@horizonmedia.com'),
-    cc: resolveCc([ADMIN_EMAIL]),
-    flags: { minImpThreshold: 100, minClickThreshold: 100 }
+    cc: resolveCc([ADMIN_EMAIL])
   },
   {
     name: 'PST03',
@@ -48,8 +46,7 @@ const auditConfigs = [
     mergedFolderPath: folderPath('Merged Reports', 'PST03'),
     tempDailyFolderPath: folderPath('Temp Daily Reports', 'PST03'),
     recipients: resolveRecipients('dmaestre@horizonmedia.com'),
-    cc: resolveCc([ADMIN_EMAIL]),
-    flags: { minImpThreshold: 0, minClickThreshold: 0 }
+    cc: resolveCc([ADMIN_EMAIL])
   },
   {
     name: 'NEXT01',
@@ -57,8 +54,7 @@ const auditConfigs = [
     mergedFolderPath: folderPath('Merged Reports', 'NEXT01'),
     tempDailyFolderPath: folderPath('Temp Daily Reports', 'NEXT01'),
     recipients: resolveRecipients('bosborne@horizonmedia.com, mmassaroni@horizonmedia.com'),
-    cc: resolveCc([ADMIN_EMAIL]),
-    flags: { minImpThreshold: 1200, minClickThreshold: 1200 }
+    cc: resolveCc([ADMIN_EMAIL])
   },
   {
     name: 'NEXT02',
@@ -66,8 +62,7 @@ const auditConfigs = [
     mergedFolderPath: folderPath('Merged Reports', 'NEXT02'),
     tempDailyFolderPath: folderPath('Temp Daily Reports', 'NEXT02'),
     recipients: resolveRecipients('rschaff@horizonmedia.com, mmassaroni@horizonmedia.com, jwong@horizonmedia.com'),
-    cc: resolveCc([ADMIN_EMAIL]),
-    flags: { minImpThreshold: 0, minClickThreshold: 0 }
+    cc: resolveCc([ADMIN_EMAIL])
   },
   {
     name: 'NEXT03',
@@ -75,8 +70,7 @@ const auditConfigs = [
     mergedFolderPath: folderPath('Merged Reports', 'NEXT03'),
     tempDailyFolderPath: folderPath('Temp Daily Reports', 'NEXT03'),
     recipients: resolveRecipients('szeterberg@horizonmedia.com, mmassaroni@horizonmedia.com, jwong@horizonmedia.com'),
-    cc: resolveCc([ADMIN_EMAIL]),
-    flags: { minImpThreshold: 0, minClickThreshold: 0 }
+    cc: resolveCc([ADMIN_EMAIL])
   },
   {
     name: 'SPTM01',
@@ -84,8 +78,7 @@ const auditConfigs = [
     mergedFolderPath: folderPath('Merged Reports', 'SPTM01'),
     tempDailyFolderPath: folderPath('Temp Daily Reports', 'SPTM01'),
     recipients: resolveRecipients('spectrum_adops@horizonmedia.com'),
-    cc: resolveCc([ADMIN_EMAIL]),
-    flags: { minImpThreshold: 10, minClickThreshold: 10 }
+    cc: resolveCc([ADMIN_EMAIL])
   },
   {
     name: 'NFL01',
@@ -93,8 +86,7 @@ const auditConfigs = [
     mergedFolderPath: folderPath('Merged Reports', 'NFL01'),
     tempDailyFolderPath: folderPath('Temp Daily Reports', 'NFL01'),
     recipients: resolveRecipients('NFL_AdOps@horizonmedia.com, sbermolone@horizonmedia.com'),
-    cc: resolveCc([ADMIN_EMAIL]),
-    flags: { minImpThreshold: 50, minClickThreshold: 50 }
+    cc: resolveCc([ADMIN_EMAIL])
   },
   {
     name: 'ENT01',
@@ -102,8 +94,7 @@ const auditConfigs = [
     mergedFolderPath: folderPath('Merged Reports', 'ENT01'),
     tempDailyFolderPath: folderPath('Temp Daily Reports', 'ENT01'),
     recipients: resolveRecipients('sremick@horizonmedia.com, cali@horizonmedia.com'),
-    cc: resolveCc([ADMIN_EMAIL]),
-    flags: { minImpThreshold: 15, minClickThreshold: 15 }
+    cc: resolveCc([ADMIN_EMAIL])
   }
 ];
 
@@ -1500,18 +1491,30 @@ function getOrCreateThresholdsSheet() {
       
       // Add default threshold rows for each config
       const defaultThresholds = [];
+      
+      // Default threshold values (previously from config.flags)
+      const defaultValues = {
+        'PST01': { minImpressions: 50, minClicks: 10 },
+        'PST02': { minImpressions: 100, minClicks: 100 },
+        'PST03': { minImpressions: 0, minClicks: 0 },
+        'NEXT01': { minImpressions: 1200, minClicks: 1200 },
+        'NEXT02': { minImpressions: 0, minClicks: 0 },
+        'NEXT03': { minImpressions: 0, minClicks: 0 },
+        'SPTM01': { minImpressions: 10, minClicks: 10 },
+        'NFL01': { minImpressions: 50, minClicks: 50 },
+        'ENT01': { minImpressions: 15, minClicks: 15 }
+      };
+      
       auditConfigs.forEach(config => {
-        const currentFlags = config.flags || {};
-        const minImpressions = currentFlags.minImpThreshold || currentFlags.minVolumeThreshold || 0;
-        const minClicks = currentFlags.minClickThreshold || currentFlags.minVolumeThreshold || 0;
+        const defaults = defaultValues[config.name] || { minImpressions: 0, minClicks: 0 };
         
         // Add a row for each flag type
         flagTypeOptions.forEach(flagType => {
           defaultThresholds.push([
             config.name,
             flagType,
-            minImpressions,
-            minClicks,
+            defaults.minImpressions,
+            defaults.minClicks,
             'TRUE'
           ]);
         });
