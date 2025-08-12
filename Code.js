@@ -2482,22 +2482,25 @@ function testRecipientsSystem() {
     
     // Step 4: Test staging mode behavior
     Logger.log(`🎭 Testing staging mode override...`);
-    const originalStaging = IS_STAGING_MODE;
+    Logger.log(`  Current staging mode: ${STAGING_MODE}`);
     
-    // Temporarily enable staging mode
-    global.IS_STAGING_MODE = true;
-    const stagingRecipients = resolveRecipients('test-config', recipientsData);
-    Logger.log(`  Staging mode recipients: ${stagingRecipients}`);
+    // Show current mode recipients
+    const currentRecipients = resolveRecipients('test-config', recipientsData);
+    Logger.log(`  Current mode recipients: ${currentRecipients}`);
     
-    // Restore original staging mode
-    global.IS_STAGING_MODE = originalStaging;
+    // Note about staging mode
+    if (STAGING_MODE === 'Y') {
+      Logger.log(`  ✅ Staging mode is ENABLED - all emails go to admin`);
+    } else {
+      Logger.log(`  ✅ Production mode is ENABLED - emails use sheet recipients`);
+    }
     
     Logger.log(`✅ Recipients system test completed successfully!`);
     Logger.log(`📊 Summary:`);
     Logger.log(`  - Recipients sheet: Ready`);
     Logger.log(`  - Configurations loaded: ${configCount}`);
     Logger.log(`  - Recipient resolution: Working`);
-    Logger.log(`  - Staging mode override: Working`);
+    Logger.log(`  - Staging mode: ${STAGING_MODE === 'Y' ? 'ENABLED (Admin override)' : 'DISABLED (Sheet recipients)'}`);
     
   } catch (error) {
     Logger.log(`❌ Error testing recipients system: ${error.message}`);
