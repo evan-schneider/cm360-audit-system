@@ -176,7 +176,7 @@ function getDriveFolderByPath_(pathArray) {
 }
 
 function validateAuditConfigs() {
-  const requiredFields = ['name', 'label', 'recipients'];
+  const requiredFields = ['name', 'label'];
   auditConfigs.forEach(config => {
     requiredFields.forEach(field => {
       if (!config[field] || typeof config[field] !== 'string') {
@@ -2287,7 +2287,7 @@ function debugValidateAuditConfigs() {
 
 function debugPrintConfigSummary() {
   auditConfigs.forEach(c => {
-    Logger.log(`[${c.name}] Label: ${c.label}, Recipients: ${c.recipients}, Flags: ${JSON.stringify(c.flags)}`);
+    Logger.log(`[${c.name}] Label: ${c.label}, Flags: ${JSON.stringify(c.flags)} (Recipients managed via sheet)`);
   });
 }
 
