@@ -12,7 +12,6 @@ A comprehensive Google Apps Script system for auditing CM360 (Campaign Manager 3
 
 ## Key Components
 - `Code.js` - Main audit system (1800+ lines)
-- `Code_Backup.js` - Backup and reference code
 - `ConfigPicker.html` - Team configuration interface
 - `Dashboard.html` - Main dashboard interface
 - `appsscript.json` - Google Apps Script manifest
