@@ -1,54 +1,64 @@
+
 # CM360 Audit System
 
 ## Overview
-A comprehensive Google Apps Script system for auditing CM360 (Campaign Manager 360) campaigns with advanced exclusions management and automated reporting capabilities.
+CM360 Audit System is a robust, enterprise-grade Google Apps Script solution for automating Campaign Manager 360 (CM360) campaign audits. It streamlines compliance, reporting, and QA by merging, flagging, and distributing audit results across multiple teams, with advanced exclusions management and automated daily summaries.
 
-## Features
-- **Campaign Auditing**: Automatically audits CM360 campaigns across 9 team configurations
-- **Exclusions Management**: Integrated exclusions sheet with automatic population and validation
-- **Placement Name Lookup**: Updates placement names from CM360 reports with data validation
-- **Excel Export**: Generates detailed audit reports with proper formatting
-- **Team Configuration**: Supports multiple team setups with customizable audit parameters
+## Key Features
+- **Automated Campaign Auditing**: Audits all configured CM360 campaigns on a daily schedule, supporting multiple teams and configurations.
+- **Advanced Exclusions Management**: Flexible exclusions sheet for placement, site, and name fragment filtering, with real-time validation and auto-population.
+- **Placement Name Lookup**: Automatically updates placement names from CM360 reports for accurate flagging and reporting.
+- **Excel & Email Reporting**: Generates detailed, formatted Excel reports and sends summary/status emails to stakeholders.
+- **Configurable Team Workflows**: Supports per-team thresholds, recipients, and batch processing for scalable operations.
+- **Dashboard & UI**: Intuitive dashboard and configuration picker for easy management and monitoring.
+- **Error Handling & Logging**: Comprehensive logging, error reporting, and status tracking for reliable operation.
 
-## Key Components
-- `Code.js` - Main audit system (1800+ lines)
-- `ConfigPicker.html` - Team configuration interface
-- `Dashboard.html` - Main dashboard interface
-- `appsscript.json` - Google Apps Script manifest
+## Components
+- `Code.js` — Main Apps Script logic (auditing, batching, email, Drive/Sheets integration)
+- `ConfigPicker.html` — Team configuration picker UI
+- `Dashboard.html` — Main dashboard interface
+- `appsscript.json` — Apps Script project manifest
 
-## Setup Instructions
-1. Create a new Google Apps Script project
-2. Copy the contents of `Code.js` into the script editor
-3. Add the HTML files for the dashboard and configuration picker
-4. Configure CM360 API access and credentials
-5. Set up the exclusions sheet for placement filtering
+## Setup & Installation
+1. **Create a Google Apps Script Project**
+	- In Google Drive, select New > More > Google Apps Script.
+2. **Copy Source Files**
+	- Paste the contents of `Code.js` into the script editor.
+	- Add `ConfigPicker.html` and `Dashboard.html` as HTML files.
+	- Replace the default `appsscript.json` with the provided manifest.
+3. **Configure API Access**
+	- Enable the CM360 API and Advanced Drive API in the Apps Script project.
+	- Set up required OAuth scopes as prompted.
+4. **Initial Sheet Setup**
+	- Run the setup menu to auto-create thresholds, recipients, and exclusions sheets.
+	- Populate with your team’s configuration and recipient details.
+5. **Deploy Triggers**
+	- Use the menu to install daily batch triggers for automated audits.
 
-## Usage
-1. **Dashboard Access**: Open the script and run the dashboard function
-2. **Team Selection**: Use the Config Picker to select your team configuration
-3. **Run Audit**: Execute the audit process for your selected campaigns
-4. **Exclusions Management**: Use the exclusions sheet to filter specific placements
-5. **Update Placement Names**: Use the "Update Placement Names" button to refresh placement data
-6. **Export Results**: Download audit results as formatted Excel files
+## Usage Workflow
+1. **Open the Dashboard**
+	- Use the custom menu to access the dashboard and configuration picker.
+2. **Configure Teams & Thresholds**
+	- Edit the thresholds, recipients, and exclusions sheets as needed.
+3. **Run or Schedule Audits**
+	- Audits run automatically via triggers, or can be run manually from the menu.
+4. **Review Results**
+	- Receive summary emails and Excel reports; review flagged placements and campaign issues.
+5. **Manage Exclusions**
+	- Update the exclusions sheet to refine audit logic and reduce false positives.
 
-## Exclusions Sheet Features
-- Automatic creation and population
-- Real-time validation during edits
-- Integration with audit logic
-- Support for placement-specific exclusions
+## File Descriptions
+- **Code.js**: Core logic for batch processing, audit execution, email/report generation, and UI integration.
+- **ConfigPicker.html**: Modal dialog for selecting and managing team configurations.
+- **Dashboard.html**: Sidebar/dashboard for audit status and quick actions.
+- **appsscript.json**: Project manifest (defines script settings, scopes, and add-on config).
 
-## Technical Details
-- Built for Google Apps Script environment
-- Integrates with CM360 API
-- Uses Google Sheets for data management
-- Supports Excel export with custom formatting
-- Includes comprehensive error handling and validation
+## Support & Contribution
+- For support, open an issue on the project’s GitHub repository or contact the maintainer.
+- Contributions are welcome! Please fork the repo and submit a pull request with your improvements.
 
-## Version History
-- Enhanced with exclusions management system
-- Added placement name lookup with validation
-- Improved UI with emoji fixes
-- Integrated automated sheet management
+## License
+This project is licensed under the MIT License. See `LICENSE` for details.
 
-## Support
-This system is designed for enterprise-level CM360 campaign auditing with advanced exclusions management capabilities.
+---
+CM360 Audit System is designed for digital marketing teams, agencies, and enterprises seeking reliable, automated QA and compliance for Campaign Manager 360 operations.
