@@ -1,6 +1,6 @@
 ﻿// === CONFIGURATION & CONSTANTS ===
 const ADMIN_EMAIL = 'evschneider@horizonmedia.com';
-const STAGING_MODE = 'Y'; // Set to 'Y' for staging mode, 'N' for production
+const STAGING_MODE = 'N'; // Set to 'Y' for staging mode, 'N' for production
 
 // CONFIGURATION DATA SOURCE
 // Option 1: Use current spreadsheet (source code visible to editors)
@@ -952,7 +952,8 @@ function emailFlaggedRows(sheetId, emailRows, flaggedRows, config, recipientsDat
   const plural = (count, singular, plural) => count === 1 ? singular : plural;
   const totalFlagged = flaggedRows.length;
   const uniqueCampaigns = new Set(flaggedRows.map(r => r[1])).size;
-  const summaryText = `⚠️ The following ${totalFlagged} ${plural(totalFlagged, 'placement', 'placements')} across ${uniqueCampaigns} ${plural(uniqueCampaigns, 'campaign', 'campaigns')} ${plural(totalFlagged, 'was', 'were')} were flagged during the <strong>${configName}</strong> CM360 audit of yesterday's delivery. Please review:`;
+  const verb = totalFlagged === 1 ? 'was' : 'were';
+  const summaryText = `⚠️ The following ${totalFlagged} ${plural(totalFlagged, 'placement', 'placements')} across ${uniqueCampaigns} ${plural(uniqueCampaigns, 'campaign', 'campaigns')} ${verb} flagged during the <strong>${configName}</strong> CM360 audit of yesterday's delivery. Please review:`;
 
   const truncatedNote = flaggedRows.length > 100
     ? `<p style="font-family:Arial, sans-serif; font-size:12px;">Only the first 100 flagged rows are shown below. Full details are included in the attached Excel file.</p>`
