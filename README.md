@@ -14,10 +14,10 @@ CM360 Audit System is a robust, enterprise-grade Google Apps Script solution for
 - **Error Handling & Logging**: Comprehensive logging, error reporting, and status tracking for reliable operation.
 
 ## Components
-- `Code.js` — Main Apps Script logic (auditing, batching, email, Drive/Sheets integration)
-- `ConfigPicker.html` — Team configuration picker UI
-- `Dashboard.html` — Main dashboard interface
-- `appsscript.json` — Apps Script project manifest
+- `Code.js` - Main Apps Script logic (auditing, batching, email, Drive/Sheets integration)
+- `ConfigPicker.html` - Team configuration picker UI
+- `Dashboard.html` - Main dashboard interface
+- `appsscript.json` - Apps Script project manifest
 
 ## Setup & Installation
 1. **Create a Google Apps Script Project**
@@ -31,7 +31,7 @@ CM360 Audit System is a robust, enterprise-grade Google Apps Script solution for
 	- Set up required OAuth scopes as prompted.
 4. **Initial Sheet Setup**
 	- Run the setup menu to auto-create thresholds, recipients, and exclusions sheets.
-	- Populate with your team’s configuration and recipient details.
+	- Populate with your team's configuration and recipient details.
 5. **Deploy Triggers**
 	- Use the menu to install daily batch triggers for automated audits.
 
@@ -54,7 +54,7 @@ CM360 Audit System is a robust, enterprise-grade Google Apps Script solution for
 - **appsscript.json**: Project manifest (defines script settings, scopes, and add-on config).
 
 ## Support & Contribution
-- For support, open an issue on the project’s GitHub repository or contact the maintainer.
+- For support, open an issue on the project's GitHub repository or contact the maintainer.
 - Contributions are welcome! Please fork the repo and submit a pull request with your improvements.
 
 ## License
@@ -62,3 +62,40 @@ This project is licensed under the MIT License. See `LICENSE` for details.
 
 ---
 CM360 Audit System is designed for digital marketing teams, agencies, and enterprises seeking reliable, automated QA and compliance for Campaign Manager 360 operations.
+
+## How to run locally (with clasp)
+
+Prerequisites:
+- Node.js and npm installed
+- `clasp` installed globally or available via `npx` (we use `npx @google/clasp` in examples)
+- You must be authorized with the Google account that owns or can edit the Apps Script project
+
+1. Authenticate clasp (one-time):
+
+```powershell
+npx @google/clasp login
+```
+
+2. Pull the remote project (if you're working with the cloud project):
+
+```powershell
+npx @google/clasp pull
+```
+
+3. Push local changes to Apps Script:
+
+```powershell
+npx @google/clasp push
+```
+
+4. Create a version and (optionally) deploy an API executable if you need `clasp run`:
+
+```powershell
+npx @google/clasp version "v1"
+npx @google/clasp deploy --versionNumber 1 --description "api-exec"
+```
+
+Notes:
+- Running `clasp run <functionName>` requires an API-executable deployment and may require linking a user-managed GCP project for some projects; if you see a message about GCP projects in the Apps Script UI, follow the editor guidance.
+- If your function uses Gmail, Drive, or other sensitive scopes, you'll need to accept OAuth consent when running from the Apps Script editor or when creating a deployment.
+- Use the Apps Script editor to run functions interactively and inspect logs if you prefer not to deploy.

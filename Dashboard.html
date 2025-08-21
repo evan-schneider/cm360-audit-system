@@ -1,120 +1,120 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <base target="_top">
-    <style>
-      body {
-        font-family: Arial, sans-serif;
-        font-size: 13px;
-        padding: 10px;
-      }
-      .bundle {
-        margin: 10px 0;
-        padding: 6px;
-        border: 1px solid #ccc;
-        border-radius: 6px;
-      }
-      .batch-group {
-        margin: 20px 0;
-        padding: 10px;
-        border: 2px solid #bbb;
-        border-radius: 8px;
-        background: #f9f9f9;
-      }
-      .batch-group h3 {
-        margin-top: 0;
-        margin-bottom: 8px;
-        font-size: 15px;
-        color: #444;
-      }
-      pre {
-        margin: 4px 0 0 0;
-        background: #f8f8f8;
-        padding: 4px;
-        border-radius: 4px;
-      }
-      button {
-        margin-top: 8px;
-        padding: 5px 10px;
-        font-size: 13px;
-      }
-    </style>
-  </head>
-  <body>
-    <h2>📊 CM360 Audit Dashboard</h2>
+ <head>
+ <base target="_top">
+ <style>
+ body {
+ font-family: Arial, sans-serif;
+ font-size: 13px;
+ padding: 10px;
+ }
+ .bundle {
+ margin: 10px 0;
+ padding: 6px;
+ border: 1px solid #ccc;
+ border-radius: 6px;
+ }
+ .batch-group {
+ margin: 20px 0;
+ padding: 10px;
+ border: 2px solid #bbb;
+ border-radius: 8px;
+ background: #f9f9f9;
+ }
+ .batch-group h3 {
+ margin-top: 0;
+ margin-bottom: 8px;
+ font-size: 15px;
+ color: #444;
+ }
+ pre {
+ margin: 4px 0 0 0;
+ background: #f8f8f8;
+ padding: 4px;
+ border-radius: 4px;
+ }
+ button {
+ margin-top: 8px;
+ padding: 5px 10px;
+ font-size: 13px;
+ }
+ </style>
+ </head>
+ <body>
+ <h2> CM360 Audit Dashboard</h2>
 
-    <div id="bundles">Loading audit configs...</div>
+ <div id="bundles">Loading audit configs...</div>
 
-    <div style="margin-top: 20px;">
-      <button onclick="checkRunners()">🔍 Check Missing Runners</button>
-      <button onclick="reinstallTriggers()">🔁 Reinstall Triggers</button>
-      <button onclick="generateStubs()">🧩 Generate Missing Runner Stubs</button>
-    </div>
+ <div style="margin-top: 20px;">
+ <button onclick="checkRunners()"> Check Missing Runners</button>
+ <button onclick="reinstallTriggers()"> Reinstall Triggers</button>
+ <button onclick="generateStubs()"> Generate Missing Runner Stubs</button>
+ </div>
 
-    <div id="runnerResults" style="margin-top: 16px;"></div>
-    <div id="stubOutput" style="margin-top: 16px;"></div>
+ <div id="runnerResults" style="margin-top: 16px;"></div>
+ <div id="stubOutput" style="margin-top: 16px;"></div>
 
-    <script>
-      // Load audit config summaries
-      google.script.run.withSuccessHandler(renderBundles).getAuditConfigSummaries();
+ <script>
+ // Load audit config summaries
+ google.script.run.withSuccessHandler(renderBundles).getAuditConfigSummaries();
 
-      function renderBundles(data) {
-        const div = document.getElementById('bundles');
-        let html = '';
+ function renderBundles(data) {
+ const div = document.getElementById('bundles');
+ let html = '';
 
-        data.forEach(batch => {
-          html += `<div class="batch-group">
-            <h3>${batch.batchLabel}</h3>
-            ${batch.configs.map(c => `
-              <div class="bundle">
-                <strong>${c.name}</strong><br/>
-                <strong>Label:</strong> ${c.label}<br/>
-                <strong>Recipients:</strong> ${c.recipients}<br/>
-                <strong>Flags:</strong>
-                <pre>${c.flags}</pre>
-              </div>
-            `).join('')}
-          </div>`;
-        });
+ data.forEach(batch => {
+ html += `<div class="batch-group">
+ <h3>${batch.batchLabel}</h3>
+ ${batch.configs.map(c => `
+ <div class="bundle">
+ <strong>${c.name}</strong><br/>
+ <strong>Label:</strong> ${c.label}<br/>
+ <strong>Recipients:</strong> ${c.recipients}<br/>
+ <strong>Flags:</strong>
+ <pre>${c.flags}</pre>
+ </div>
+ `).join('')}
+ </div>`;
+ });
 
-        html += `<p><strong>Total Configs:</strong> ${data.reduce((sum, b) => sum + b.configs.length, 0)}</p>`;
-        div.innerHTML = html;
-      }
+ html += `<p><strong>Total Configs:</strong> ${data.reduce((sum, b) => sum + b.configs.length, 0)}</p>`;
+ div.innerHTML = html;
+ }
 
-      function checkRunners() {
-        google.script.run.withSuccessHandler(displayRunnerResults).checkMissingBatchRunners();
-      }
+ function checkRunners() {
+ google.script.run.withSuccessHandler(displayRunnerResults).checkMissingBatchRunners();
+ }
 
-      function reinstallTriggers() {
-        google.script.run.withSuccessHandler(displayTriggerResults).installDailyAuditTriggers();
-      }
+ function reinstallTriggers() {
+ google.script.run.withSuccessHandler(displayTriggerResults).installDailyAuditTriggers();
+ }
 
-      function displayTriggerResults(messages) {
-        const div = document.getElementById('runnerResults');
-        div.innerHTML = `<strong>Trigger Installation:</strong><br/><ul style="padding-left: 20px;">${
-          messages.map(m => `<li>${m}</li>`).join('')
-        }</ul>`;
-      }
+ function displayTriggerResults(messages) {
+ const div = document.getElementById('runnerResults');
+ div.innerHTML = `<strong>Trigger Installation:</strong><br/><ul style="padding-left: 20px;">${
+ messages.map(m => `<li>${m}</li>`).join('')
+ }</ul>`;
+ }
 
-      function displayRunnerResults(messages) {
-        const div = document.getElementById('runnerResults');
-        div.innerHTML = `<strong>Batch Runner Check:</strong><br/><ul style="padding-left: 20px;">${
-          messages.map(m => `<li>${m}</li>`).join('')
-        }</ul>`;
-      }
+ function displayRunnerResults(messages) {
+ const div = document.getElementById('runnerResults');
+ div.innerHTML = `<strong>Batch Runner Check:</strong><br/><ul style="padding-left: 20px;">${
+ messages.map(m => `<li>${m}</li>`).join('')
+ }</ul>`;
+ }
 
-      function generateStubs() {
-        google.script.run.withSuccessHandler(displayStubs).generateMissingBatchStubs();
-      }
+ function generateStubs() {
+ google.script.run.withSuccessHandler(displayStubs).generateMissingBatchStubs();
+ }
 
-      function displayStubs(code) {
-        const div = document.getElementById('stubOutput');
-        div.innerHTML = `
-          <strong>Missing Batch Runner Functions:</strong>
-          <pre style="background:#f4f4f4; padding:10px; border-radius:6px; white-space:pre-wrap;">${code}</pre>
-        `;
-      }
+ function displayStubs(code) {
+ const div = document.getElementById('stubOutput');
+ div.innerHTML = `
+ <strong>Missing Batch Runner Functions:</strong>
+ <pre style="background:#f4f4f4; padding:10px; border-radius:6px; white-space:pre-wrap;">${code}</pre>
+ `;
+ }
 
-    </script>
-  </body>
+ </script>
+ </body>
 </html>

@@ -1,0 +1,29 @@
+<style>
+  .btn { display:block; margin:6px 0; padding:8px 12px; border-radius:4px; background:#1a73e8; color:#fff; border:none; cursor:pointer; }
+  .btn.secondary { background:#6c6c6c; }
+  .btn.warn { background:#ff9900; }
+  body { font-family: Arial, sans-serif; padding:12px; }
+  h3 { margin-top:0; }
+</style>
+<div>
+  <h3>CM360 Helper Buttons</h3>
+  <button class="btn" onclick="run('createMissingThresholds')">Create Missing Thresholds</button>
+  <button class="btn" onclick="run('createMissingRecipients')">Create Missing Recipients</button>
+  <button class="btn" onclick="run('createMissingExclusions')">Create Missing Exclusions</button>
+  <button class="btn" onclick="run('ensureExternalConfigInstructions')">Ensure External Instructions</button>
+  <button class="btn" onclick="run('refreshExternalHeaderStyles')">Refresh External Header Styles</button>
+  <button class="btn warn" onclick="runWithConfirm('processAuditRequests','Are you sure you want to process pending audit requests?')">Process Audit Requests</button>
+  <button class="btn secondary" onclick="run('fixAuditRequestsSheet')">Fix Audit Requests Sheet (fill gaps)</button>
+  <button class="btn secondary" onclick="run('syncFromExternalConfig')">Sync FROM External Config</button>
+  <button class="btn secondary" onclick="run('syncToExternalConfig')">Sync TO External Config</button>
+  <div style="margin-top:12px; font-size:12px; color:#666">Buttons call server-side functions and log results in Executions.</div>
+</div>
+<script>
+  function run(fn){
+    document.body.style.opacity = 0.7;
+    google.script.run.withSuccessHandler(()=>{document.body.style.opacity=1;google.script.host.close();}).withFailureHandler(e=>{alert('Failed: '+e.message);document.body.style.opacity=1;} )[fn]();
+  }
+  function runWithConfirm(fn, msg){
+    if(confirm(msg)) run(fn);
+  }
+</script>

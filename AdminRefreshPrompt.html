@@ -1,0 +1,14 @@
+<div style="font-family:Arial, sans-serif; padding:12px;">
+  <h3 style="margin:0 0 8px 0;">Admin Instructions</h3>
+  <p style="margin:0 0 12px 0; font-size:13px;">Quickly refresh Admin headers & instructions across sheets.</p>
+  <button id="refreshBtn" style="background:#2e7d32;color:#fff;border:none;padding:8px 12px;border-radius:4px;cursor:pointer;">Update External Config Instructions</button>
+  <button id="dismissBtn" style="margin-left:8px;padding:8px 12px;border-radius:4px;">Dismiss</button>
+  <script>
+    document.getElementById('refreshBtn').addEventListener('click', function(){
+      google.script.run.withSuccessHandler(()=>{google.script.host.close();}).withFailureHandler(e=>{alert('Failed: '+e.message)}).refreshExternalConfigInstructions();
+      this.disabled = true;
+      this.textContent = 'Updating external...';
+    });
+    document.getElementById('dismissBtn').addEventListener('click', function(){ google.script.host.close(); });
+  </script>
+</div>
