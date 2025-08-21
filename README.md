@@ -1,101 +1,101 @@
 
 # CM360 Audit System
 
+CM360 Audit System is a robust Google Apps Script solution that automates Campaign Manager 360 (CM360) campaign audits and operational workflows. It aggregates daily delivery files, merges and flags issues against configurable thresholds, honors per‑team exclusions, and distributes results via formatted Excel attachments and summary emails. A simple spreadsheet UI provides configuration management, ad‑hoc run controls, and request handling.
+
 ## Overview
-CM360 Audit System is a robust, enterprise-grade Google Apps Script solution for automating Campaign Manager 360 (CM360) campaign audits. It streamlines compliance, reporting, and QA by merging, flagging, and distributing audit results across multiple teams, with advanced exclusions management and automated daily summaries.
+The system is designed for reliability and low‑maintenance operation inside Google Workspace:
+- Gmail label–based ingestion of daily audit files (ZIP, CSV, XLSX)
+- Deterministic merge + header detection + data cleaning
+- Flexible flagging by thresholds (clicks > impressions, out‑of‑flight, pixel‑size mismatch, default ad serving)
+- Per‑config recipients with optional “withhold no‑flag emails” behavior
+- Exclusions by placement ID, site name, or name fragment
+- Daily summary email with status across configs
+- External configuration spreadsheet support, including writable INSTRUCTIONS columns
 
-## Key Features
-- **Automated Campaign Auditing**: Audits all configured CM360 campaigns on a daily schedule, supporting multiple teams and configurations.
-- **Advanced Exclusions Management**: Flexible exclusions sheet for placement, site, and name fragment filtering, with real-time validation and auto-population.
-- **Placement Name Lookup**: Automatically updates placement names from CM360 reports for accurate flagging and reporting.
-- **Excel & Email Reporting**: Generates detailed, formatted Excel reports and sends summary/status emails to stakeholders.
-- **Configurable Team Workflows**: Supports per-team thresholds, recipients, and batch processing for scalable operations.
-- **Dashboard & UI**: Intuitive dashboard and configuration picker for easy management and monitoring.
-- **Error Handling & Logging**: Comprehensive logging, error reporting, and status tracking for reliable operation.
+## Architecture and data flow
+1. Delivery files arrive in Gmail under labels like `Daily Audits/CM360/<CONFIG>`.
+2. The script pulls today’s attachments, extracts ZIPs, converts Excel (via Advanced Drive API), and stages files in Drive.
+3. Files are merged into a canonical sheet; headers are detected and normalized; pixel sizes are standardized.
+4. Flagging logic evaluates thresholds and exclusions; flagged rows are sorted to the top.
+5. Stakeholders receive a formatted Excel export and an HTML summary for each config; a global daily summary is also sent.
 
-## Components
-- `Code.js` - Main Apps Script logic (auditing, batching, email, Drive/Sheets integration)
-- `ConfigPicker.html` - Team configuration picker UI
-- `Dashboard.html` - Main dashboard interface
-- `appsscript.json` - Apps Script project manifest
+## Key components
+- `Code.js` — Core logic: ingestion, merge, flagging, email/reporting, configuration writers, UI/menu wiring
+- `ConfigPicker.html` — Modal dialog for selecting and running audits by config
+- `Dashboard.html` — Sidebar dashboard for quick access and status
+- `appsscript.json` — Apps Script manifest (scopes, settings)
 
-## Setup & Installation
-1. **Create a Google Apps Script Project**
-	- In Google Drive, select New > More > Google Apps Script.
-2. **Copy Source Files**
-	- Paste the contents of `Code.js` into the script editor.
-	- Add `ConfigPicker.html` and `Dashboard.html` as HTML files.
-	- Replace the default `appsscript.json` with the provided manifest.
-3. **Configure API Access**
-	- Enable the CM360 API and Advanced Drive API in the Apps Script project.
-	- Set up required OAuth scopes as prompted.
-4. **Initial Sheet Setup**
-	- Run the setup menu to auto-create thresholds, recipients, and exclusions sheets.
-	- Populate with your team's configuration and recipient details.
-5. **Deploy Triggers**
-	- Use the menu to install daily batch triggers for automated audits.
+## Configuration
+- External config sheet: set `EXTERNAL_CONFIG_SHEET_ID` in `Code.js`.
+- Sheet names (defaults):
+	- Thresholds: `Audit Thresholds`
+	- Exclusions: `Audit Exclusions`
+	- Recipients: `Audit Recipients`
+	- Requests: `Audit Requests`
+- INSTRUCTIONS writers: the script can write curated two‑column guidance into fixed columns on each sheet.
+- Staging and recipients:
+	- `STAGING_MODE`: when `Y`, emails route to `ADMIN_EMAIL`.
+	- Recipients sheet supports `Withhold No‑Flag Emails` to suppress emails on clean runs.
+- Gmail labels: each config in `auditConfigs` references a label such as `Daily Audits/CM360/PST01`.
 
-## Usage Workflow
-1. **Open the Dashboard**
-	- Use the custom menu to access the dashboard and configuration picker.
-2. **Configure Teams & Thresholds**
-	- Edit the thresholds, recipients, and exclusions sheets as needed.
-3. **Run or Schedule Audits**
-	- Audits run automatically via triggers, or can be run manually from the menu.
-4. **Review Results**
-	- Receive summary emails and Excel reports; review flagged placements and campaign issues.
-5. **Manage Exclusions**
-	- Update the exclusions sheet to refine audit logic and reduce false positives.
+## Setup
+You can operate purely in the Apps Script editor, or use `clasp` for local development.
 
-## File Descriptions
-- **Code.js**: Core logic for batch processing, audit execution, email/report generation, and UI integration.
-- **ConfigPicker.html**: Modal dialog for selecting and managing team configurations.
-- **Dashboard.html**: Sidebar/dashboard for audit status and quick actions.
-- **appsscript.json**: Project manifest (defines script settings, scopes, and add-on config).
+Option A — Apps Script editor
+1) Create/open the Apps Script project bound to your spreadsheet.
+2) Add files: paste `Code.js` and add HTML files (`ConfigPicker.html`, `Dashboard.html`).
+3) Replace the manifest with `appsscript.json` (scopes will auto‑prompt).
+4) In Services, enable Advanced Drive API (required for Excel→Sheets conversion). If disabled, CSV flows still work; Excel imports will be skipped.
+5) Save and authorize the script on first run as prompted.
 
-## Support & Contribution
-- For support, open an issue on the project's GitHub repository or contact the maintainer.
-- Contributions are welcome! Please fork the repo and submit a pull request with your improvements.
+Option B — Local with `clasp`
+```powershell
+npm install -g @google/clasp
+clasp login
+git clone https://github.com/evan-schneider/cm360-audit-system.git
+Set-Location .\cm360-audit-system
+clasp clone <scriptId>   # or clasp pull if already linked
+clasp push
+```
+
+## Operating
+- On spreadsheet open, a custom menu is added with environment setup, sheet management, request tools, batch runners, and utilities.
+- Use “Prepare Environment” to create Gmail labels and Drive folders for all configs.
+- Use the batch runner functions (`runDailyAuditsBatch1..N`) via the menu to run audits, or install daily triggers with “Setup & Install Batch Triggers”.
+- “Update External Config Instructions” writes curated guidance to INSTRUCTIONS columns in the external spreadsheet.
+- A daily summary email is sent once all configs finish (lock‑protected to avoid duplicates).
+
+## Thresholds and exclusions
+- Thresholds: per‑flag minimum impressions/clicks (e.g., for clicks > impressions, out‑of‑flight, pixel mismatch, default ad serving).
+- Exclusions: by placement ID, site, or name fragment; can be limited by flag type and config or applied globally.
+- Recipients: control primary/CC, active status, and no‑flag email suppression per config.
+
+## Permissions and APIs
+- Built‑in services: GmailApp, DriveApp, SpreadsheetApp, HtmlService, CacheService, LockService, PropertiesService, UrlFetchApp.
+- Advanced Drive API: required for Excel import (conversion). If not enabled, the script skips Excel conversion and proceeds with available CSVs.
+
+## Troubleshooting
+- Missing Gmail label: ensure filters route messages to the expected label path; the setup tool can create labels but not Gmail filters.
+- Drive API not enabled: you’ll see “Skipped: Drive API not enabled”; enable Advanced Drive API in Services.
+- Header not found: confirm your reports include canonical headers (e.g., Advertiser, Campaign, Site, Placement, Placement ID, Start/End Date, Creative, Impressions, Clicks).
+- No files found: verify delivery occurred today and the label path matches the config.
+- Email quota: the script caches and reports remaining quota; large recipient lists can exhaust daily limits.
+
+## Version control and releases (optional)
+When histories diverge (e.g., `main` vs `master`), use a clean clone and merge with unrelated histories:
+```powershell
+git fetch origin
+git checkout -b merge-master
+git merge origin/main --allow-unrelated-histories
+$files = git diff --name-only --diff-filter=U
+foreach ($f in $files) { git checkout --theirs -- $f; git add $f }
+git commit -m "Merge origin/main into master: resolved conflicts by taking origin/main versions"
+git push origin HEAD:master
+```
+
+## Contributing
+Bug reports and PRs are welcome. For larger changes, open an issue to discuss approach and scope.
 
 ## License
-This project is licensed under the MIT License. See `LICENSE` for details.
-
----
-CM360 Audit System is designed for digital marketing teams, agencies, and enterprises seeking reliable, automated QA and compliance for Campaign Manager 360 operations.
-
-## How to run locally (with clasp)
-
-Prerequisites:
-- Node.js and npm installed
-- `clasp` installed globally or available via `npx` (we use `npx @google/clasp` in examples)
-- You must be authorized with the Google account that owns or can edit the Apps Script project
-
-1. Authenticate clasp (one-time):
-
-```powershell
-npx @google/clasp login
-```
-
-2. Pull the remote project (if you're working with the cloud project):
-
-```powershell
-npx @google/clasp pull
-```
-
-3. Push local changes to Apps Script:
-
-```powershell
-npx @google/clasp push
-```
-
-4. Create a version and (optionally) deploy an API executable if you need `clasp run`:
-
-```powershell
-npx @google/clasp version "v1"
-npx @google/clasp deploy --versionNumber 1 --description "api-exec"
-```
-
-Notes:
-- Running `clasp run <functionName>` requires an API-executable deployment and may require linking a user-managed GCP project for some projects; if you see a message about GCP projects in the Apps Script UI, follow the editor guidance.
-- If your function uses Gmail, Drive, or other sensitive scopes, you'll need to accept OAuth consent when running from the Apps Script editor or when creating a deployment.
-- Use the Apps Script editor to run functions interactively and inspect logs if you prefer not to deploy.
+MIT (see `LICENSE`).
