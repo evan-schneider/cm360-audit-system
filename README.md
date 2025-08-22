@@ -61,7 +61,10 @@ clasp push
 
 ## Operating
 - On spreadsheet open, a custom menu is added with environment setup, sheet management, request tools, batch runners, and utilities.
-- Use “Prepare Environment” to create Gmail labels and Drive folders for all configs.
+- Use “Prepare Environment” (Admin Controls → Prepare Environment) to auto-create Gmail labels and Drive folders for all configs that are missing them.
+	- Creates Gmail labels (does not create Gmail filters; set up mail routing separately).
+	- Creates or repairs Drive folder paths for Merged Reports and Temp Daily Reports per config.
+	- Shows a summary of actions and any suggested follow-ups.
 - Use the batch runner functions (`runDailyAuditsBatch1..N`) via the menu to run audits, or install daily triggers with “Setup & Install Batch Triggers”.
 - “Update External Config Instructions” writes curated guidance to INSTRUCTIONS columns in the external spreadsheet.
 - A daily summary email is sent once all configs finish (lock‑protected to avoid duplicates).
@@ -99,3 +102,42 @@ Bug reports and PRs are welcome. For larger changes, open an issue to discuss ap
 
 ## License
 MIT (see `LICENSE`).
+
+## Adding a new config (exact steps)
+
+Follow these exact steps to add a new config to the system. Mistakes in the `auditConfigs` entry will cause the script to skip that config or fail folder resolution.
+
+1. Open `Code.js` in your editor.
+2. Find the `auditConfigs` array near the top of the file (it contains objects like `PST01`, `PST02`, ...).
+3. Add a new object to the array with these required properties:
+	 - `name`: short uppercase code (e.g., `ENT02`).
+	 - `label`: Gmail label path used to collect that config's daily files (e.g., `Daily Audits/CM360/ENT02`).
+	 - `mergedFolderPath`: an array representing the Drive path where merged reports will be saved. Use the helper `folderPath(type, configName)` or provide an array like `['Project Log Files','CM360 Daily Audits','Merged Reports','ENT02']`.
+	 - `tempDailyFolderPath`: an array representing the Drive path where inbound temp files will be staged (similar shape to `mergedFolderPath`).
+
+Exact example — copy & paste into `auditConfigs` (insert as a new element):
+
+```javascript
+{
+	name: 'ENT02',
+	label: 'Daily Audits/CM360/ENT02',
+	mergedFolderPath: folderPath('Merged Reports', 'ENT02'),
+	tempDailyFolderPath: folderPath('Temp Daily Reports', 'ENT02')
+}
+```
+
+Notes:
+- Use `folderPath('Merged Reports', '<NAME>')` to match the project's default folder layout and avoid typos.
+- The `label` must match an existing Gmail label (you can create it manually or run "Prepare Environment" from the menu which will create labels). Creating the label does not automatically create a Gmail filter; ensure reporting emails are labeled correctly by your mail routing rules.
+- After adding the object, either:
+	- Click the menu: Admin Controls → Prepare Environment (recommended), or
+	- Run `prepareAuditEnvironment()` from the Apps Script editor
+	This will create the Gmail label and Drive folders for the new config if they don't already exist.
+- Run `installDailyAuditTriggers()` or use the menu "Setup & Install Batch Triggers" to create triggers for the updated config set.
+
+Verification steps
+- In Apps Script editor run `validateAuditConfigs()` — it should not throw errors for the new config.
+- Run `prepareAuditEnvironment()` — verify the merged folder appears in Drive and the Gmail label is present.
+- Manually run `runDailyAuditByName('<NAME>')` to test end-to-end for a config (use today's delivery or a small test ZIP/CSV).
+
+If you want, paste the new config here and I can add it and run the setup commands for you.
