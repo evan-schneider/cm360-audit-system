@@ -1,0 +1,50 @@
+{
+  "name": "cm360-audit-system",
+  "version": "1.0.0",
+  "description": "Automated Campaign Manager 360 (CM360) audit system built with Google Apps Script for enterprise-scale campaign monitoring and reporting",
+  "main": "Code.js",
+  "scripts": {
+    "deploy": "clasp push",
+    "pull": "clasp pull",
+    "open": "clasp open",
+    "logs": "clasp logs",
+    "versions": "clasp versions",
+    "version:create": "clasp version",
+    "login": "clasp login",
+    "setup": "npm install -g @google/clasp && clasp login"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/evan-schneider/cm360-audit-system.git"
+  },
+  "keywords": [
+    "cm360",
+    "campaign-manager",
+    "google-ads",
+    "audit",
+    "automation",
+    "apps-script",
+    "reporting",
+    "enterprise",
+    "advertising",
+    "monitoring"
+  ],
+  "author": {
+    "name": "Evan Schneider",
+    "email": "evan.schneider98@gmail.com"
+  },
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/evan-schneider/cm360-audit-system/issues"
+  },
+  "homepage": "https://github.com/evan-schneider/cm360-audit-system#readme",
+  "engines": {
+    "node": ">=14.0.0"
+  },
+  "devDependencies": {
+    "@google/clasp": "^2.4.2"
+  },
+  "clasp": {
+    "rootDir": "."
+  }
+}
