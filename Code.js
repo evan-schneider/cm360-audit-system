@@ -1,6 +1,6 @@
 ﻿// === CONFIGURATION & CONSTANTS ===
 const ADMIN_EMAIL = 'evschneider@horizonmedia.com';
-const STAGING_MODE = 'Y'; // Set to 'Y' for staging mode, 'N' for product
+const STAGING_MODE = 'N'; // Set to 'Y' for staging mode, 'N' for production
 
 //
 // Configuration data source: use external sheet if EXTERNAL_CONFIG_SHEET_ID is set
@@ -1106,6 +1106,50 @@ function emailFlaggedRows(sheetId, emailRows, flaggedRows, config, recipientsDat
  return flaggedRows;
 }
 
+// Send a concise "no issues" notification with optional Excel attachment of the merged sheet
+function sendNoIssueEmail(config, spreadsheetId, note, recipientsData) {
+	try {
+		const configName = config && config.name ? String(config.name) : 'Unknown';
+		const tz = Session.getScriptTimeZone();
+		const subjectDate = Utilities.formatDate(new Date(), tz, 'yyyy-MM-dd');
+		const subject = `✅ CM360 Daily Audit: No Issues (${configName} - ${subjectDate})`;
+
+		// Build a short, friendly HTML body
+		const htmlBody = `
+			<p style="font-family:Arial, sans-serif; font-size:13px; line-height:1.4;">
+				No issues were flagged for <strong>${escapeHtml(configName)}</strong> during yesterday's CM360 audit.
+			</p>
+			<p style="font-family:Arial, sans-serif; font-size:12px; color:#666;">
+				The merged delivery file is attached for reference.
+			</p>
+			<p style="margin-top:12px; font-family:Arial, sans-serif; font-size:12px;">&mdash; Platform Solutions Team</p>
+		`;
+
+		// Attach merged sheet as Excel for audit trail (best-effort)
+		let attachments = [];
+		try {
+			if (spreadsheetId) {
+				const xlsx = exportSheetAsExcel(spreadsheetId, `CM360_DailyAudit_${configName}_${subjectDate}.xlsx`);
+				if (xlsx) attachments = [xlsx];
+			}
+		} catch (attachErr) {
+			Logger.log(`sendNoIssueEmail: could not build attachment (${configName}): ${attachErr.message}`);
+		}
+
+		return safeSendEmail({
+			to: resolveRecipients(configName, recipientsData),
+			cc: resolveCc(configName, recipientsData),
+			subject,
+			plainBody: 'No issues were flagged.',
+			htmlBody,
+			attachments
+		}, `${configName} - no issues`);
+	} catch (e) {
+		Logger.log(`sendNoIssueEmail error: ${e.message}`);
+		return false;
+	}
+}
+
 // === SETUP & ENVIRONMENT PREP ===
 function prepareAuditEnvironment() {
  const ui = SpreadsheetApp.getUi();
@@ -1332,7 +1376,7 @@ function createAuditMenu(ui) {
  .addSeparator()
  // Tools & Utilities
  .addItem('🔧  Refresh External Header Styles', 'refreshExternalHeaderStyles')
- .addItem('🔁  Update Placement Names', 'updatePlacementNamesFromReports')
+ .addItem('🔁  Update Placement Names', 'updatePlacementNamesFromReportsWithUI')
  .addItem('🔐  Check Authorization', 'checkAuthorizationStatus')
  .addItem('🧾  Validate Configs', 'debugValidateAuditConfigs')
  .addItem('⏱️  Setup & Install Batch Triggers', 'setupAndInstallBatchTriggers')
@@ -1726,7 +1770,7 @@ function ensureMenuFunctionsPresent() {
 		'promptSetupExternalConfigMenu','ensureExternalConfigInstructions','updateExternalConfigInstructions','syncToExternalConfig',
 		'syncFromExternalConfig','populateExternalConfigWithDefaults','showCreateAuditRequestPicker',
 		'processAuditRequests','fixAuditRequestsSheet','refreshExternalHeaderStyles',
-		'updatePlacementNamesFromReports','checkAuthorizationStatus','debugValidateAuditConfigs',
+		'updatePlacementNamesFromReports','updatePlacementNamesFromReportsWithUI','checkAuthorizationStatus','debugValidateAuditConfigs',
 		'setupAndInstallBatchTriggers','showBatchTestPicker','showConfigPicker','showAuditDashboard',
 		'showButtonsSidebar','createMissingThresholds','createMissingRecipients','createMissingExclusions'
 	];
@@ -2953,16 +2997,7 @@ function LOOKUP_PLACEMENT_NAME(configName, placementId) {
 // Function to update all placement names in the exclusions sheet
 function updatePlacementNamesFromReports() {
  try {
- const ui = SpreadsheetApp.getUi();
- const response = ui.alert(
- 'Update Placement Names',
- 'This will search through the latest merged reports to update placement names in the exclusions sheet. This may take a few minutes. Continue?',
- ui.ButtonSet.YES_NO
- );
- 
- if (response !== ui.Button.YES) {
- return;
- }
+ Logger.log('Starting updatePlacementNamesFromReports - searching through latest merged reports to update placement names in exclusions sheet...');
   
 	 const sheet = getOrCreateExclusionsSheet();
 	 const data = sheet.getDataRange().getValues();
@@ -2971,7 +3006,17 @@ function updatePlacementNamesFromReports() {
   
 	 Logger.log('Starting placement name update process...');
   
-	 // Collect target rows: Placement ID present, Placement Name blank
+	 // Helper: consider a placement name "missing" if it's empty or contains a previous error message
+	 function isMissingOrErrorPlacementName(name) {
+		 if (!name) return true;
+		 const s = String(name || '').trim().toLowerCase();
+		 if (s === '') return true;
+		 // Common error markers used in this script
+		 if (s.startsWith('error') || s.includes('not found') || s.includes('placement id not found')) return true;
+		 return false;
+	 }
+
+	 // Collect target rows: Placement ID present, Placement Name missing or contains an error
 	 const targetsByConfig = {};
 	 const missingConfigRows = [];
 	 for (let i = 1; i < data.length; i++) {
@@ -2982,7 +3027,8 @@ function updatePlacementNamesFromReports() {
 		 const headerish = configName.includes('INSTRUCTIONS') || configName.includes('Config Name:') || configName.includes('Example:');
 		 if (headerish) continue;
 		 if (!placementId) continue; // need a Placement ID to look up
-		 if (currentPlacementName) continue; // already has a name
+		 // Include rows where placement name is missing OR contains a previous error marker
+		 if (!isMissingOrErrorPlacementName(currentPlacementName)) continue; // already has a valid name
 		 if (!configName) {
 			 missingConfigRows.push(i + 1); // 1-based row index
 			 continue;
@@ -2993,7 +3039,7 @@ function updatePlacementNamesFromReports() {
 
 	 // Fill errors for rows missing config
 	 if (missingConfigRows.length > 0) {
-		 missingConfigRows.forEach(r => sheet.getRange(r, 3).setValue('Error: Config Name is required'));
+		 missingConfigRows.forEach(r => sheet.getRange(r, 3).setValue('ERROR: Config Name is required'));
 	 }
 
 	 // Helper: open latest merged sheet for a config and build a map of ID -> Name
@@ -3044,7 +3090,7 @@ function updatePlacementNamesFromReports() {
 		 const idToName = buildIdToNameMap_(configName);
 		 if (!idToName) {
 			 // No report or no headers; mark all as not found in last CM360 report
-			 rows.forEach(({ rowIndex }) => sheet.getRange(rowIndex, 3).setValue('Placement ID not found in last CM360 report'));
+			 rows.forEach(({ rowIndex }) => sheet.getRange(rowIndex, 3).setValue('ERROR:Placement ID not found in last CM360 report'));
 			 notFoundCount += rows.length;
 			 continue;
 		 }
@@ -3054,7 +3100,7 @@ function updatePlacementNamesFromReports() {
 				 sheet.getRange(rowIndex, 3).setValue(name);
 				 updatedCount++;
 			 } else {
-				 sheet.getRange(rowIndex, 3).setValue('Placement ID not found in last CM360 report');
+				 sheet.getRange(rowIndex, 3).setValue('ERROR: Placement ID not found in last CM360 report');
 				 notFoundCount++;
 			 }
 		 });
@@ -3065,14 +3111,50 @@ function updatePlacementNamesFromReports() {
 	 const message = `Placement name update complete!\n\n` +
 		`Updated: ${updatedCount}\n` +
 		`Not found: ${notFoundCount}`;
-	 ui.alert('Update Complete', message, ui.ButtonSet.OK);
 	 Logger.log(`Update complete: ${updatedCount} updated, ${notFoundCount} not found`);
  
 	} catch (error) {
 	 Logger.log(` Error in updatePlacementNamesFromReports: ${error.message}`);
-	 const ui = SpreadsheetApp.getUi();
-	 ui.alert('Error', `Failed to update placement names: ${error.message}`, ui.ButtonSet.OK);
+	 // Send error notification to admin email instead of showing UI alert
+	 try {
+		 GmailApp.sendEmail(
+			 ADMIN_EMAIL,
+			 'CM360 Audit - Placement Name Update Error',
+			 `Failed to update placement names: ${error.message}\n\nThis error occurred during the automated placement name update process.`,
+			 { htmlBody: `<p>Failed to update placement names: <strong>${error.message}</strong></p><p>This error occurred during the automated placement name update process.</p>` }
+		 );
+	 } catch (emailError) {
+		 Logger.log(`Failed to send error email: ${emailError.message}`);
+	 }
 	}
+}
+
+// UI wrapper for manual menu use - shows confirmation dialog
+function updatePlacementNamesFromReportsWithUI() {
+ try {
+ const ui = SpreadsheetApp.getUi();
+ const response = ui.alert(
+ 'Update Placement Names',
+ 'This will search through the latest merged reports to update placement names in the exclusions sheet. This may take a few minutes. Continue?',
+ ui.ButtonSet.YES_NO
+ );
+ 
+ if (response !== ui.Button.YES) {
+ return;
+ }
+ 
+ // Call the main function (now UI-free)
+ updatePlacementNamesFromReports();
+ 
+ // Show completion message
+ const ui2 = SpreadsheetApp.getUi();
+ ui2.alert('Update Complete', 'Placement name update process has finished. Check the logs for details.', ui2.ButtonSet.OK);
+ 
+ } catch (error) {
+ Logger.log(`Error in updatePlacementNamesFromReportsWithUI: ${error.message}`);
+ const ui = SpreadsheetApp.getUi();
+ ui.alert('Error', `Failed to update placement names: ${error.message}`, ui.ButtonSet.OK);
+ }
 }
 
 // === DEBUGGING & TEST TOOLS ===
