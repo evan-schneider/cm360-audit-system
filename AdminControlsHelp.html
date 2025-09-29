@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <title>About Admin Controls</title>
+  <style>
+    body { font-family: Arial, sans-serif; font-size: 13px; margin: 12px; }
+    h2 { font-size: 16px; margin: 0 0 10px; }
+    .tip { color: #555; margin: 6px 0 12px; }
+    .grid { display: grid; grid-template-columns: 1fr; gap: 8px; }
+    .item { padding: 8px 10px; border: 1px solid #e0e0e0; border-radius: 6px; background: #fafafa; }
+    .label { font-weight: 600; }
+    .fn { font-family: Consolas, 'Courier New', monospace; font-size: 12px; color: #666; }
+    .desc { margin-top: 4px; color: #333; }
+    .item[title] { cursor: help; }
+  </style>
+</head>
+<body>
+  <h2>Admin Controls — What does each item do?</h2>
+  <div class="tip">Hover any row to see a tooltip. The function name shows what is invoked under the hood.</div>
+  <div class="grid">
+    <? for (var i = 0; i < items.length; i++) { var it = items[i]; ?>
+      <div class="item" title="<?= it.desc ?>">
+        <div class="label"><?= it.label ?></div>
+        <div class="fn">Function: <?= it.fn ?></div>
+        <div class="desc"><?= it.desc ?></div>
+      </div>
+    <? } ?>
+  </div>
+</body>
+</html>
