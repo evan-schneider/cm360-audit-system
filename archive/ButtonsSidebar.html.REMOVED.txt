@@ -1,0 +1,2 @@
+This file was retired. The Admin Controls menu no longer uses the Buttons sidebar.
+If you need it back, restore `ButtonsSidebar.html` and re-add a menu item calling `showButtonsSidebar()`.

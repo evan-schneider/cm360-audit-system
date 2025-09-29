@@ -1,0 +1,15 @@
+# Node and build artifacts
+node_modules/
+.npm/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Local Apps Script credentials and cache
+.clasp.json
+.claspignore
+
+# Logs and temp
+*.log
+.tmp/
