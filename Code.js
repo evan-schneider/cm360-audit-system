@@ -1273,27 +1273,169 @@ function sendDailySummaryEmail(results) {
 	}
 }
 
+function mergeAuditResultsByConfig_(...resultSets) {
+	const map = new Map();
+	const pushSet = (arr) => {
+		if (!Array.isArray(arr)) return;
+		arr.forEach(item => {
+			if (!item || typeof item !== 'object' || !item.name) return;
+			const name = String(item.name).trim();
+			const existing = map.get(name) || {};
+			map.set(name, Object.assign({}, existing, item, { name }));
+		});
+	};
+	resultSets.forEach(pushSet);
+	return Array.from(map.values());
+}
+
+function getAllAuditRunStates_() {
+	try {
+		const props = PropertiesService.getScriptProperties();
+		const all = props.getProperties();
+		const states = [];
+		Object.keys(all || {}).forEach(key => {
+			if (!key || key.indexOf(AUDIT_RUN_STATE_KEY_PREFIX) !== 0) return;
+			try {
+				const state = JSON.parse(all[key]);
+				state.batchId = key.slice(AUDIT_RUN_STATE_KEY_PREFIX.length);
+				states.push(state);
+			} catch (e) {
+				Logger.log(`getAllAuditRunStates_ parse error (${key}): ${e.message}`);
+			}
+		});
+		return states;
+	} catch (e) {
+		Logger.log('getAllAuditRunStates_ error: ' + e.message);
+		return [];
+	}
+}
+
+function buildSummaryResultSet_(options) {
+	options = options || {};
+	const allowPlaceholders = !!options.allowPlaceholders;
+	const configs = getAuditConfigs();
+	const activeNames = configs.map(c => c && c.name).filter(Boolean);
+	const activeSet = new Set(activeNames);
+	const cached = mergeAuditResultsByConfig_(getCombinedAuditResults_()).filter(r => activeSet.has(r.name));
+	if (!allowPlaceholders) {
+		return cached;
+	}
+	const resultMap = new Map();
+	cached.forEach(r => { if (r && r.name) resultMap.set(r.name, r); });
+	const tz = Session.getScriptTimeZone();
+	const todayKey = Utilities.formatDate(new Date(), tz, 'yyyyMMdd');
+	const states = getAllAuditRunStates_();
+	const stateByConfig = new Map();
+	states.forEach(state => {
+		const startedAt = state && state.startedAt ? new Date(state.startedAt) : null;
+		if (startedAt && Utilities.formatDate(startedAt, tz, 'yyyyMMdd') !== todayKey) return;
+		const cfgs = Array.isArray(state && state.configs) ? state.configs : [];
+		cfgs.forEach(name => {
+			if (!name || !activeSet.has(name)) return;
+			const existing = stateByConfig.get(name);
+			if (!existing || (startedAt && existing.startedAt && startedAt > existing.startedAt) || (startedAt && !existing.startedAt)) {
+				stateByConfig.set(name, {
+					state,
+					startedAt
+				});
+			}
+		});
+	});
+	activeNames.forEach(name => {
+		if (resultMap.has(name)) return;
+		const info = stateByConfig.get(name) || {};
+		const startedAt = info.startedAt;
+		const state = info.state || {};
+		let status = 'Not started (no run recorded today)';
+		let emailTime = 'Not sent';
+		if (startedAt || state.startedAt) {
+			const startStr = startedAt ? Utilities.formatDate(startedAt, tz, 'HH:mm:ss') : null;
+			if (state.alertedAt) {
+				const alertStr = Utilities.formatDate(new Date(state.alertedAt), tz, 'HH:mm:ss');
+				status = `Error: Timed out before completion${startStr ? ` (started ${startStr})` : ''}`;
+				emailTime = `Timed out${alertStr ? ` @ ${alertStr}` : ''}`;
+			} else if (state.completedAt) {
+				status = `Completed (no summary data recorded${startStr ? `; started ${startStr}` : ''})`;
+				emailTime = 'Completed (email status unknown)';
+			} else {
+				status = `In progress (no completion logged${startStr ? `; started ${startStr}` : ''})`;
+			}
+		}
+		resultMap.set(name, {
+			name,
+			status,
+			flaggedRows: null,
+			emailSent: false,
+			emailWithheld: false,
+			emailTime,
+			latestReportUrl: ''
+		});
+	});
+	return Array.from(resultMap.values());
+}
+
+function attemptSendDailySummary_(options) {
+	options = options || {};
+	const allowPlaceholders = !!options.allowPlaceholders;
+	const reason = options.reason || 'run';
+	const cache = CacheService.getScriptCache();
+	const alreadySent = cache.get('CM360_SUMMARY_SENT');
+	if (alreadySent === '1') {
+		Logger.log(`[Summary] Already sent (${reason}).`);
+		return false;
+	}
+	const lock = LockService.getScriptLock();
+	if (!lock.tryLock(5000)) {
+		Logger.log(`[Summary] Could not acquire lock (${reason}).`);
+		return false;
+	}
+	try {
+		const recheck = cache.get('CM360_SUMMARY_SENT');
+		if (recheck === '1') {
+			Logger.log(`[Summary] Already sent after acquiring lock (${reason}).`);
+			return false;
+		}
+		const configs = getAuditConfigs();
+		const totalConfigs = configs.length;
+		const results = buildSummaryResultSet_({ allowPlaceholders });
+		const uniqueCount = new Set(results.map(r => r && r.name).filter(Boolean)).size;
+		if (!allowPlaceholders && uniqueCount < totalConfigs) {
+			Logger.log(`[Summary] ${uniqueCount}/${totalConfigs} configs complete; awaiting more before sending (${reason}).`);
+			return false;
+		}
+		if (!results.length) {
+			Logger.log('[Summary] No results available to include; skipping send.');
+			return false;
+		}
+		sendDailySummaryEmail(results);
+		cache.put('CM360_SUMMARY_SENT', '1', 21600);
+		cache.remove(getAuditCacheKey_());
+		Logger.log(`[Summary] Daily summary dispatched (${reason}).`);
+		return true;
+	} catch (e) {
+		Logger.log(`attemptSendDailySummary_ error (${reason}): ${e.message}`);
+		return false;
+	} finally {
+		try { lock.releaseLock(); } catch (_) {}
+	}
+}
+
+function sendDailySummaryFailover() {
+	try {
+		const sent = attemptSendDailySummary_({ allowPlaceholders: true, reason: 'Failover trigger' });
+		if (!sent) {
+			Logger.log('[Summary Failover] No summary sent (already delivered or waiting for additional data).');
+		}
+	} catch (e) {
+		Logger.log('sendDailySummaryFailover error: ' + e.message);
+	}
+}
+
 // Preview the single summary email without sending; synthesizes from configs if no cache
 function previewDailySummaryNow() {
-	let results = getCombinedAuditResults_();
+	let results = buildSummaryResultSet_({ allowPlaceholders: true });
 	if (!results || results.length === 0) {
-		// Synthesize a neutral preview based on active configs
-		try {
-			const cfgs = getAuditConfigs();
-			const urlMap = getLatestReportUrlMap_();
-			results = cfgs.map(c => ({
-				name: c.name,
-				status: 'Completed (no issues)',
-				flaggedRows: 0,
-				emailSent: false,
-				emailWithheld: true,
-				emailTime: Utilities.formatDate(new Date(), Session.getScriptTimeZone(), 'yyyy-MM-dd HH:mm:ss'),
-				// Prefer persisted latest URL; if missing, look it up from Drive so Preview links to the actual merged sheet
-				latestReportUrl: urlMap[c.name] || findLatestMergedReportUrl_(c) || ''
-			}));
-		} catch (e) {
-			results = [];
-		}
+		results = [];
 	}
 	const content = buildSummaryEmailContent_(results, { strictLatestLink: false });
 	const html = HtmlService.createHtmlOutput(`
@@ -2298,7 +2440,7 @@ function runAuditBatch(configs, isFinal = false) {
 	 break;
  }
  const result = executeAudit(config, preloaded);
- results.push({
+ const entry = {
  name: config.name,
  status: result.status,
  flaggedRows: result.flaggedCount,
@@ -2306,9 +2448,11 @@ function runAuditBatch(configs, isFinal = false) {
  emailTime: result.emailTime,
 	emailWithheld: result.emailWithheld || false,
 	latestReportUrl: result.latestReportUrl || ''
- });
+};
+ results.push(entry);
+ storeCombinedAuditResults_([entry]);
  } catch (err) {
- results.push({
+ const entry = {
  name: config.name,
  status: `Error: ${err.message}`,
  flaggedRows: null,
@@ -2316,46 +2460,24 @@ function runAuditBatch(configs, isFinal = false) {
  emailTime: formatDate(new Date(), 'yyyy-MM-dd HH:mm:ss'),
 	emailWithheld: false,
 	latestReportUrl: ''
- });
+ };
+ results.push(entry);
+ storeCombinedAuditResults_([entry]);
  }
  }
 
- storeCombinedAuditResults_(results);
+	storeCombinedAuditResults_(results);
 
- const totalConfigs = getAuditConfigs().length;
- const cachedResults = getCombinedAuditResults_();
-
- const completedConfigs = new Set(cachedResults.map(r => r.name)).size;
+	const cachedResults = getCombinedAuditResults_();
+	const totalConfigs = getAuditConfigs().length;
+	const completedConfigs = new Set(cachedResults.map(r => r.name)).size;
 
 	Logger.log(`✅ Completed ${completedConfigs} of ${totalConfigs} configs`);
 
- // Send the summary once when all configs are done, regardless of batch order
- if (completedConfigs >= totalConfigs) {
- const cache = CacheService.getScriptCache();
- const alreadySent = cache.get('CM360_SUMMARY_SENT');
- if (alreadySent === '1') {
-	Logger.log('⚠️ Summary already sent by another batch. Skipping.');
- return;
- }
- const lock = LockService.getScriptLock();
- if (lock.tryLock(5000)) {
- try {
- const recheck = cache.get('CM360_SUMMARY_SENT');
- if (recheck !== '1') {
- Logger.log(`[EMAIL] All audits complete. Sending summary email...`);
- sendDailySummaryEmail(cachedResults);
- cache.put('CM360_SUMMARY_SENT', '1', 21600); // 6 hours
- CacheService.getScriptCache().remove(getAuditCacheKey_());
- } else {
-	Logger.log('⚠️ Summary already sent after acquiring lock. Skipping.');
- }
- } finally {
- lock.releaseLock();
- }
- } else {
-	Logger.log('⚠️ Could not acquire lock to send summary; another batch likely sending it.');
- }
- }
+	// Send the summary once when all configs are done, regardless of batch order
+	if (completedConfigs >= totalConfigs) {
+		attemptSendDailySummary_({ allowPlaceholders: false, reason: 'All configs complete' });
+	}
 
  // Mark completion for this batch
  try {
@@ -2397,16 +2519,24 @@ function validateAuditConfigs() {
 	Logger.log(`validateAuditConfigs: ${configs.length} configs ready.`);
 }
 function storeCombinedAuditResults_(newResults) {
- const cache = CacheService.getScriptCache();
- const existing = getCombinedAuditResults_();
- const combined = [...existing, ...newResults];
- cache.put(getAuditCacheKey_(), JSON.stringify(combined), 21600); // 6 hours
+	const cache = CacheService.getScriptCache();
+	const existing = getCombinedAuditResults_();
+	const incoming = Array.isArray(newResults) ? newResults.filter(Boolean) : (newResults ? [newResults] : []);
+	const combined = mergeAuditResultsByConfig_(existing, incoming);
+	cache.put(getAuditCacheKey_(), JSON.stringify(combined), 21600); // 6 hours
 }
 
 function getCombinedAuditResults_() {
  const cache = CacheService.getScriptCache();
  const stored = cache.get(getAuditCacheKey_());
- return stored ? JSON.parse(stored) : [];
+ if (!stored) return [];
+ try {
+ 	const parsed = JSON.parse(stored);
+ 	return Array.isArray(parsed) ? parsed : [];
+ } catch (e) {
+ 	Logger.log('getCombinedAuditResults_ parse error: ' + e.message);
+ 	return [];
+ }
 }
 
 function storeEmailQuotaRemaining_(remaining) {
@@ -2681,10 +2811,18 @@ function installDailyAuditTriggers() {
  // Clear existing batch triggers
  const existing = ScriptApp.getProjectTriggers();
  existing.forEach(trigger => {
- if (trigger.getHandlerFunction().startsWith("runDailyAuditsBatch")) {
- ScriptApp.deleteTrigger(trigger);
- results.push(` Removed trigger: ${trigger.getHandlerFunction()}`);
- }
+	try {
+		const handler = trigger.getHandlerFunction();
+		if (handler && handler.startsWith("runDailyAuditsBatch")) {
+			ScriptApp.deleteTrigger(trigger);
+			results.push(` Removed trigger: ${handler}`);
+		} else if (handler === 'sendDailySummaryFailover') {
+			ScriptApp.deleteTrigger(trigger);
+			results.push(' Removed trigger: sendDailySummaryFailover');
+		}
+	} catch (e) {
+		Logger.log('installDailyAuditTriggers: trigger cleanup error: ' + e.message);
+	}
  });
 
  // Discover which batch functions are actually present in source
@@ -2717,6 +2855,19 @@ function installDailyAuditTriggers() {
 		 results.push(`⚠️ Skipped trigger for ${fnName} - function not found in source`);
 	 }
  }
+
+	try {
+		ScriptApp.newTrigger('sendDailySummaryFailover')
+			.timeBased()
+			.atHour(9)
+			.nearMinute(30)
+			.everyDays(1)
+			.create();
+		results.push('✅ Installed daily trigger for: sendDailySummaryFailover (failover summary)');
+	} catch (e) {
+		Logger.log('installDailyAuditTriggers: failed to install summary failover trigger: ' + e.message);
+		results.push(`⚠️ Failed to install summary failover trigger: ${e.message}`);
+	}
 
  return results;
 }
@@ -2809,7 +2960,7 @@ function runDailyAuditsBatch11() {
 
 function runDailyAuditsBatch12() {
  const batches = getAuditConfigBatches(BATCH_SIZE);
- runAuditBatch(batches[11], true);
+ runAuditBatch(batches[11]);
 }
 
 function generateMissingBatchStubs() {
@@ -3341,6 +3492,11 @@ function auditWatchdogCheck() {
 			} catch (e) { Logger.log('[Watchdog] failed to mark alertedAt for ' + a.id + ': ' + e.message); }
 		}
 		Logger.log(`[Watchdog] Alerted admin for ${alerts.length} hung batch(es).`);
+		try {
+			attemptSendDailySummary_({ allowPlaceholders: true, reason: 'Watchdog hung detection' });
+		} catch (summaryErr) {
+			Logger.log('auditWatchdogCheck summary attempt error: ' + summaryErr.message);
+		}
 	} catch (e) {
 		Logger.log('auditWatchdogCheck error: ' + e.message);
 	}
