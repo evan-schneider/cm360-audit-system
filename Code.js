@@ -2894,12 +2894,6 @@ function installAllAutomationTriggers(options) {
 		createTrigger('sendDailySummaryFailover', trig => trig.timeBased().atHour(9).nearMinute(30).everyDays(1).create(), 'daily summary failover trigger');
 	}
 
-	// === Batch rebalance using summary ===
-	if (shouldInclude('rebalanceAuditBatchesUsingSummary', ['rebalanceAuditBatchesUsingSummary'])) {
-		removeHandlers(['rebalanceAuditBatchesUsingSummary'], 'rebalance trigger');
-		createTrigger('rebalanceAuditBatchesUsingSummary', trig => trig.timeBased().atHour(6).nearMinute(10).everyDays(1).create(), 'daily batch rebalance trigger');
-	}
-
 	// === Daily health check ===
 	if (shouldInclude('healthCheck', ['runHealthCheckAndEmail'])) {
 		removeHandlers(['runHealthCheckAndEmail'], 'health check trigger');
@@ -2928,36 +2922,30 @@ function installAllAutomationTriggers(options) {
 		}
 	}
 
-	// === Nightly external sync ===
-	if (shouldInclude('nightlyExternalSync', ['runNightlyExternalSync'])) {
-		removeHandlers(['runNightlyExternalSync'], 'nightly external sync trigger');
-		if (EXTERNAL_CONFIG_SHEET_ID) {
-			createTrigger('runNightlyExternalSync', trig => trig.timeBased().atHour(23).nearMinute(15).everyDays(1).create(), 'nightly external→admin sync trigger');
-		} else {
-			results.push('ℹ️ Skipped nightly external sync — EXTERNAL_CONFIG_SHEET_ID not configured');
-		}
-	}
-
-	// === Refresh external config instructions (silent wrapper) ===
-	if (shouldInclude('refreshExternalInstructions', ['refreshExternalConfigInstructionsSilent'])) {
-		removeHandlers(['refreshExternalConfigInstructionsSilent'], 'external instructions refresh trigger');
-		if (EXTERNAL_CONFIG_SHEET_ID) {
-			createTrigger('refreshExternalConfigInstructionsSilent', trig => trig.timeBased().atHour(2).nearMinute(15).everyDays(1).create(), 'daily external instructions refresh trigger');
-		} else {
-			results.push('ℹ️ Skipped external instructions refresh — EXTERNAL_CONFIG_SHEET_ID not configured');
-		}
-	}
-
-	// === Update placement names from reports ===
-	if (shouldInclude('placementNameRefresh', ['updatePlacementNamesFromReports'])) {
-		removeHandlers(['updatePlacementNamesFromReports'], 'placement refresh trigger');
-		createTrigger('updatePlacementNamesFromReports', trig => trig.timeBased().atHour(2).nearMinute(45).everyDays(1).create(), 'daily placement name refresh trigger');
-	}
-
-	// === Clear daily script properties ===
-	if (shouldInclude('clearDailyScriptProperties', ['clearDailyScriptProperties'])) {
-		removeHandlers(['clearDailyScriptProperties'], 'script properties cleanup trigger');
-		createTrigger('clearDailyScriptProperties', trig => trig.timeBased().atHour(0).nearMinute(45).everyDays(1).create(), 'daily script properties cleanup trigger');
+	// === Nightly maintenance bundle ===
+	if (shouldInclude('nightlyMaintenance', [
+		'runNightlyMaintenance',
+		'rebalanceAuditBatchesUsingSummary',
+		'nightlyExternalSync',
+		'runNightlyExternalSync',
+		'runNightlyExternalSync_',
+		'refreshExternalConfigInstructionsSilent',
+		'refreshExternalConfigInstructions',
+		'updatePlacementNamesFromReports',
+		'clearDailyScriptProperties'
+	])) {
+		removeHandlers([
+			'runNightlyMaintenance',
+			'rebalanceAuditBatchesUsingSummary',
+			'nightlyExternalSync',
+			'runNightlyExternalSync',
+			'runNightlyExternalSync_',
+			'refreshExternalConfigInstructionsSilent',
+			'refreshExternalConfigInstructions',
+			'updatePlacementNamesFromReports',
+			'clearDailyScriptProperties'
+		], 'nightly maintenance trigger');
+		createTrigger('runNightlyMaintenance', trig => trig.timeBased().atHour(2).nearMinute(20).everyDays(1).create(), 'nightly maintenance trigger');
 	}
 
 	// === GAS failure notifications forwarder ===
@@ -3359,7 +3347,7 @@ function createAuditMenu(ui) {
  .addItem('🔁  Update Placement Names', 'updatePlacementNamesFromReportsWithUI')
  .addItem('🔐  Check Authorization', 'checkAuthorizationStatus')
  .addItem('🧾  Validate Configs', 'debugValidateAuditConfigs')
- .addItem('⏱️  Setup & Install Batch Triggers', 'setupAndInstallBatchTriggers')
+ .addItem('⏱️  Install All Triggers', 'installAllAutomationTriggers')
  .addItem('🔄  Sync Delivery Mode Now', 'runDeliveryModeSync')
  .addItem('📮  Debug Email Delivery', 'debugEmailDeliveryStatus')
  .addItem('✉️  Send Test Admin Email', 'sendTestAdminEmail')
@@ -3395,7 +3383,7 @@ function getAdminControlsHelpItems() {
 		{ label: '🔁  Update Placement Names', fn: 'updatePlacementNamesFromReportsWithUI', desc: 'Reads latest merged reports and fills Placement Name in the EXTERNAL Exclusions sheet for rows with IDs.' },
 		{ label: '🔐  Check Authorization', fn: 'checkAuthorizationStatus', desc: 'Verifies script scopes/auth and sends a result to the current user.' },
 		{ label: '🧾  Validate Configs', fn: 'debugValidateAuditConfigs', desc: 'Validates audit configs derived from Recipients and logs findings.' },
-		{ label: '⏱️  Setup & Install Batch Triggers', fn: 'setupAndInstallBatchTriggers', desc: 'Ensures batch runner functions exist and refreshes all automation triggers (batches, summaries, syncs, cleanup).' },
+		{ label: '⏱️  Install All Triggers', fn: 'installAllAutomationTriggers', desc: 'Reinstalls all automation triggers (daily batches, summaries, syncs, cleanup) without touching batch stubs.' },
 		{ label: '🔄  Sync Delivery Mode Now', fn: 'runDeliveryModeSync', desc: 'Updates the “Delivery Mode” instruction line on Admin and External Recipients tabs.' },
 		{ label: '📮  Debug Email Delivery', fn: 'debugEmailDeliveryStatus', desc: 'Logs delivery mode, admin email, and remaining send quota.' },
 		{ label: '✉️  Send Test Admin Email', fn: 'sendTestAdminEmail', desc: 'Sends a quick test message to admin to verify email plumbing.' },
@@ -7153,10 +7141,10 @@ function autoFixRequestsSheet_() {
 
 // === Nightly External → Admin Sync Helpers ===
 function installNightlyExternalSync() {
-	const results = installAllAutomationTriggers({ handlers: ['nightlyExternalSync'] });
+	const results = installAllAutomationTriggers({ handlers: ['nightlyMaintenance'] });
 	try {
 		const ui = SpreadsheetApp.getUi();
-		ui.alert('Nightly External Sync', results.join('\n'), ui.ButtonSet.OK);
+		ui.alert('Nightly Maintenance Triggers', results.join('\n'), ui.ButtonSet.OK);
 	} catch (_) {}
 	return results;
 }
@@ -7165,7 +7153,8 @@ function removeNightlyExternalSync() {
 	let removed = 0;
 	ScriptApp.getProjectTriggers().forEach(function(t){
 		try {
-			if (t.getHandlerFunction && t.getHandlerFunction() === 'runNightlyExternalSync') {
+			const handler = t.getHandlerFunction && t.getHandlerFunction();
+			if (handler === 'runNightlyExternalSync' || handler === 'runNightlyMaintenance' || handler === 'runNightlyExternalSync_') {
 				ScriptApp.deleteTrigger(t);
 				removed++;
 			}
@@ -7193,6 +7182,40 @@ function runNightlyExternalSync() {
 			htmlBody: `<pre style="font-family:monospace">${escapeHtml(e.message)}</pre>`
 		}, 'runNightlyExternalSync');
 	}
+}
+
+function runNightlyMaintenance() {
+	const results = [];
+	const record = msg => results.push(msg);
+	const invoke = (label, action) => {
+		try {
+			if (typeof action !== 'function') {
+				record(`ℹ️ Skipped ${label} — handler not available`);
+				return;
+			}
+			action();
+			record(`✅ ${label}`);
+		} catch (err) {
+			Logger.log(`runNightlyMaintenance ${label} error: ${err.message}`);
+			record(`⚠️ ${label} failed: ${err.message}`);
+		}
+	};
+
+	invoke('rebalanceAuditBatchesUsingSummary', () => rebalanceAuditBatchesUsingSummary());
+
+	if (EXTERNAL_CONFIG_SHEET_ID) {
+		invoke('runNightlyExternalSync', () => runNightlyExternalSync());
+		invoke('refreshExternalConfigInstructionsSilent', () => refreshExternalConfigInstructionsSilent());
+	} else {
+		record('ℹ️ Skipped runNightlyExternalSync — EXTERNAL_CONFIG_SHEET_ID not configured');
+		record('ℹ️ Skipped refreshExternalConfigInstructionsSilent — EXTERNAL_CONFIG_SHEET_ID not configured');
+	}
+
+	invoke('updatePlacementNamesFromReports', () => updatePlacementNamesFromReports());
+	invoke('clearDailyScriptProperties', () => clearDailyScriptProperties());
+
+	Logger.log('runNightlyMaintenance results: ' + results.join(' | '));
+	return results;
 }
 /** Sync configuration sheets (Recipients, Thresholds, Exclusions) TO external config spreadsheet */
 function syncToExternalConfig() {

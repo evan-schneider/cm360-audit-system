@@ -66,7 +66,7 @@ clasp push
 	- Creates Gmail labels (does not create Gmail filters; set up mail routing separately).
 	- Creates or repairs Drive folder paths for Merged Reports and Temp Daily Reports per config.
 	- Shows a summary of actions and any suggested follow-ups.
-- Use the batch runner functions (`runDailyAuditsBatch1..N`) via the menu to run audits, or install daily triggers with “Setup & Install Batch Triggers”.
+- Use the batch runner functions (`runDailyAuditsBatch1..N`) via the menu to run audits, or install daily triggers with “Install All Triggers”.
 - “Update External Config Instructions” writes curated guidance to INSTRUCTIONS columns in the external spreadsheet.
 - A daily summary email is sent once all configs finish (lock‑protected to avoid duplicates).
 
@@ -134,7 +134,7 @@ Notes:
 	- Click the menu: Admin Controls → Prepare Environment (recommended), or
 	- Run `prepareAuditEnvironment()` from the Apps Script editor
 	This will create the Gmail label and Drive folders for the new config if they don't already exist.
-- Run `installAllAutomationTriggers()` or use the menu "Setup & Install Batch Triggers" to reinstall automation triggers for the updated config set.
+- Run `installAllAutomationTriggers()` or use the menu "Install All Triggers" to reinstall automation triggers for the updated config set.
 
 Verification steps
 - In Apps Script editor run `validateAuditConfigs()` — it should not throw errors for the new config.
@@ -258,7 +258,7 @@ npm run deploy
    - Creates Drive folder structure
    - Shows setup summary and next steps
 
-2. **Configure Triggers**: Use *Setup & Install Batch Triggers* to create daily automation
+2. **Configure Triggers**: Use *Install All Triggers* to create daily automation
 
 3. **Test Configuration**: Run individual configs via *🧪 [TEST] Run Batch or Config*
 
