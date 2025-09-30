@@ -56,6 +56,7 @@ const ADMIN_LOG_NAME = 'CM360 Deletion Log';
 // Audit run state tracking (used by watchdog to detect timeouts)
 const AUDIT_RUN_STATE_KEY_PREFIX = 'CM360_AUDIT_RUN_STATE_V1_';
 const AUDIT_RUN_LIST_KEY = 'CM360_AUDIT_RUN_LIST_V1';
+const CONFIG_ORDER_PROPERTY_KEY = 'CM360_CONFIG_ORDER_V1';
 
 // Email safety guard to keep HTML bodies reasonable in size
 const EMAIL_BODY_BYTE_LIMIT = 90000; // ~90KB
@@ -2803,73 +2804,169 @@ function prepareAuditEnvironment() {
  ui.alert('Setup Summary', msg.trim(), ui.ButtonSet.OK);
 }
 
-function installDailyAuditTriggers() {
- // Determine how many batches are needed based on current configs
- const batches = getAuditConfigBatches(BATCH_SIZE);
- const results = [];
+function installAllAutomationTriggers(options) {
+	options = options || {};
+	const silent = options.silent === true;
+	const handlerFilter = Array.isArray(options.handlers) && options.handlers.length
+		? new Set(options.handlers.map(String))
+		: null;
 
- // Clear existing batch triggers
- const existing = ScriptApp.getProjectTriggers();
- existing.forEach(trigger => {
-	try {
-		const handler = trigger.getHandlerFunction();
-		if (handler && handler.startsWith("runDailyAuditsBatch")) {
-			ScriptApp.deleteTrigger(trigger);
-			results.push(` Removed trigger: ${handler}`);
-		} else if (handler === 'sendDailySummaryFailover') {
-			ScriptApp.deleteTrigger(trigger);
-			results.push(' Removed trigger: sendDailySummaryFailover');
+	const shouldInclude = (key, handlerNames) => {
+		if (!handlerFilter) return true;
+		if (key && handlerFilter.has(key)) return true;
+		if (handlerNames) {
+			for (const name of [].concat(handlerNames)) {
+				if (handlerFilter.has(String(name))) return true;
+			}
 		}
-	} catch (e) {
-		Logger.log('installDailyAuditTriggers: trigger cleanup error: ' + e.message);
+		return false;
+	};
+
+	const removeHandlers = (handlerNames, label) => {
+		if (!handlerNames || handlerNames.length === 0) return;
+		const targetSet = new Set(handlerNames.map(String));
+		(ScriptApp.getProjectTriggers() || []).forEach(trigger => {
+			try {
+				const fn = trigger.getHandlerFunction && trigger.getHandlerFunction();
+				if (fn && targetSet.has(fn)) {
+					ScriptApp.deleteTrigger(trigger);
+					results.push(`🧹 Removed existing trigger for ${fn}`);
+				}
+			} catch (err) {
+				results.push(`⚠️ Failed to remove ${label || 'trigger'}: ${err.message}`);
+			}
+		});
+	};
+
+	const createTrigger = (handler, builderFn, description) => {
+		try {
+			builderFn(ScriptApp.newTrigger(handler));
+			results.push(`✅ Installed ${description || handler}`);
+		} catch (err) {
+			Logger.log(`installAllAutomationTriggers: failed to install ${handler}: ${err.message}`);
+			results.push(`⚠️ Failed to install ${description || handler}: ${err.message}`);
+		}
+	};
+
+	const results = [];
+
+	// === Daily audit batch triggers ===
+	if (shouldInclude('dailyAuditBatches', [])) {
+		const batches = getAuditConfigBatches(BATCH_SIZE);
+		const batchHandlers = [];
+		for (let i = 0; i < batches.length; i++) {
+			batchHandlers.push(`runDailyAuditsBatch${i + 1}`);
+		}
+		removeHandlers(batchHandlers, 'daily audit batch trigger');
+
+		let presentIndexes = null;
+		try {
+			const info = listBatchFunctionsInSource_();
+			if (info && info.existingIndexes) presentIndexes = info.existingIndexes;
+		} catch (e) {
+			Logger.log('installAllAutomationTriggers: source scan failed; falling back to runtime checks: ' + e.message);
+		}
+
+		for (let i = 0; i < batches.length; i++) {
+			const index1 = i + 1;
+			const fnName = `runDailyAuditsBatch${index1}`;
+			let canInstall = false;
+			if (presentIndexes) {
+				canInstall = presentIndexes.has(index1);
+			} else {
+				try {
+					canInstall = (typeof globalThis[fnName] === 'function');
+				} catch (_) {
+					canInstall = false;
+				}
+			}
+			if (canInstall) {
+				createTrigger(fnName, trig => trig.timeBased().atHour(8).everyDays(1).create(), `daily audit batch trigger (${fnName})`);
+			} else {
+				results.push(`⚠️ Skipped trigger for ${fnName} — function not found in source`);
+			}
+		}
 	}
- });
 
- // Discover which batch functions are actually present in source
- let presentIndexes = null;
- try {
-	 const info = listBatchFunctionsInSource_();
-	 if (info && info.existingIndexes) presentIndexes = info.existingIndexes;
- } catch (e) {
-	 Logger.log('installDailyAuditTriggers: source scan failed; will fall back to runtime check: ' + e.message);
- }
-
- // Install triggers only for functions that are present in source (or fallback runtime check)
- for (let i = 0; i < batches.length; i++) {
-	 const index1 = i + 1;
-	 const fnName = `runDailyAuditsBatch${index1}`;
-	 let canInstall = false;
-	 if (presentIndexes) {
-		 canInstall = presentIndexes.has(index1);
-	 } else {
-		 try { canInstall = (typeof globalThis[fnName] === 'function'); } catch (_) { canInstall = false; }
-	 }
-	 if (canInstall) {
-		 ScriptApp.newTrigger(fnName)
-			 .timeBased()
-			 .atHour(8)
-			 .everyDays(1)
-			 .create();
-		 results.push(`✅ Installed daily trigger for: ${fnName}`);
-	 } else {
-		 results.push(`⚠️ Skipped trigger for ${fnName} - function not found in source`);
-	 }
- }
-
-	try {
-		ScriptApp.newTrigger('sendDailySummaryFailover')
-			.timeBased()
-			.atHour(9)
-			.nearMinute(30)
-			.everyDays(1)
-			.create();
-		results.push('✅ Installed daily trigger for: sendDailySummaryFailover (failover summary)');
-	} catch (e) {
-		Logger.log('installDailyAuditTriggers: failed to install summary failover trigger: ' + e.message);
-		results.push(`⚠️ Failed to install summary failover trigger: ${e.message}`);
+	// === Summary failover ===
+	if (shouldInclude('summaryFailover', ['sendDailySummaryFailover'])) {
+		removeHandlers(['sendDailySummaryFailover'], 'summary failover trigger');
+		createTrigger('sendDailySummaryFailover', trig => trig.timeBased().atHour(9).nearMinute(30).everyDays(1).create(), 'daily summary failover trigger');
 	}
 
- return results;
+	// === Batch rebalance using summary ===
+	if (shouldInclude('rebalanceAuditBatchesUsingSummary', ['rebalanceAuditBatchesUsingSummary'])) {
+		removeHandlers(['rebalanceAuditBatchesUsingSummary'], 'rebalance trigger');
+		createTrigger('rebalanceAuditBatchesUsingSummary', trig => trig.timeBased().atHour(6).nearMinute(10).everyDays(1).create(), 'daily batch rebalance trigger');
+	}
+
+	// === Daily health check ===
+	if (shouldInclude('healthCheck', ['runHealthCheckAndEmail'])) {
+		removeHandlers(['runHealthCheckAndEmail'], 'health check trigger');
+		createTrigger('runHealthCheckAndEmail', trig => trig.timeBased().atHour(5).everyDays(1).create(), 'daily health check trigger');
+	}
+
+	// === Audit watchdog ===
+	if (shouldInclude('auditWatchdog', ['auditWatchdogCheck'])) {
+		removeHandlers(['auditWatchdogCheck'], 'watchdog trigger');
+		createTrigger('auditWatchdogCheck', trig => trig.timeBased().everyHours(3).create(), '3-hour audit watchdog trigger');
+	}
+
+	// === Delivery mode sync ===
+	if (shouldInclude('deliveryModeSync', ['runDeliveryModeSync'])) {
+		removeHandlers(['runDeliveryModeSync'], 'delivery mode sync trigger');
+		createTrigger('runDeliveryModeSync', trig => trig.timeBased().everyHours(3).create(), '3-hour delivery mode sync trigger');
+	}
+
+	// === Auto-fix audit requests sheet (requires external config) ===
+	if (shouldInclude('autoFixRequests', ['autoFixRequestsSheet_'])) {
+		removeHandlers(['autoFixRequestsSheet_'], 'auto-fix requests trigger');
+		if (EXTERNAL_CONFIG_SHEET_ID) {
+			createTrigger('autoFixRequestsSheet_', trig => trig.timeBased().everyHours(4).create(), '4-hour audit requests auto-fix trigger');
+		} else {
+			results.push('ℹ️ Skipped auto-fix trigger — EXTERNAL_CONFIG_SHEET_ID not configured');
+		}
+	}
+
+	// === Nightly external sync ===
+	if (shouldInclude('nightlyExternalSync', ['runNightlyExternalSync'])) {
+		removeHandlers(['runNightlyExternalSync'], 'nightly external sync trigger');
+		if (EXTERNAL_CONFIG_SHEET_ID) {
+			createTrigger('runNightlyExternalSync', trig => trig.timeBased().atHour(23).nearMinute(15).everyDays(1).create(), 'nightly external→admin sync trigger');
+		} else {
+			results.push('ℹ️ Skipped nightly external sync — EXTERNAL_CONFIG_SHEET_ID not configured');
+		}
+	}
+
+	// === Refresh external config instructions (silent wrapper) ===
+	if (shouldInclude('refreshExternalInstructions', ['refreshExternalConfigInstructionsSilent'])) {
+		removeHandlers(['refreshExternalConfigInstructionsSilent'], 'external instructions refresh trigger');
+		if (EXTERNAL_CONFIG_SHEET_ID) {
+			createTrigger('refreshExternalConfigInstructionsSilent', trig => trig.timeBased().atHour(2).nearMinute(15).everyDays(1).create(), 'daily external instructions refresh trigger');
+		} else {
+			results.push('ℹ️ Skipped external instructions refresh — EXTERNAL_CONFIG_SHEET_ID not configured');
+		}
+	}
+
+	// === Update placement names from reports ===
+	if (shouldInclude('placementNameRefresh', ['updatePlacementNamesFromReports'])) {
+		removeHandlers(['updatePlacementNamesFromReports'], 'placement refresh trigger');
+		createTrigger('updatePlacementNamesFromReports', trig => trig.timeBased().atHour(2).nearMinute(45).everyDays(1).create(), 'daily placement name refresh trigger');
+	}
+
+	// === Clear daily script properties ===
+	if (shouldInclude('clearDailyScriptProperties', ['clearDailyScriptProperties'])) {
+		removeHandlers(['clearDailyScriptProperties'], 'script properties cleanup trigger');
+		createTrigger('clearDailyScriptProperties', trig => trig.timeBased().atHour(0).nearMinute(45).everyDays(1).create(), 'daily script properties cleanup trigger');
+	}
+
+	// === GAS failure notifications forwarder ===
+	if (shouldInclude('gasFailureForwarder', ['forwardGASFailureNotificationsToAdmin'])) {
+		removeHandlers(['forwardGASFailureNotificationsToAdmin'], 'GAS failure forwarder trigger');
+		createTrigger('forwardGASFailureNotificationsToAdmin', trig => trig.timeBased().everyHours(1).create(), 'hourly GAS failure forwarder trigger');
+	}
+
+	return results;
 }
 
 // === TRIGGER FUNCTIONS ===
@@ -3298,7 +3395,7 @@ function getAdminControlsHelpItems() {
 		{ label: '🔁  Update Placement Names', fn: 'updatePlacementNamesFromReportsWithUI', desc: 'Reads latest merged reports and fills Placement Name in the EXTERNAL Exclusions sheet for rows with IDs.' },
 		{ label: '🔐  Check Authorization', fn: 'checkAuthorizationStatus', desc: 'Verifies script scopes/auth and sends a result to the current user.' },
 		{ label: '🧾  Validate Configs', fn: 'debugValidateAuditConfigs', desc: 'Validates audit configs derived from Recipients and logs findings.' },
-		{ label: '⏱️  Setup & Install Batch Triggers', fn: 'setupAndInstallBatchTriggers', desc: 'Ensures batch runner functions exist and installs daily time-based triggers.' },
+		{ label: '⏱️  Setup & Install Batch Triggers', fn: 'setupAndInstallBatchTriggers', desc: 'Ensures batch runner functions exist and refreshes all automation triggers (batches, summaries, syncs, cleanup).' },
 		{ label: '🔄  Sync Delivery Mode Now', fn: 'runDeliveryModeSync', desc: 'Updates the “Delivery Mode” instruction line on Admin and External Recipients tabs.' },
 		{ label: '📮  Debug Email Delivery', fn: 'debugEmailDeliveryStatus', desc: 'Logs delivery mode, admin email, and remaining send quota.' },
 		{ label: '✉️  Send Test Admin Email', fn: 'sendTestAdminEmail', desc: 'Sends a quick test message to admin to verify email plumbing.' },
@@ -3504,14 +3601,16 @@ function auditWatchdogCheck() {
 
 function installAuditWatchdogTrigger() {
 	try {
-		// Remove old watchdog triggers
-		const fn = 'auditWatchdogCheck';
-		ScriptApp.getProjectTriggers().forEach(t => { try { if (t.getHandlerFunction() === fn) ScriptApp.deleteTrigger(t); } catch(_) {} });
-		// Run every 3 hours to avoid repeated alerts while still catching missed batches
-		ScriptApp.newTrigger(fn).timeBased().everyHours(3).create();
-		Logger.log('installAuditWatchdogTrigger: installed 3-hour watchdog trigger.');
+		const results = installAllAutomationTriggers({ handlers: ['auditWatchdog'] });
+		Logger.log('installAuditWatchdogTrigger results: ' + results.join(' | '));
+		try {
+			const ss = SpreadsheetApp.getActiveSpreadsheet();
+			if (ss) ss.toast('Audit watchdog trigger refreshed.', 'Trigger Installer', 5);
+		} catch (_) {}
+		return results;
 	} catch (e) {
 		Logger.log('installAuditWatchdogTrigger error: ' + e.message);
+		return [];
 	}
 }
 
@@ -3541,14 +3640,18 @@ function formatHealthCheckHtml_(report) {
 
 // Install/refresh a daily health check a few hours before Daily Audit batches
 function installHealthCheckTrigger() {
-	const fnName = 'runHealthCheckAndEmail';
-	// Remove existing triggers for this function
-	(ScriptApp.getProjectTriggers() || []).forEach(t => {
-		try { if (t.getHandlerFunction && t.getHandlerFunction() === fnName) ScriptApp.deleteTrigger(t); } catch (_) {}
-	});
-	// Schedule at 5 AM local time (if daily audits run at ~8 AM); adjust as needed
-	ScriptApp.newTrigger(fnName).timeBased().atHour(5).everyDays(1).create();
-	Logger.log('Installed daily health check trigger at 05:00 local time');
+	try {
+		const results = installAllAutomationTriggers({ handlers: ['healthCheck'] });
+		Logger.log('installHealthCheckTrigger results: ' + results.join(' | '));
+		try {
+			const ui = SpreadsheetApp.getUi();
+			ui.alert('Health Check Trigger', results.join('\n'), ui.ButtonSet.OK);
+		} catch (_) {}
+		return results;
+	} catch (e) {
+		Logger.log('installHealthCheckTrigger error: ' + e.message);
+		return [];
+	}
 }
 
 // Send a quick test email to ADMIN_EMAIL to verify delivery
@@ -3728,10 +3831,16 @@ function refreshAdminHeadersAndInstructions() {
 /** Update only the external configuration spreadsheet's INSTRUCTIONS columns.
  * This is a non-destructive write to the external sheet so you can pull changes back to your local/admin copy with Sync FROM External.
  */
-function refreshExternalConfigInstructions() {
+function refreshExternalConfigInstructions(options) {
+	options = options || {};
+	const silent = options && options.silent === true;
+	const ui = silent ? null : SpreadsheetApp.getUi();
 	if (!EXTERNAL_CONFIG_SHEET_ID) {
-		const ui = SpreadsheetApp.getUi();
-		ui.alert('No External Config Sheet', 'EXTERNAL_CONFIG_SHEET_ID is not configured. Cannot update external instructions.', ui.ButtonSet.OK);
+		if (silent) {
+			Logger.log('refreshExternalConfigInstructions: EXTERNAL_CONFIG_SHEET_ID not configured; skipping.');
+		} else {
+			ui.alert('No External Config Sheet', 'EXTERNAL_CONFIG_SHEET_ID is not configured. Cannot update external instructions.', ui.ButtonSet.OK);
+		}
 		return;
 	}
 
@@ -3854,10 +3963,25 @@ function refreshExternalConfigInstructions() {
 		writeInstructionsToFixedColumns(req, 7, 7, requestsInstructions);
 
 		Logger.log('refreshExternalConfigInstructions: refreshed headers and instructions on external config (fixed columns written)');
+		if (silent) {
+			return true;
+		}
+		ui.alert('Refresh Complete', 'Headers and INSTRUCTIONS refreshed on target spreadsheets. No table data was modified.', ui.ButtonSet.OK);
 		return true;
 	} catch (e) {
 		Logger.log('refreshExternalConfigInstructions error: ' + e.message);
+		if (!silent) {
+			ui.alert('Refresh Failed', `Failed to refresh instructions: ${e.message}`, ui.ButtonSet.OK);
+		}
 		throw e;
+	}
+}
+
+function refreshExternalConfigInstructionsSilent() {
+	try {
+		refreshExternalConfigInstructions({ silent: true });
+	} catch (e) {
+		Logger.log('refreshExternalConfigInstructionsSilent error: ' + e.message);
 	}
 }
 
@@ -4546,28 +4670,10 @@ function forwardGASFailureNotificationsToAdmin() {
  * Run once from the editor while signed in as the admin to create the trigger.
  */
 function installGASFailureNotifierTrigger() {
-	const fnName = 'forwardGASFailureNotificationsToAdmin';
-	// Remove existing triggers for the function to avoid duplicates
-	const existing = ScriptApp.getProjectTriggers();
-	existing.forEach(t => {
-		try {
-			if (t.getHandlerFunction && t.getHandlerFunction() === fnName) {
-				ScriptApp.deleteTrigger(t);
-				Logger.log('installGASFailureNotifierTrigger: removed existing trigger for ' + fnName);
-			}
-		} catch (e) {
-			Logger.log('installGASFailureNotifierTrigger: error while removing triggers: ' + e.message);
-		}
-	});
-
-	// Create a new hourly trigger (adjust frequency if desired)
 	try {
-		ScriptApp.newTrigger(fnName)
-			.timeBased()
-			.everyHours(1)
-			.create();
-		Logger.log('installGASFailureNotifierTrigger: hourly trigger installed for ' + fnName);
-		return 'Trigger installed: forward GAS failure notifications hourly.';
+		const results = installAllAutomationTriggers({ handlers: ['gasFailureForwarder'] });
+		Logger.log('installGASFailureNotifierTrigger results: ' + results.join(' | '));
+		return results.join('\n');
 	} catch (err) {
 		Logger.log('installGASFailureNotifierTrigger error: ' + err.message);
 		return 'Failed to install trigger: ' + err.message;
@@ -5041,13 +5147,14 @@ function syncDeliveryModeStatus() {
 
 // Install or refresh a periodic trigger that will update Delivery Mode on both sheets
 function installDeliveryModeSyncTrigger() {
-	// Remove existing triggers for this function
-	ScriptApp.getProjectTriggers().forEach(t => {
-		try { if (t.getHandlerFunction && t.getHandlerFunction() === 'runDeliveryModeSync') ScriptApp.deleteTrigger(t); } catch (e) {}
-	});
-	// Create a new trigger to run every 3 hours
-	ScriptApp.newTrigger('runDeliveryModeSync').timeBased().everyHours(3).create();
-	Logger.log('Installed delivery mode sync trigger (every 3 hours)');
+	try {
+		const results = installAllAutomationTriggers({ handlers: ['deliveryModeSync'] });
+		Logger.log('installDeliveryModeSyncTrigger results: ' + results.join(' | '));
+		return results;
+	} catch (e) {
+		Logger.log('installDeliveryModeSyncTrigger error: ' + e.message);
+		return [];
+	}
 }
 
 function runDeliveryModeSync() {
@@ -5564,6 +5671,36 @@ function clearAuditConfigsCache_() {
 	auditConfigsCache_ = null;
 }
 
+function getCustomConfigOrder_() {
+	try {
+		const raw = PropertiesService.getScriptProperties().getProperty(CONFIG_ORDER_PROPERTY_KEY);
+		if (!raw) return [];
+		const arr = JSON.parse(raw);
+		return Array.isArray(arr) ? arr.map(v => String(v || '')).filter(Boolean) : [];
+	} catch (e) {
+		Logger.log('getCustomConfigOrder_ error: ' + e.message);
+		return [];
+	}
+}
+
+function saveCustomConfigOrder_(names) {
+	try {
+		const props = PropertiesService.getScriptProperties();
+		if (!Array.isArray(names) || names.length === 0) {
+			props.deleteProperty(CONFIG_ORDER_PROPERTY_KEY);
+			clearAuditConfigsCache_();
+			return;
+		}
+		const sanitized = names
+			.map(name => String(name || '').trim())
+			.filter(Boolean);
+		props.setProperty(CONFIG_ORDER_PROPERTY_KEY, JSON.stringify(sanitized));
+		clearAuditConfigsCache_();
+	} catch (e) {
+		Logger.log('saveCustomConfigOrder_ error: ' + e.message);
+	}
+}
+
 function shouldIncludeConfigRow_(configName, activeValue) {
 	const name = String(configName || '').trim();
 	if (!name) return false;
@@ -5592,9 +5729,28 @@ function getAuditConfigs(options = {}) {
 		const label = `Daily Audits/CM360/${cfgName}`;
 		configs.push(makeAuditConfig_(cfgName, label));
 	});
-	configs.sort((a, b) => a.name.localeCompare(b.name));
-	auditConfigsCache_ = { list: configs, timestamp: Date.now() };
-	return configs;
+		configs.sort((a, b) => a.name.localeCompare(b.name));
+		const customOrder = getCustomConfigOrder_();
+		let finalConfigs = configs;
+		if (customOrder && customOrder.length) {
+			const byName = new Map();
+			configs.forEach(cfg => byName.set(cfg.name, cfg));
+			const ordered = [];
+			const consumed = new Set();
+			customOrder.forEach(name => {
+				const cfg = byName.get(name);
+				if (cfg) {
+					ordered.push(cfg);
+					consumed.add(cfg.name);
+				}
+			});
+			if (ordered.length) {
+				const leftovers = configs.filter(cfg => !consumed.has(cfg.name));
+				finalConfigs = ordered.concat(leftovers);
+			}
+		}
+		auditConfigsCache_ = { list: finalConfigs, timestamp: Date.now() };
+		return finalConfigs;
 }
 
 function getAuditConfigByName(configName) {
@@ -5628,6 +5784,106 @@ function ensureConfigFoldersExist() {
 	} catch (e) {
 		Logger.log('ensureConfigFoldersExist error: ' + e.message);
 		SpreadsheetApp.getUi().alert('Error creating folders: ' + e.message);
+	}
+}
+
+function rebalanceAuditBatchesUsingSummary(options) {
+	options = options || {};
+	try {
+		const configs = getAuditConfigs({ refresh: true });
+		if (!configs.length) {
+			Logger.log('[Rebalance] No configs available to reorder.');
+			return [];
+		}
+		const prev = getPreviousSummaryCounts_();
+		const countsMap = (prev && prev.counts) ? prev.counts : {};
+		const overrideMetrics = options.metrics && typeof options.metrics === 'object' ? options.metrics : null;
+		const metrics = configs.map(cfg => {
+			const raw = overrideMetrics && overrideMetrics.hasOwnProperty(cfg.name)
+				? overrideMetrics[cfg.name]
+				: (countsMap.hasOwnProperty(cfg.name) ? countsMap[cfg.name] : null);
+			const value = raw == null ? 0 : Number(raw) || 0;
+			return { name: cfg.name, metric: value };
+		});
+		metrics.sort((a, b) => {
+			if (b.metric !== a.metric) return b.metric - a.metric;
+			return a.name.localeCompare(b.name);
+		});
+		const distinctMetrics = new Set(metrics.map(m => m.metric));
+		if (distinctMetrics.size <= 1) {
+			const existing = getCustomConfigOrder_();
+			if (existing.length) {
+				Logger.log('[Rebalance] Metrics tied; retaining existing custom order.');
+				return existing;
+			}
+			const alphabetical = configs.map(cfg => cfg.name);
+			saveCustomConfigOrder_(alphabetical);
+			Logger.log('[Rebalance] Metrics tied and no custom order; keeping alphabetical order.');
+			return alphabetical;
+		}
+		const paired = [];
+		let left = 0;
+		let right = metrics.length - 1;
+		while (left <= right) {
+			if (left === right) {
+				paired.push(metrics[left].name);
+			} else {
+				paired.push(metrics[left].name);
+				paired.push(metrics[right].name);
+			}
+			left++;
+			right--;
+		}
+		saveCustomConfigOrder_(paired);
+		Logger.log(`[Rebalance] Applied high-low pairing. New order: ${paired.join(', ')}`);
+		return paired;
+	} catch (e) {
+		Logger.log('rebalanceAuditBatchesUsingSummary error: ' + e.message);
+		return [];
+	}
+}
+
+function clearDailyScriptProperties(options) {
+	options = options || {};
+	try {
+		const props = PropertiesService.getScriptProperties();
+		const allProps = props.getProperties() || {};
+		const targets = new Set();
+		const staticKeys = [
+			AUDIT_RUN_LIST_KEY,
+			CONFIG_ORDER_PROPERTY_KEY,
+			'CM360_ADMIN_REFRESH_SEEN'
+		];
+		staticKeys.forEach(key => {
+			if (key && Object.prototype.hasOwnProperty.call(allProps, key)) targets.add(key);
+		});
+		Object.keys(allProps).forEach(key => {
+			if (typeof key === 'string' && key.indexOf(AUDIT_RUN_STATE_KEY_PREFIX) === 0) {
+				targets.add(key);
+			}
+		});
+		if (options.includeCleanupState === true) {
+			if (Object.prototype.hasOwnProperty.call(allProps, CLEANUP_STATE_KEY)) targets.add(CLEANUP_STATE_KEY);
+			if (Object.prototype.hasOwnProperty.call(allProps, CLEANUP_TRIGGER_ID_KEY)) targets.add(CLEANUP_TRIGGER_ID_KEY);
+		}
+		if (!targets.size) {
+			Logger.log('[EOD] No script properties required clearing.');
+			return [];
+		}
+		const cleared = [];
+		targets.forEach(key => {
+			try {
+				props.deleteProperty(key);
+				cleared.push(key);
+			} catch (err) {
+				Logger.log(`[EOD] Failed to delete property ${key}: ${err.message}`);
+			}
+		});
+		Logger.log(`[EOD] Cleared ${cleared.length} script propert${cleared.length === 1 ? 'y' : 'ies'}: ${cleared.join(', ')}`);
+		return cleared;
+	} catch (e) {
+		Logger.log('clearDailyScriptProperties error: ' + e.message);
+		return [];
 	}
 }
 
@@ -6879,18 +7135,12 @@ function _repackPrimaryColumnsAE_(sheet) {
 
 // Optional: installable time-based auto-fix trigger for the external sheet
 function installAutoFixForRequestsSheet() {
- if (!EXTERNAL_CONFIG_SHEET_ID) {
- SpreadsheetApp.getUi().alert('No External Config Sheet', 'EXTERNAL_CONFIG_SHEET_ID is not set.', SpreadsheetApp.getUi().ButtonSet.OK);
- return;
- }
- // Remove existing triggers for this handler
- ScriptApp.getProjectTriggers().forEach(function(t){
- if (t.getHandlerFunction && t.getHandlerFunction() === 'autoFixRequestsSheet_') {
- ScriptApp.deleteTrigger(t);
- }
- });
- ScriptApp.newTrigger('autoFixRequestsSheet_').timeBased().everyHours(4).create();
- SpreadsheetApp.getUi().alert('Auto-Fix Installed', 'A time-based trigger will compact the Audit Requests sheet every 4 hours.', SpreadsheetApp.getUi().ButtonSet.OK);
+	const results = installAllAutomationTriggers({ handlers: ['autoFixRequests'] });
+	try {
+		const ui = SpreadsheetApp.getUi();
+		ui.alert('Audit Requests Auto-Fix', results.join('\n'), ui.ButtonSet.OK);
+	} catch (_) {}
+	return results;
 }
 
 function autoFixRequestsSheet_() {
@@ -6903,25 +7153,19 @@ function autoFixRequestsSheet_() {
 
 // === Nightly External → Admin Sync Helpers ===
 function installNightlyExternalSync() {
-	if (!EXTERNAL_CONFIG_SHEET_ID) {
+	const results = installAllAutomationTriggers({ handlers: ['nightlyExternalSync'] });
+	try {
 		const ui = SpreadsheetApp.getUi();
-		ui.alert('No External Config Sheet', 'EXTERNAL_CONFIG_SHEET_ID is not set.', ui.ButtonSet.OK);
-		return;
-	}
-	// Remove existing triggers for the same handler
-	ScriptApp.getProjectTriggers().forEach(function(t){
-		try { if (t.getHandlerFunction && t.getHandlerFunction() === 'runNightlyExternalSync_') ScriptApp.deleteTrigger(t); } catch(_) {}
-	});
-	// Run daily around 11:15pm local script time (adjust if needed)
-	ScriptApp.newTrigger('runNightlyExternalSync_').timeBased().atHour(23).nearMinute(15).everyDays(1).create();
-	try { SpreadsheetApp.getUi().alert('Nightly Sync Installed', 'A daily trigger will sync FROM External into Admin each night.', SpreadsheetApp.getUi().ButtonSet.OK); } catch(_) {}
+		ui.alert('Nightly External Sync', results.join('\n'), ui.ButtonSet.OK);
+	} catch (_) {}
+	return results;
 }
 
 function removeNightlyExternalSync() {
 	let removed = 0;
 	ScriptApp.getProjectTriggers().forEach(function(t){
 		try {
-			if (t.getHandlerFunction && t.getHandlerFunction() === 'runNightlyExternalSync_') {
+			if (t.getHandlerFunction && t.getHandlerFunction() === 'runNightlyExternalSync') {
 				ScriptApp.deleteTrigger(t);
 				removed++;
 			}
@@ -6930,7 +7174,7 @@ function removeNightlyExternalSync() {
 	try { SpreadsheetApp.getUi().alert('Nightly Sync', `${removed} nightly sync trigger(s) removed.`, SpreadsheetApp.getUi().ButtonSet.OK); } catch(_) {}
 }
 
-function runNightlyExternalSync_() {
+function runNightlyExternalSync() {
 	try {
 		syncFromExternalConfig({
 			silent: true,
@@ -6947,7 +7191,7 @@ function runNightlyExternalSync_() {
 			to: ADMIN_EMAIL,
 			subject: 'CM360: Nightly External → Admin Sync Failed',
 			htmlBody: `<pre style="font-family:monospace">${escapeHtml(e.message)}</pre>`
-		}, 'runNightlyExternalSync_');
+		}, 'runNightlyExternalSync');
 	}
 }
 /** Sync configuration sheets (Recipients, Thresholds, Exclusions) TO external config spreadsheet */
@@ -8421,17 +8665,19 @@ function setupAndInstallBatchTriggers() {
  
  // Step 3: Proceed to triggers (source already updated if needed)
  
- // Step 4: Install triggers for existing functions
- Logger.log(' Installing daily triggers...');
- const triggerResults = installDailyAuditTriggers();
- // Only count actual installations (installDailyAuditTriggers includes removed/skipped messages)
- const installedCount = triggerResults.filter(r => typeof r === 'string' && r.indexOf('Installed daily trigger') !== -1).length;
+ // Step 4: Install triggers for existing functions and supporting automations
+ Logger.log(' Installing automation triggers...');
+ const triggerResults = installAllAutomationTriggers();
+ const batchInstallCount = triggerResults.filter(r => /daily audit batch trigger/.test(r)).length;
+ const totalInstalledCount = triggerResults.filter(r => /^✅/.test(r)).length;
+ const informationalNotes = triggerResults.filter(r => /^ℹ️/.test(r));
  
  // Step 5: Report final results
     let finalMessage = `✅ Batch Triggers Setup Complete!\n\n`;
  finalMessage += ` Summary:\n`;
  finalMessage += `- Batch functions present: ${existingFns.length}/${neededCount}\n`;
- finalMessage += `- Triggers installed: ${installedCount} triggers\n`;
+ finalMessage += `- Batch triggers installed: ${batchInstallCount}\n`;
+ finalMessage += `- Total automation installs this run: ${totalInstalledCount}\n`;
  finalMessage += `- Configs per batch: ${BATCH_SIZE}\n\n`;
  finalMessage += ` Batches:\n`;
  
@@ -8439,7 +8685,11 @@ function setupAndInstallBatchTriggers() {
  finalMessage += `- Batch ${index + 1}: ${batch.map(c => c.name).join(', ')}\n`;
  });
  
-	finalMessage += `\n✅ Daily triggers are now active!`;
+	finalMessage += `\n✅ Automation triggers refreshed.`;
+
+	if (informationalNotes.length) {
+		finalMessage += `\n\nℹ️ Notes:\n${informationalNotes.join('\n')}`;
+	}
  
  ui.alert(
  'Setup Complete',
@@ -8448,7 +8698,7 @@ function setupAndInstallBatchTriggers() {
  );
  
 		Logger.log('✅ Batch triggers setup completed successfully');
-		Logger.log(` Installed ${installedCount} triggers for ${neededCount} batches`);
+		Logger.log(` Installed ${batchInstallCount} batch triggers (${totalInstalledCount} total automation triggers this run)`);
  
  } catch (error) {
 	Logger.log(`❌ Error in setupAndInstallBatchTriggers: ${error.message}`);

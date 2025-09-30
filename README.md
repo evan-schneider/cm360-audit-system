@@ -134,7 +134,7 @@ Notes:
 	- Click the menu: Admin Controls → Prepare Environment (recommended), or
 	- Run `prepareAuditEnvironment()` from the Apps Script editor
 	This will create the Gmail label and Drive folders for the new config if they don't already exist.
-- Run `installDailyAuditTriggers()` or use the menu "Setup & Install Batch Triggers" to create triggers for the updated config set.
+- Run `installAllAutomationTriggers()` or use the menu "Setup & Install Batch Triggers" to reinstall automation triggers for the updated config set.
 
 Verification steps
 - In Apps Script editor run `validateAuditConfigs()` — it should not throw errors for the new config.

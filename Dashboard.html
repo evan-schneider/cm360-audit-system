@@ -86,7 +86,7 @@
  }
 
  function reinstallTriggers() {
- google.script.run.withSuccessHandler(displayTriggerResults).installDailyAuditTriggers();
+ google.script.run.withSuccessHandler(displayTriggerResults).installAllAutomationTriggers();
  }
 
  function displayTriggerResults(messages) {
