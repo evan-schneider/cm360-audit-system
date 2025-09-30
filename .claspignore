@@ -1,0 +1,12 @@
+# Ignore everything by default so clasp only pushes explicit allow-list below
+**/*
+
+# Allow the manifest and active script files
+!appsscript.json
+!Code.js
+
+# Allow HTML templates referenced by the script
+!AdminControlsHelp.html
+!AdminRefreshPrompt.html
+!ConfigPicker.html
+!Dashboard.html
