@@ -72,20 +72,20 @@ The current admin email is **evschneider@horizonmedia.com**. This should be chan
 
 **Where to Update:**
 
-#### Script Properties (Primary Location)
+#### Code.js (Line ~29)
 1. Open the Admin Spreadsheet
 2. Go to **Extensions > Apps Script**
-3. Click **Project Settings** (gear icon) in left sidebar
-4. Scroll to **Script Properties**
-5. Find ADMIN_EMAIL property
-6. Update value to new admin email (e.g., new team lead)
-7. Click **Save**
-
-#### Code.js Fallback (Secondary Location)
-1. In Apps Script editor, open **Code.js**
-2. Find line ~29: `return 'evschneider@horizonmedia.com';`
-3. Change to: `return 'newadmin@horizonmedia.com';`
-4. Save and deploy
+3. Open **Code.js** file
+4. Find line ~29 in the ADMIN_EMAIL constant:
+   ```javascript
+   return 'evschneider@horizonmedia.com';
+   ```
+5. Change to:
+   ```javascript
+   return 'newadmin@horizonmedia.com';
+   ```
+6. **Save** the file (Ctrl+S / Cmd+S)
+7. **Deploy**: Click the blue Deploy button or use existing deployment
 
 **What uses ADMIN_EMAIL:**
 - Error alerts and failure notifications
@@ -127,8 +127,8 @@ The current admin email is **evschneider@horizonmedia.com**. This should be chan
 
 **For Evan to complete before leaving:**
 
-- [ ] Update ADMIN_EMAIL in Script Properties to new team lead
-- [ ] Update ADMIN_EMAIL fallback in Code.js (line ~29)
+- [ ] Update ADMIN_EMAIL in Code.js (line ~29)
+- [ ] Deploy updated Code.js to Apps Script
 - [ ] Transfer platformsolutionshmi@gmail.com credentials to team:
   - [ ] Password (via secure method)
   - [ ] 2FA backup codes
@@ -1184,13 +1184,14 @@ unNightlyMaintenance | Daily 2:20 AM | Cleanup, rebalancing, email deletion |
 
 #### 6. "ADMIN_EMAIL not found" in Recipients
 
-**Cause:** Script property missing
+**Cause:** ADMIN_EMAIL constant not defined or code error
 
 **Resolution:**
-1. Project Settings > Script Properties
-2. Add property: ADMIN_EMAIL
-3. Value: Current admin email
-4. Save
+1. Extensions > Apps Script
+2. Open Code.js
+3. Find ADMIN_EMAIL constant definition (line ~29)
+4. Verify it returns a valid email address
+5. Save and deploy if changed
 
 ---
 
@@ -1543,8 +1544,8 @@ Daily Audits
 **Steps:**
 
 1. **Update ADMIN_EMAIL** (see Critical First Steps)
-   - Script Properties: Change to new team lead email
-   - Code.js line ~29: Update fallback email
+   - Code.js line ~29: Update email address
+   - Deploy updated code to Apps Script
 
 2. **Transfer platformsolutionshmi@gmail.com access:**
    - Evan provides credentials to team (secure handoff)
