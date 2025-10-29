@@ -6,15 +6,17 @@
 const EXTERNAL_CONFIG_SHEET_ID = '1-566gqkyZRNDeNtXWUjKDB_H8A9XbhCu8zL-uaZdGT8';
 
 // Delivery mode override: read from Script Properties once at load with safe fallback
-// Set Script Property STAGING_MODE to 'Y' to route emails to ADMIN_EMAIL only; defaults to 'N'
-const STAGING_MODE = (function() {
+// IMPORTANT: STAGING_MODE must be read DYNAMICALLY from Script Properties, not cached as a constant
+// This ensures changes take effect immediately without requiring trigger reinstallation
+// Default to 'Y' (staging) if property not set - safer for testing
+function getStagingMode_() {
 	try {
 		const v = String(PropertiesService.getScriptProperties().getProperty('STAGING_MODE') || 'N').trim().toUpperCase();
 		return v === 'Y' ? 'Y' : 'N';
 	} catch (e) {
-		return 'N';
+		return 'Y'; // Safe default: staging mode on
 	}
-})();
+}
 
 // Admin email for alerts, staging redirects, and defaults
 // IMPORTANT: Do NOT fall back to the trigger owner; always use the explicit admin.
@@ -99,20 +101,29 @@ function getConfigSpreadsheet() {
 
 // Restored: getDriveFolderByPath_ helper to get or create nested Drive folders by path
 function getDriveFolderByPath_(pathArray) {
-	try {
-		let folder = DriveApp.getRootFolder();
-		if (!Array.isArray(pathArray) || pathArray.length === 0) return folder;
-		for (var i = 0; i < pathArray.length; i++) {
-			var name = String(pathArray[i] || '').trim();
-			if (!name) continue;
-			var it = folder.getFoldersByName(name);
-			folder = it.hasNext() ? it.next() : folder.createFolder(name);
+	const maxAttempts = 3;
+	for (var attempt = 1; attempt <= maxAttempts; attempt++) {
+		try {
+			let folder = DriveApp.getRootFolder();
+			if (!Array.isArray(pathArray) || pathArray.length === 0) return folder;
+			for (var i = 0; i < pathArray.length; i++) {
+				var name = String(pathArray[i] || '').trim();
+				if (!name) continue;
+				var it = folder.getFoldersByName(name);
+				folder = it.hasNext() ? it.next() : folder.createFolder(name);
+			}
+			return folder;
+		} catch (e) {
+			Logger.log(`getDriveFolderByPath_ error (attempt ${attempt}/${maxAttempts}): ${e.message}`);
+			if (attempt < maxAttempts) {
+				try {
+					Utilities.sleep(200 * attempt);
+				} catch (sleepErr) {}
+			}
 		}
-		return folder;
-	} catch (e) {
-		Logger.log('getDriveFolderByPath_ error: ' + e.message);
-		return null;
 	}
+	Logger.log('getDriveFolderByPath_ exhausted retries; returning null.');
+	return null;
 }
 
 // Read-only variant: walk a Drive path and return the folder if all parts exist; do not create anything
@@ -460,34 +471,32 @@ function processCleanupMergedFiles_(state, mergedRoot, cutoffDate, timestamp, lo
 			}
 			const params = {
 				q: `'${folderId}' in parents and trashed = false`,
-				fields: 'nextPageToken, items(id, title, name, createdDate, createdTime)',
+				fields: 'nextPageToken, items(id, title, createdDate, modifiedDate)',
 				pageSize: CLEANUP_PAGE_SIZE,
 				supportsAllDrives: true,
 				includeItemsFromAllDrives: true
 			};
 			if (pageToken) params.pageToken = pageToken;
-			let resp;
-			try {
-				resp = Drive.Files.list(params);
-			} catch (err) {
-				Logger.log(`processCleanupMergedFiles_ list error (${configName}): ${err.message}`);
+			const resp = driveFilesListWithRetry_(params, `processCleanupMergedFiles_/${configName}`);
+			if (!resp) {
+				Logger.log(`processCleanupMergedFiles_ list error (${configName}): exhausted retries`);
 				break;
 			}
 			const files = resp.items || resp.files || [];
 			for (const file of files) {
 				if (!file) continue;
 				const name = file.title || file.name || '';
-				const createdRaw = file.createdDate || file.createdTime || null;
+				const createdRaw = file.createdDate || file.modifiedDate || null;
 				const created = createdRaw ? new Date(createdRaw) : null;
 				if (created && name.startsWith('Merged_') && created < cutoffDate) {
-					logBuckets.temp.push([
+					logBuckets.merged.push([
 						name,
 						[...TRASH_ROOT_PATH, 'To Trash After 60 Days', 'Merged Reports', configName].join(' / '),
 						Utilities.formatDate(created, tz, 'yyyy-MM-dd'),
 						timestamp
 					]);
 					try {
-						Drive.Files.update({ trashed: true }, file.id, null, { supportsAllDrives: true });
+						driveFilesUpdateWithRetry_({ trashed: true }, file.id, null, { supportsAllDrives: true }, `processCleanupMergedFiles_/trash/${configName}/${name}`);
 					} catch (e) {
 						try {
 							DriveApp.getFileById(file.id).setTrashed(true);
@@ -544,26 +553,24 @@ function processCleanupOtherFolders_(state, trashRoot, cutoffDate, timestamp, lo
 			}
 			const params = {
 				q: `'${folderId}' in parents and trashed = false`,
-				fields: 'nextPageToken, items(id, title, name, createdDate, createdTime)',
+				fields: 'nextPageToken, items(id, title, createdDate, modifiedDate)',
 				pageSize: CLEANUP_PAGE_SIZE,
 				supportsAllDrives: true,
 				includeItemsFromAllDrives: true
 			};
 			if (pageToken) params.pageToken = pageToken;
-			let resp;
-			try {
-				resp = Drive.Files.list(params);
-			} catch (err) {
-				Logger.log(`processCleanupOtherFolders_ list error (${name}): ${err.message}`);
+			const resp = driveFilesListWithRetry_(params, `processCleanupOtherFolders_/${name}`);
+			if (!resp) {
+				Logger.log(`processCleanupOtherFolders_ list error (${name}): exhausted retries`);
 				break;
 			}
 			const files = resp.items || resp.files || [];
 			for (const file of files) {
 				if (!file) continue;
-				const createdRaw = file.createdDate || file.createdTime || null;
+				const createdRaw = file.createdDate || file.modifiedDate || null;
 				const created = createdRaw ? new Date(createdRaw) : null;
 				if (created && created < cutoffDate) {
-					const fname = file.name || '';
+					const fname = file.title || file.name || '';
 					logBuckets.temp.push([
 						fname,
 						pathStr,
@@ -571,7 +578,7 @@ function processCleanupOtherFolders_(state, trashRoot, cutoffDate, timestamp, lo
 						timestamp
 					]);
 					try {
-						Drive.Files.update({ trashed: true }, file.id, null, { supportsAllDrives: true });
+						driveFilesUpdateWithRetry_({ trashed: true }, file.id, null, { supportsAllDrives: true }, `processCleanupOtherFolders_/trash/${name}/${fname}`);
 					} catch (e) {
 						try {
 							DriveApp.getFileById(file.id).setTrashed(true);
@@ -737,7 +744,8 @@ function safeSendEmail(opts = {}, context = '') {
 		}
 
 		// In staging mode: send ONLY to admin (strip CC/BCC and ignore provided recipients)
-		if (STAGING_MODE === 'Y') {
+		const stagingMode = getStagingMode_();
+		if (stagingMode === 'Y') {
 			Logger.log(`[EMAIL] Staging mode active - forcing delivery to admin only (original to=${to}) (${context})`);
 			const sanitized = {};
 			if (mailOpts.htmlBody) sanitized.htmlBody = mailOpts.htmlBody;
@@ -752,7 +760,7 @@ function safeSendEmail(opts = {}, context = '') {
 		}
 
 		// BCC admin only when explicitly requested by caller and in production
-		if (STAGING_MODE === 'N' && opts.bccAdmin === true && ADMIN_EMAIL) {
+		if (stagingMode === 'N' && opts.bccAdmin === true && ADMIN_EMAIL) {
 			const normalizeList = (val) => {
 				if (!val) return [];
 				if (Array.isArray(val)) return val.map(String);
@@ -949,29 +957,86 @@ function formatHeaderOrderDiagnostic_(headerRow) {
 	}
 }
 
+// Generic retry wrapper for Drive.Files.list calls (returns null after exhausting attempts)
+function driveFilesListWithRetry_(params, contextLabel) {
+	const maxAttempts = 3;
+	let lastError = null;
+	for (var attempt = 1; attempt <= maxAttempts; attempt++) {
+		try {
+			return Drive.Files.list(params);
+		} catch (e) {
+			lastError = e;
+			const msg = e && e.message ? e.message : String(e);
+			Logger.log(`[Drive] list error (${contextLabel}) attempt ${attempt}/${maxAttempts}: ${msg}`);
+			if (attempt < maxAttempts) {
+				try { Utilities.sleep(200 * attempt); } catch (_) {}
+			}
+		}
+	}
+	return null;
+}
+
+// Generic retry wrapper for Drive.Files.update calls (throws after exhausting attempts)
+function driveFilesUpdateWithRetry_(resource, fileId, mediaData, optionalArgs, contextLabel) {
+	const maxAttempts = 3;
+	let lastError = null;
+	for (var attempt = 1; attempt <= maxAttempts; attempt++) {
+		try {
+			if (optionalArgs != null) {
+				return Drive.Files.update(resource, fileId, mediaData, optionalArgs);
+			} else if (typeof mediaData !== 'undefined' && mediaData !== null) {
+				return Drive.Files.update(resource, fileId, mediaData);
+			} else {
+				return Drive.Files.update(resource, fileId);
+			}
+		} catch (e) {
+			lastError = e;
+			const msg = e && e.message ? e.message : String(e);
+			Logger.log(`[Drive] update error (${contextLabel}) attempt ${attempt}/${maxAttempts}: ${msg}`);
+			if (attempt < maxAttempts) {
+				try { Utilities.sleep(200 * attempt); } catch (_) {}
+			}
+		}
+	}
+	throw lastError;
+}
+
 // Convert uploaded Excel/CSV blob into a Google Sheet and return an object with id
 function safeConvertExcelToSheet(blob, filename, parentFolderId, configName) {
-	try {
-		// Ensure Advanced Drive API is available
-		if (typeof Drive === 'undefined' || !Drive.Files) {
-			throw new Error('Advanced Drive API not available');
-		}
-
-		const resource = {
-			title: filename,
-			mimeType: blob.getContentType() || MimeType.MICROSOFT_EXCEL,
-			parents: parentFolderId ? [{ id: parentFolderId }] : []
-		};
-
-		// Use Drive.Files.insert with convert=true to import as Google Sheets
-		const created = Drive.Files.insert(resource, blob, { convert: true });
-
-		// created.id contains the new file id
-		return { id: created.id };
-	} catch (e) {
-		Logger.log(`safeConvertExcelToSheet error (${configName} / ${filename}): ${e.message}`);
-		throw e;
+	// Ensure Advanced Drive API is available before attempting conversion
+	if (typeof Drive === 'undefined' || !Drive.Files) {
+		throw new Error('Advanced Drive API not available');
 	}
+
+	const maxAttempts = 3;
+	let lastError = null;
+
+	for (var attempt = 1; attempt <= maxAttempts; attempt++) {
+		try {
+			const resource = {
+				title: filename,
+				mimeType: blob.getContentType() || MimeType.MICROSOFT_EXCEL,
+				parents: parentFolderId ? [{ id: parentFolderId }] : []
+			};
+
+			// Use Drive.Files.insert with convert=true to import as Google Sheets
+			const created = Drive.Files.insert(resource, blob, { convert: true });
+
+			// created.id contains the new file id
+			return { id: created.id };
+		} catch (e) {
+			lastError = e;
+			Logger.log(`safeConvertExcelToSheet error (${configName} / ${filename}) attempt ${attempt}/${maxAttempts}: ${e.message}`);
+			if (attempt < maxAttempts) {
+				try {
+					Utilities.sleep(250 * attempt);
+				} catch (_) {}
+			}
+		}
+	}
+
+	// Exhausted retries; rethrow last error so caller can handle failure
+	throw lastError;
 }
 
 // Store and retrieve previous summary flagged counts per config for delta calculation
@@ -1029,20 +1094,22 @@ function buildSummaryEmailContent_(results, options) {
 
 	// Aggregate metrics (low-effort, from current result fields)
 	const toNum = v => (v == null ? 0 : Number(v) || 0);
-	const totalConfigs = results.length;
-	const flaggedConfigs = results.filter(r => toNum(r.flaggedRows) > 0).length;
-	const totalFlaggedRows = results.reduce((sum, r) => sum + toNum(r.flaggedRows), 0);
-	const errorCount = results.filter(r => /error/i.test(String(r.status || ''))).length;
-	const skippedCount = results.filter(r => /skipped/i.test(String(r.status || ''))).length;
-	const emailsSentCount = results.filter(r => r.emailSent === true).length;
-	const emailsWithheldCount = results.filter(r => r.emailWithheld === true).length;
+	// Filter out any null/undefined entries
+	const validResults = results.filter(r => r && typeof r === 'object');
+	const totalConfigs = validResults.length;
+	const flaggedConfigs = validResults.filter(r => toNum(r.flaggedRows) > 0).length;
+	const totalFlaggedRows = validResults.reduce((sum, r) => sum + toNum(r.flaggedRows), 0);
+	const errorCount = validResults.filter(r => /error/i.test(String(r.status || ''))).length;
+	const skippedCount = validResults.filter(r => /skipped/i.test(String(r.status || ''))).length;
+	const emailsSentCount = validResults.filter(r => r.emailSent === true).length;
+	const emailsWithheldCount = validResults.filter(r => r.emailWithheld === true).length;
 
 		// Build previous-day counts for delta
 		const prev = getPreviousSummaryCounts_();
 		const prevCounts = prev && prev.counts ? prev.counts : {};
 
 		// Sort rows: most flags first, then errors/skips, then alpha
-	const sorted = results.slice().sort((a, b) => {
+	const sorted = validResults.slice().sort((a, b) => {
 		const af = toNum(a.flaggedRows), bf = toNum(b.flaggedRows);
 		if (bf !== af) return bf - af;
 		const aErr = /error/i.test(String(a.status || ''));
@@ -1487,6 +1554,21 @@ function fetchDailyAuditAttachments(config, recipientsData) {
  startOfToday.setHours(0, 0, 0, 0); 
  
  const parentFolder = getDriveFolderByPath_(config.tempDailyFolderPath);
+	if (!parentFolder) {
+		const pathStr = Array.isArray(config.tempDailyFolderPath) ? config.tempDailyFolderPath.join(' / ') : '(invalid path)';
+		const errMsg = `Temp daily folder unavailable after retries (path: ${pathStr})`;
+		Logger.log(`❌ [${config.name}] ${errMsg}`);
+		try {
+			safeSendEmail({
+				to: ADMIN_EMAIL,
+				subject: `⚠️ CM360 Audit Drive folder unavailable (${config.name})`,
+				htmlBody: `<p style="font-family:Arial, sans-serif; font-size:13px;">${escapeHtml(errMsg)}</p>`
+			}, `${config.name} - temp folder unavailable`);
+		} catch (notifyErr) {
+			Logger.log(`[${config.name}] Failed to send admin alert for temp folder issue: ${notifyErr.message}`);
+		}
+		throw new Error(errMsg);
+	}
  const timestamp = Utilities.formatDate(new Date(), Session.getScriptTimeZone(), 'yyyyMMdd_HHmmss');
  const driveFolder = parentFolder.createFolder(`Temp_CM360_${timestamp}`);
 
@@ -1521,7 +1603,25 @@ function fetchDailyAuditAttachments(config, recipientsData) {
  const hasFiles = driveFolder.getFiles().hasNext();
  if (!hasFiles) {
 	Logger.log(`⚠️ [${config.name}] No files saved to: ${driveFolder.getName()}`);
- return null;
+	const subject = `⚠️ CM360 Audit Skipped: No Files Found (${config.name} - ${formatDate(new Date())})`;
+	const htmlBody = `
+	<p style="font-family:Arial, sans-serif; font-size:13px;">
+	The CM360 audit for bundle "<strong>${escapeHtml(config.name)}</strong>" was skipped because no Excel or ZIP files were found for today.
+	</p>
+	<p style="font-family:Arial, sans-serif; font-size:13px;">
+	Please verify the report was delivered and labeled correctly.
+	</p>
+	<p style="margin-top:12px; font-family:Arial, sans-serif; font-size:12px;">&mdash; Platform Solutions Team</p>
+	`;
+	safeSendEmail({
+	to: resolveRecipients(config.name, recipientsData),
+	cc: resolveCc(config.name, recipientsData),
+	 subject,
+	 htmlBody,
+		 attachments: [],
+		 bccAdmin: true
+	}, config.name);
+	return null;
  }
 
 	Logger.log(`✅ [${config.name}] Files saved to: ${driveFolder.getName()}`);
@@ -1564,7 +1664,7 @@ function mergeDailyAuditExcels(folderId, mergedFolderPath, configName = 'Unknown
  const converted = safeConvertExcelToSheet(blob, file.getName(), folder.getId(), configName);
 
  // Ensure it only lives in `folder`
- Drive.Files.update({ parents: [{ id: folder.getId() }] }, converted.id);
+		driveFilesUpdateWithRetry_({ parents: [{ id: folder.getId() }] }, converted.id, null, null, `${configName} reparent primary ${file.getName()}`);
 
  spreadsheet = SpreadsheetApp.openById(converted.id);
  data = spreadsheet.getSheets()[0].getDataRange().getValues();
@@ -1702,7 +1802,7 @@ function mergeDailyAuditExcels(folderId, mergedFolderPath, configName = 'Unknown
  						 } else if (lowerAlt.endsWith('.xlsx')) {
  							 const altBlob = altFile.getBlob();
  							 const altConverted = safeConvertExcelToSheet(altBlob, altFile.getName(), folder.getId(), configName);
- 							 Drive.Files.update({ parents: [{ id: folder.getId() }] }, altConverted.id);
+							driveFilesUpdateWithRetry_({ parents: [{ id: folder.getId() }] }, altConverted.id, null, null, `${configName} reparent alt ${altFile.getName()}`);
  							 altSpreadsheet = SpreadsheetApp.openById(altConverted.id);
  							 const altVals = altSpreadsheet.getSheets()[0].getDataRange().getValues();
  							 let altHdrIdx = altVals.findIndex(row => {
@@ -1842,7 +1942,7 @@ function mergeDailyAuditExcels(folderId, mergedFolderPath, configName = 'Unknown
  	 	 	 	 	 } else if (lowerAlt.endsWith('.xlsx')) {
  	 	 	 	 	 	 const altBlob = altFile.getBlob();
  	 	 	 	 	 	 const altConverted = safeConvertExcelToSheet(altBlob, altFile.getName(), folder.getId(), configName);
- 	 	 	 	 	 	 Drive.Files.update({ parents: [{ id: folder.getId() }] }, altConverted.id);
+						driveFilesUpdateWithRetry_({ parents: [{ id: folder.getId() }] }, altConverted.id, null, null, `${configName} reparent alt ${altFile.getName()}`);
  	 	 	 	 	 	 altSpreadsheet = SpreadsheetApp.openById(altConverted.id);
  	 	 	 	 	 	 const altVals = altSpreadsheet.getSheets()[0].getDataRange().getValues();
  	 	 	 	 	 	 let altHdrIdx = altVals.findIndex(row => {
@@ -2175,18 +2275,27 @@ function executeAudit(config, preloaded) {
  const placementId = String(row[fullCol.PlacementID] || '');
 
  // Check each potential flag with its specific thresholds
+ // NEW LOGIC: Use threshold for whichever metric (impressions or clicks) is HIGHER
  
  // Clicks > Impressions check
  const clicksThreshold = getThresholdForFlag(thresholdsData, configName, 'clicks_greater_than_impressions');
- const hasMinVolumeForClicks = impressions >= clicksThreshold.minImpressions || clicks >= clicksThreshold.minClicks;
+ // Determine which metric is higher and apply its threshold
+ const dominantMetricForClicks = clicks > impressions ? 'clicks' : 'impressions';
+ const dominantValueForClicks = clicks > impressions ? clicks : impressions;
+ const appliedThresholdForClicks = clicks > impressions ? clicksThreshold.minClicks : clicksThreshold.minImpressions;
+ const hasMinVolumeForClicks = dominantValueForClicks >= appliedThresholdForClicks;
  if (hasMinVolumeForClicks && clicks > impressions && 
  !isPlacementExcludedForFlag(exclusionsData, configName, placementId, 'clicks_greater_than_impressions', placementName, siteName)) {
  flags.push('Clicks > Impressions');
+ Logger.log(`🚩 [FLAG ADDED] ${configName} - ${placementName}: Clicks > Impressions (${clicks} clicks >= ${appliedThresholdForClicks} threshold)`);
  }
  
  // Out of flight dates check
  const flightThreshold = getThresholdForFlag(thresholdsData, configName, 'out_of_flight_dates');
- const hasMinVolumeForFlight = impressions >= flightThreshold.minImpressions || clicks >= flightThreshold.minClicks;
+ const dominantMetricForFlight = clicks > impressions ? 'clicks' : 'impressions';
+ const dominantValueForFlight = clicks > impressions ? clicks : impressions;
+ const appliedThresholdForFlight = clicks > impressions ? flightThreshold.minClicks : flightThreshold.minImpressions;
+ const hasMinVolumeForFlight = dominantValueForFlight >= appliedThresholdForFlight;
  if (hasMinVolumeForFlight && (startDate > today || endDate < today) && 
  !isPlacementExcludedForFlag(exclusionsData, configName, placementId, 'out_of_flight_dates', placementName, siteName)) {
  flags.push('Out of flight dates');
@@ -2194,7 +2303,10 @@ function executeAudit(config, preloaded) {
  
  // Pixel size mismatch check
  const pixelThreshold = getThresholdForFlag(thresholdsData, configName, 'pixel_size_mismatch');
- const hasMinVolumeForPixel = impressions >= pixelThreshold.minImpressions || clicks >= pixelThreshold.minClicks;
+ const dominantMetricForPixel = clicks > impressions ? 'clicks' : 'impressions';
+ const dominantValueForPixel = clicks > impressions ? clicks : impressions;
+ const appliedThresholdForPixel = clicks > impressions ? pixelThreshold.minClicks : pixelThreshold.minImpressions;
+ const hasMinVolumeForPixel = dominantValueForPixel >= appliedThresholdForPixel;
  if (hasMinVolumeForPixel && placementPixel && creativePixel && placementPixel !== creativePixel && 
  !isPlacementExcludedForFlag(exclusionsData, configName, placementId, 'pixel_size_mismatch', placementName, siteName)) {
  flags.push('Pixel size mismatch');
@@ -2202,7 +2314,10 @@ function executeAudit(config, preloaded) {
  
  // Default ad serving check
  const defaultThreshold = getThresholdForFlag(thresholdsData, configName, 'default_ad_serving');
- const hasMinVolumeForDefault = impressions >= defaultThreshold.minImpressions || clicks >= defaultThreshold.minClicks;
+ const dominantMetricForDefault = clicks > impressions ? 'clicks' : 'impressions';
+ const dominantValueForDefault = clicks > impressions ? clicks : impressions;
+ const appliedThresholdForDefault = clicks > impressions ? defaultThreshold.minClicks : defaultThreshold.minImpressions;
+ const hasMinVolumeForDefault = dominantValueForDefault >= appliedThresholdForDefault;
  if (hasMinVolumeForDefault && adType.includes('default') && 
  !isPlacementExcludedForFlag(exclusionsData, configName, placementId, 'default_ad_serving', placementName, siteName)) {
  flags.push('Default ad serving');
@@ -2519,12 +2634,84 @@ function validateAuditConfigs() {
 	});
 	Logger.log(`validateAuditConfigs: ${configs.length} configs ready.`);
 }
+function sanitizeCombinedResultEntry_(entry, options) {
+	options = options || {};
+	if (!entry || typeof entry !== 'object') return null;
+	const statusLimit = typeof options.statusLimit === 'number' ? options.statusLimit : 400;
+	const emailTimeLimit = typeof options.emailTimeLimit === 'number' ? options.emailTimeLimit : 48;
+	const urlLimit = typeof options.urlLimit === 'number' ? options.urlLimit : 350;
+	const includeUrl = options.includeUrl !== false;
+	const safeNumber = (value) => {
+		if (value === null || typeof value === 'undefined') return null;
+		const n = Number(value);
+		return isFinite(n) ? n : null;
+	};
+	const sanitizeString = (value, limit) => {
+		if (!value) return '';
+		const str = String(value);
+		if (!limit || str.length <= limit) return str;
+		return str.slice(0, Math.max(1, limit - 1)) + '…';
+	};
+	const sanitized = {
+		name: entry.name ? String(entry.name) : '',
+		status: sanitizeString(entry.status, statusLimit),
+		flaggedRows: safeNumber(entry.flaggedRows),
+		emailSent: entry.emailSent === true,
+		emailTime: sanitizeString(entry.emailTime, emailTimeLimit),
+		emailWithheld: entry.emailWithheld === true
+	};
+	if (includeUrl) {
+		sanitized.latestReportUrl = sanitizeString(entry.latestReportUrl, urlLimit);
+	}
+	return sanitized;
+}
+
 function storeCombinedAuditResults_(newResults) {
 	const cache = CacheService.getScriptCache();
+	const key = getAuditCacheKey_();
 	const existing = getCombinedAuditResults_();
 	const incoming = Array.isArray(newResults) ? newResults.filter(Boolean) : (newResults ? [newResults] : []);
 	const combined = mergeAuditResultsByConfig_(existing, incoming);
-	cache.put(getAuditCacheKey_(), JSON.stringify(combined), 21600); // 6 hours
+
+	const variants = [
+		{ name: 'full', options: { statusLimit: 400, emailTimeLimit: 64, urlLimit: 350, includeUrl: true } },
+		{ name: 'trimmed', options: { statusLimit: 160, emailTimeLimit: 48, urlLimit: 250, includeUrl: true } },
+		{ name: 'minimal', options: { statusLimit: 80, emailTimeLimit: 32, urlLimit: 0, includeUrl: false } }
+	];
+
+	for (const variant of variants) {
+		const payloadArray = combined
+			.map(entry => sanitizeCombinedResultEntry_(entry, variant.options))
+			.filter(Boolean);
+		let serialized;
+		try {
+			serialized = JSON.stringify(payloadArray);
+		} catch (serErr) {
+			Logger.log(`storeCombinedAuditResults_: failed to serialize (${variant.name}): ${serErr.message}`);
+			continue;
+		}
+		if (serialized.length > 95000) {
+			Logger.log(`storeCombinedAuditResults_: payload too large for variant ${variant.name} (${serialized.length}B)`);
+			continue;
+		}
+		try {
+			cache.put(key, serialized, 21600); // 6 hours
+			if (variant.name !== 'full') {
+				Logger.log(`storeCombinedAuditResults_: cached using ${variant.name} variant (${serialized.length}B)`);
+			}
+			return;
+		} catch (err) {
+			const msg = err && err.message ? err.message : String(err);
+			if (/storage/i.test(msg) || /INTERNAL/i.test(msg)) {
+				Logger.log(`storeCombinedAuditResults_: cache storage error with ${variant.name} variant (${serialized.length}B): ${msg}`);
+				continue;
+			}
+			Logger.log(`storeCombinedAuditResults_: unexpected cache error (${variant.name}): ${msg}`);
+			return;
+		}
+	}
+
+	Logger.log('storeCombinedAuditResults_: unable to cache combined results after all variants (using in-memory fallback only).');
 }
 
 function getCombinedAuditResults_() {
@@ -2532,8 +2719,25 @@ function getCombinedAuditResults_() {
  const stored = cache.get(getAuditCacheKey_());
  if (!stored) return [];
  try {
- 	const parsed = JSON.parse(stored);
- 	return Array.isArray(parsed) ? parsed : [];
+		const parsed = JSON.parse(stored);
+		if (!Array.isArray(parsed)) return [];
+		return parsed.map(entry => {
+			if (!entry || typeof entry !== 'object') return null;
+			const toNumber = value => {
+				if (value === null || typeof value === 'undefined') return null;
+				const n = Number(value);
+				return isFinite(n) ? n : null;
+			};
+			return {
+				name: entry.name ? String(entry.name) : '',
+				status: entry.status ? String(entry.status) : '',
+				flaggedRows: toNumber(entry.flaggedRows),
+				emailSent: entry.emailSent === true,
+				emailTime: entry.emailTime ? String(entry.emailTime) : '',
+				emailWithheld: entry.emailWithheld === true,
+				latestReportUrl: entry.latestReportUrl ? String(entry.latestReportUrl) : ''
+			};
+		}).filter(Boolean);
  } catch (e) {
  	Logger.log('getCombinedAuditResults_ parse error: ' + e.message);
  	return [];
@@ -3354,6 +3558,7 @@ function createAuditMenu(ui) {
  .addItem('👀  Preview Daily Summary', 'previewDailySummaryNow')
  .addItem('🔎  Silent Withhold Check…', 'showSilentWithholdCheck')
  .addItem('🩺  Run Health Check (Admin)', 'runHealthCheckAndEmail')
+ .addItem('🧪  Test Thresholds…', 'showThresholdTestPicker')
  .addSeparator()
  // Manual Run Options
  .addItem('🧪  [TEST] Run Batch or Config', 'showBatchTestPicker')
@@ -3390,6 +3595,7 @@ function getAdminControlsHelpItems() {
 		{ label: '👀  Preview Daily Summary', fn: 'previewDailySummaryNow', desc: 'Builds and shows the daily summary email preview without sending.' },
 		{ label: '🔎  Silent Withhold Check…', fn: 'showSilentWithholdCheck', desc: 'Pick a config to simulate an audit’s email decision (send vs withhold) without sending.' },
 		{ label: '🩺  Run Health Check (Admin)', fn: 'runHealthCheckAndEmail', desc: 'Performs a fast, read-only workflow health check and emails the admin.' },
+		{ label: '🧪  Test Thresholds…', fn: 'showThresholdTestPicker', desc: 'Run a full audit for selected config with detailed threshold logging to diagnose threshold filtering.' },
 		{ label: '🧪  [TEST] Run Batch or Config', fn: 'showBatchTestPicker', desc: 'Pick a batch or specific config to run on demand for testing.' },
 		{ label: '▶️  Run Audit for...', fn: 'showConfigPicker', desc: 'Pick any single config to run a one-off audit now.' },
 		{ label: '📦  Batch Assignments', fn: 'showBatchAssignmentsModal', desc: 'Displays which configs are assigned to each batch runner function.' },
@@ -3414,7 +3620,7 @@ function showAdminControlsHelp() {
 // Quick diagnostics for email delivery environment
 function debugEmailDeliveryStatus() {
 	try {
-		const mode = (function(){ try { return getCurrentDeliveryMode_ ? getCurrentDeliveryMode_() : (STAGING_MODE === 'Y' ? 'STAGING' : 'PRODUCTION'); } catch(e) { return STAGING_MODE === 'Y' ? 'STAGING' : 'PRODUCTION'; } })();
+		const mode = (function(){ try { return getCurrentDeliveryMode_ ? getCurrentDeliveryMode_() : (getStagingMode_() === 'Y' ? 'STAGING' : 'PRODUCTION'); } catch(e) { return getStagingMode_() === 'Y' ? 'STAGING' : 'PRODUCTION'; } })();
 		let quota = null;
 		try { quota = MailApp.getRemainingDailyQuota(); } catch (e) {}
 		const msg = `Delivery Mode=${mode}; Admin=${ADMIN_EMAIL}; Remaining quota=${quota !== null ? quota : 'unknown'}`;
@@ -3645,7 +3851,7 @@ function installHealthCheckTrigger() {
 // Send a quick test email to ADMIN_EMAIL to verify delivery
 function sendTestAdminEmail() {
 	try {
-		const mode = STAGING_MODE === 'Y' ? 'STAGING' : 'PRODUCTION';
+		const mode = getStagingMode_() === 'Y' ? 'STAGING' : 'PRODUCTION';
 		const subject = `[${mode}] CM360 Admin Test Email`;
 		const html = `<p style="font-family:Arial,sans-serif; font-size:13px;">This is a test email sent to <b>${escapeHtml(ADMIN_EMAIL)}</b> from the CM360 Apps Script.</p>`;
 		const ok = safeSendEmail({ to: ADMIN_EMAIL, subject, plainBody: 'CM360 admin test email', htmlBody: html }, 'Test Admin Email');
@@ -4173,6 +4379,15 @@ function showConfigPicker() {
  .setWidth(300)
  .setHeight(160);
  SpreadsheetApp.getUi().showModalDialog(html, 'Select Audit Config');
+}
+
+function showThresholdTestPicker() {
+ const template = HtmlService.createTemplateFromFile('ThresholdTestPicker');
+ template.auditConfigs = getAuditConfigs(); // Pass into template
+ const html = template.evaluate()
+ .setWidth(360)
+ .setHeight(240);
+ SpreadsheetApp.getUi().showModalDialog(html, 'Test Thresholds');
 }
 
 function showBatchTestPicker() {
@@ -4818,6 +5033,7 @@ function loadThresholdsFromSheet(forceSheetRead) {
  const sheet = getOrCreateThresholdsSheet();
  const data = sheet.getDataRange().getValues();
  const thresholds = {};
+ const skippedRows = [];
  
  // Skip header row (index 0)
  for (let i = 1; i < data.length; i++) {
@@ -4829,8 +5045,16 @@ function loadThresholdsFromSheet(forceSheetRead) {
  const active = String(row[4] || '').trim().toUpperCase();
  
  // Skip empty rows, instruction rows, or inactive thresholds
- if (!configName || !flagType || active !== 'TRUE' ||
- configName.includes('INSTRUCTIONS') || 
+ if (!configName || !flagType) {
+ continue;
+ }
+ 
+ if (active !== 'TRUE') {
+ skippedRows.push(`Row ${i+1}: ${configName}-${flagType} (Active='${active}' - not TRUE)`);
+ continue;
+ }
+ 
+ if (configName.includes('INSTRUCTIONS') || 
  configName.includes('-') ||
  configName.includes('Config Name:') ||
  configName.includes('Examples:')) {
@@ -4850,6 +5074,10 @@ function loadThresholdsFromSheet(forceSheetRead) {
  }
  
  Logger.log(`Loaded thresholds from sheet for ${Object.keys(thresholds).length} configs`);
+ if (skippedRows.length > 0) {
+ Logger.log(`⚠️ Skipped ${skippedRows.length} inactive threshold rows:`);
+ skippedRows.forEach(msg => Logger.log(` ${msg}`));
+ }
  return thresholds;
  
  } catch (error) {
@@ -4865,7 +5093,8 @@ function getThresholdForFlag(thresholdsData, configName, flagType) {
  return { minImpressions: 0, minClicks: 0 };
  }
  
- return thresholdsData[configName][flagType];
+ const threshold = thresholdsData[configName][flagType];
+ return threshold;
 }
 
 // === EMAIL RECIPIENTS MANAGEMENT ===
@@ -4949,7 +5178,7 @@ function getOrCreateRecipientsSheet() {
  ['Withhold No-Flag Emails:', 'TRUE to skip emails when 0 flags found, FALSE to always send emails'],
  ['Last Updated:', 'Automatically updated when you modify recipients'],
  ['', ''],
- ['Delivery Mode:', `${STAGING_MODE === 'Y' ? 'STAGING (all audit emails currently sending to admin only)' : 'PRODUCTION (all audit emails currently sending to recipients)'}`],
+ ['Delivery Mode:', `${getStagingMode_() === 'Y' ? 'STAGING (all audit emails currently sending to admin only)' : 'PRODUCTION (all audit emails currently sending to recipients)'}`],
  ['', ''],
  ['Email Format:', ''],
  ['- Single recipient:', 'user@company.com'],
@@ -5032,7 +5261,7 @@ function resolveRecipients(configName, recipientsData) {
 	const name = String(configName || '').trim();
 	const data = recipientsData || {};
 	const entry = name && data[name] ? data[name] : null;
-	if (STAGING_MODE === 'Y') {
+	if (getStagingMode_() === 'Y') {
 		return ADMIN_EMAIL;
 	}
 	const primary = entry && entry.primary ? String(entry.primary).trim() : '';
@@ -5042,7 +5271,7 @@ function resolveRecipients(configName, recipientsData) {
 // Resolve CC recipients for a given config name from recipients sheet data.
 // In STAGING mode, omit CCs so only admin receives messages.
 function resolveCc(configName, recipientsData) {
-	if (STAGING_MODE === 'Y') return '';
+	if (getStagingMode_() === 'Y') return '';
 	const name = String(configName || '').trim();
 	const data = recipientsData || {};
 	const entry = name && data[name] ? data[name] : null;
@@ -5052,11 +5281,11 @@ function resolveCc(configName, recipientsData) {
 
 // === DELIVERY MODE STATUS SYNC ===
 function getCurrentDeliveryMode_() {
-	return STAGING_MODE === 'Y' ? 'STAGING' : 'PRODUCTION';
+	return getStagingMode_() === 'Y' ? 'STAGING' : 'PRODUCTION';
 }
 
 function getDeliveryModeDisplay_() {
-	return STAGING_MODE === 'Y'
+	return getStagingMode_() === 'Y'
 		? 'STAGING (all audit emails currently sending to admin only)'
 		: 'PRODUCTION (all audit emails currently sending to recipients)';
 }
@@ -5790,8 +6019,14 @@ function rebalanceAuditBatchesUsingSummary(options) {
 			const raw = overrideMetrics && overrideMetrics.hasOwnProperty(cfg.name)
 				? overrideMetrics[cfg.name]
 				: (countsMap.hasOwnProperty(cfg.name) ? countsMap[cfg.name] : null);
-			const value = raw == null ? 0 : Number(raw) || 0;
-			return { name: cfg.name, metric: value };
+			let metricValue;
+			if (raw === null || typeof raw === 'undefined' || raw === '') {
+				metricValue = 100;
+			} else {
+				const numeric = Number(raw);
+				metricValue = Number.isFinite(numeric) ? numeric : 100;
+			}
+			return { name: cfg.name, metric: metricValue };
 		});
 		metrics.sort((a, b) => {
 			if (b.metric !== a.metric) return b.metric - a.metric;
@@ -5839,12 +6074,14 @@ function clearDailyScriptProperties(options) {
 		const targets = new Set();
 		const staticKeys = [
 			AUDIT_RUN_LIST_KEY,
-			CONFIG_ORDER_PROPERTY_KEY,
 			'CM360_ADMIN_REFRESH_SEEN'
 		];
 		staticKeys.forEach(key => {
 			if (key && Object.prototype.hasOwnProperty.call(allProps, key)) targets.add(key);
 		});
+		if (options.resetCustomOrder === true && Object.prototype.hasOwnProperty.call(allProps, CONFIG_ORDER_PROPERTY_KEY)) {
+			targets.add(CONFIG_ORDER_PROPERTY_KEY);
+		}
 		Object.keys(allProps).forEach(key => {
 			if (typeof key === 'string' && key.indexOf(AUDIT_RUN_STATE_KEY_PREFIX) === 0) {
 				targets.add(key);
@@ -6265,14 +6502,14 @@ function testRecipientsSystem() {
  
  // Step 4: Test staging mode behavior
  Logger.log(` Testing staging mode override...`);
- Logger.log(` Current staging mode: ${STAGING_MODE}`);
+ Logger.log(` Current staging mode: ${getStagingMode_()}`);
  
  // Show current mode recipients
  const currentRecipients = resolveRecipients('test-config', recipientsData);
  Logger.log(` Current mode recipients: ${currentRecipients}`);
  
  // Note about staging mode
- if (STAGING_MODE === 'Y') {
+ if (getStagingMode_() === 'Y') {
  Logger.log(` ... Staging mode is ENABLED - all emails go to admin`);
  } else {
  Logger.log(` ... Production mode is ENABLED - emails use sheet recipients`);
@@ -6283,7 +6520,7 @@ function testRecipientsSystem() {
  Logger.log(` - Recipients sheet: Ready`);
  Logger.log(` - Configurations loaded: ${configCount}`);
  Logger.log(` - Recipient resolution: Working`);
- Logger.log(` - Staging mode: ${STAGING_MODE === 'Y' ? 'ENABLED (Admin override)' : 'DISABLED (Sheet recipients)'}`);
+ Logger.log(` - Staging mode: ${getStagingMode_() === 'Y' ? 'ENABLED (Admin override)' : 'DISABLED (Sheet recipients)'}`);
  
  } catch (error) {
  Logger.log(` Error testing recipients system: ${error.message}`);
@@ -7184,6 +7421,201 @@ function runNightlyExternalSync() {
 	}
 }
 
+/**
+ * Delete Gmail emails older than 90 days from all CM360 audit labels.
+ * This function searches for emails in the "Daily Audits/CM360" label hierarchy
+ * that are older than 90 days and permanently deletes them to manage storage.
+ * 
+ * @returns {Object} Statistics object with counts of deleted emails per label
+ */
+function deleteOldAuditEmails() {
+	Logger.log('[Gmail Cleanup] Starting deletion of emails older than 90 days');
+	
+	const stats = {
+		totalDeleted: 0,
+		byLabel: {},
+		errors: []
+	};
+	
+	try {
+		// Calculate cutoff date (90 days ago)
+		const cutoffDate = new Date();
+		cutoffDate.setDate(cutoffDate.getDate() - 90);
+		const cutoffStr = Utilities.formatDate(cutoffDate, Session.getScriptTimeZone(), 'yyyy/MM/dd');
+		
+		Logger.log(`[Gmail Cleanup] Cutoff date: ${cutoffStr}`);
+		
+		// Get all labels that match the CM360 audit pattern
+		const allLabels = GmailApp.getUserLabels();
+		const auditLabels = allLabels.filter(label => {
+			const labelName = label.getName();
+			return labelName.startsWith('Daily Audits/CM360/');
+		});
+		
+		Logger.log(`[Gmail Cleanup] Found ${auditLabels.length} audit labels to process`);
+		
+		// Process each label
+		for (const label of auditLabels) {
+			const labelName = label.getName();
+			let labelDeleteCount = 0;
+			
+			try {
+				// Search for threads older than 90 days with this label
+				// Gmail search syntax: before:yyyy/mm/dd
+				const searchQuery = `label:"${labelName}" before:${cutoffStr}`;
+				
+				// Process in batches to avoid timeout
+				let batchStart = 0;
+				const batchSize = 100;
+				let hasMore = true;
+				
+				while (hasMore) {
+					const threads = GmailApp.search(searchQuery, batchStart, batchSize);
+					
+					if (threads.length === 0) {
+						hasMore = false;
+						break;
+					}
+					
+					// Move threads to trash (Gmail API limitation - can't permanently delete via Apps Script)
+					for (const thread of threads) {
+						try {
+							thread.moveToTrash();
+							labelDeleteCount++;
+						} catch (threadErr) {
+							Logger.log(`[Gmail Cleanup] Error deleting thread in ${labelName}: ${threadErr.message}`);
+							stats.errors.push(`${labelName}: ${threadErr.message}`);
+						}
+					}
+					
+					// Check if we got fewer results than batch size (indicates last batch)
+					if (threads.length < batchSize) {
+						hasMore = false;
+					} else {
+						batchStart += batchSize;
+					}
+					
+					// Small delay to avoid rate limiting
+					if (hasMore) {
+						Utilities.sleep(500);
+					}
+				}
+				
+				if (labelDeleteCount > 0) {
+					stats.byLabel[labelName] = labelDeleteCount;
+					stats.totalDeleted += labelDeleteCount;
+					Logger.log(`[Gmail Cleanup] ${labelName}: deleted ${labelDeleteCount} thread(s)`);
+				}
+				
+			} catch (labelErr) {
+				Logger.log(`[Gmail Cleanup] Error processing label ${labelName}: ${labelErr.message}`);
+				stats.errors.push(`${labelName}: ${labelErr.message}`);
+			}
+		}
+		
+		// Also clean up the parent "Daily Audits/CM360" label if it exists
+		try {
+			const parentLabel = GmailApp.getUserLabelByName('Daily Audits/CM360');
+			if (parentLabel) {
+				const searchQuery = `label:"Daily Audits/CM360" before:${cutoffStr}`;
+				let batchStart = 0;
+				const batchSize = 100;
+				let hasMore = true;
+				let parentDeleteCount = 0;
+				
+				while (hasMore) {
+					const threads = GmailApp.search(searchQuery, batchStart, batchSize);
+					
+					if (threads.length === 0) {
+						hasMore = false;
+						break;
+					}
+					
+					for (const thread of threads) {
+						try {
+							thread.moveToTrash();
+							parentDeleteCount++;
+						} catch (threadErr) {
+							Logger.log(`[Gmail Cleanup] Error deleting thread in parent label: ${threadErr.message}`);
+							stats.errors.push(`Daily Audits/CM360: ${threadErr.message}`);
+						}
+					}
+					
+					if (threads.length < batchSize) {
+						hasMore = false;
+					} else {
+						batchStart += batchSize;
+					}
+					
+					if (hasMore) {
+						Utilities.sleep(500);
+					}
+				}
+				
+				if (parentDeleteCount > 0) {
+					stats.byLabel['Daily Audits/CM360'] = parentDeleteCount;
+					stats.totalDeleted += parentDeleteCount;
+					Logger.log(`[Gmail Cleanup] Daily Audits/CM360 (parent): deleted ${parentDeleteCount} thread(s)`);
+				}
+			}
+		} catch (parentErr) {
+			Logger.log(`[Gmail Cleanup] Error processing parent label: ${parentErr.message}`);
+			stats.errors.push(`Parent label: ${parentErr.message}`);
+		}
+		
+		Logger.log(`[Gmail Cleanup] Completed. Total threads deleted: ${stats.totalDeleted}`);
+		
+		// Send summary email to admin if any deletions occurred or errors happened
+		if (stats.totalDeleted > 0 || stats.errors.length > 0) {
+			const summaryLines = [
+				`<p style="font-family:Arial,sans-serif;font-size:13px;">Gmail cleanup completed for CM360 audit emails older than 90 days.</p>`,
+				`<p style="font-family:Arial,sans-serif;font-size:13px;"><strong>Total threads deleted:</strong> ${stats.totalDeleted}</p>`
+			];
+			
+			if (Object.keys(stats.byLabel).length > 0) {
+				summaryLines.push('<p style="font-family:Arial,sans-serif;font-size:13px;"><strong>Breakdown by label:</strong></p>');
+				summaryLines.push('<ul style="font-family:Arial,sans-serif;font-size:12px;">');
+				for (const [labelName, count] of Object.entries(stats.byLabel)) {
+					summaryLines.push(`<li>${escapeHtml(labelName)}: ${count} thread(s)</li>`);
+				}
+				summaryLines.push('</ul>');
+			}
+			
+			if (stats.errors.length > 0) {
+				summaryLines.push(`<p style="font-family:Arial,sans-serif;font-size:13px;color:#b00020;"><strong>Errors encountered:</strong> ${stats.errors.length}</p>`);
+				summaryLines.push('<ul style="font-family:Arial,sans-serif;font-size:12px;color:#b00020;">');
+				for (const error of stats.errors) {
+					summaryLines.push(`<li>${escapeHtml(error)}</li>`);
+				}
+				summaryLines.push('</ul>');
+			}
+			
+			summaryLines.push('<p style="margin-top:12px;font-family:Arial,sans-serif;font-size:12px;">&mdash; CM360 Audit System</p>');
+			
+			safeSendEmail({
+				to: ADMIN_EMAIL,
+				subject: `CM360: Gmail Cleanup Summary (${stats.totalDeleted} threads deleted)`,
+				htmlBody: summaryLines.join('\n'),
+				plainBody: `Gmail cleanup completed. ${stats.totalDeleted} threads deleted from CM360 audit labels.`
+			}, 'deleteOldAuditEmails');
+		}
+		
+	} catch (e) {
+		Logger.log(`[Gmail Cleanup] Fatal error: ${e.message}`);
+		stats.errors.push(`Fatal error: ${e.message}`);
+		
+		// Notify admin of failure
+		safeSendEmail({
+			to: ADMIN_EMAIL,
+			subject: 'CM360: Gmail Cleanup Failed',
+			htmlBody: `<p style="font-family:Arial,sans-serif;font-size:13px;color:#b00020;">Gmail cleanup encountered a fatal error:</p><pre style="font-family:monospace;background:#f5f5f5;padding:8px;">${escapeHtml(e.message)}</pre>`,
+			plainBody: `Gmail cleanup failed: ${e.message}`
+		}, 'deleteOldAuditEmails-error');
+	}
+	
+	return stats;
+}
+
 function runNightlyMaintenance() {
 	const results = [];
 	const record = msg => results.push(msg);
@@ -7213,6 +7645,8 @@ function runNightlyMaintenance() {
 
 	invoke('updatePlacementNamesFromReports', () => updatePlacementNamesFromReports());
 	invoke('clearDailyScriptProperties', () => clearDailyScriptProperties());
+	invoke('cleanupOldAuditFiles', () => cleanupOldAuditFiles());
+	invoke('deleteOldAuditEmails', () => deleteOldAuditEmails());
 
 	Logger.log('runNightlyMaintenance results: ' + results.join(' | '));
 	return results;
@@ -8048,7 +8482,7 @@ function _buildRecipientsInstructions_() {
  ['Withhold No-Flag Emails:', 'TRUE to skip emails when 0 flags found, FALSE to always send emails'],
  ['Last Updated:', 'Automatically updated when you modify recipients'],
  ['', ''],
- ['Staging Mode Override:', `Currently: ${STAGING_MODE === 'Y' ? 'STAGING (all emails go to admin)' : 'PRODUCTION (uses sheet recipients)'}`],
+ ['Staging Mode Override:', `Currently: ${getStagingMode_() === 'Y' ? 'STAGING (all emails go to admin)' : 'PRODUCTION (uses sheet recipients)'}`],
  ['', ''],
  ['Email Format:', ''],
  ['- Single recipient:', 'user@company.com'],
@@ -8733,9 +9167,159 @@ function setupAndInstallBatchTriggers() {
  }
 }
 
+// === DIAGNOSTIC UTILITIES ===
 
+/**
+ * HOW TO ENABLE/DISABLE STAGING MODE:
+ * 
+ * Staging mode routes all audit emails to ADMIN_EMAIL only (for testing).
+ * 
+ * METHOD 1 (Recommended - immediate effect):
+ *   Open Apps Script Editor → Project Settings → Script Properties
+ *   Add/Edit property: STAGING_MODE
+ *   Set to: Y (staging) or N (production)
+ *   Changes take effect immediately on next execution.
+ * 
+ * METHOD 2 (Code default - requires push):
+ *   Change line 12 default: || 'Y' to || 'N' (or vice versa)
+ *   Run: clasp push
+ *   Note: Existing triggers may cache old value until reinstalled
+ * 
+ * Current behavior: Defaults to 'Y' (staging) if Script Property not set
+ */
 
+/**
+ * Diagnostic function to trace threshold loading for a specific config
+ */
+function diagnoseThresholds(configName) {
+ try {
+ Logger.log(`\n=== THRESHOLD DIAGNOSTIC FOR ${configName} ===\n`);
+ 
+ // First, inspect raw sheet data
+ Logger.log('=== RAW SHEET INSPECTION ===');
+ const sheet = getOrCreateThresholdsSheet();
+ const allData = sheet.getDataRange().getValues();
+ 
+ Logger.log(`Total rows in sheet: ${allData.length}`);
+ Logger.log(`Header row (row 0): ${JSON.stringify(allData[0])}`);
+ 
+ // Show first 5 data rows
+ Logger.log('\nFirst 5 data rows:');
+ for (let i = 1; i < Math.min(6, allData.length); i++) {
+ Logger.log(`Row ${i}: ${JSON.stringify(allData[i])}`);
+ }
+ 
+ // Show WRI01 rows specifically
+ Logger.log('\n=== WRI01 ROWS ===');
+ for (let i = 1; i < allData.length; i++) {
+ const row = allData[i];
+ const configName_raw = String(row[0] || '');
+ if (configName_raw.includes('WRI01')) {
+ Logger.log(`Row ${i+1}: [${row.map((v, idx) => `col${idx}="${v}"`).join(', ')}]`);
+ }
+ }
+ 
+ // Load thresholds
+ Logger.log('\n=== THRESHOLD LOADING ===');
+ const thresholdsData = loadThresholdsFromSheet(true);
+ Logger.log(`Loaded thresholds for ${Object.keys(thresholdsData).length} configs total`);
+ 
+ // Check if config exists
+ if (!thresholdsData[configName]) {
+ Logger.log(`❌ Config "${configName}" NOT FOUND in thresholds data`);
+ Logger.log(`Available configs: ${Object.keys(thresholdsData).join(', ')}`);
+ return `Config ${configName} not found in thresholds`;
+ }
+ 
+ Logger.log(`✅ Config "${configName}" found in thresholds data`);
+ 
+ // Show all flag thresholds for this config
+ const configThresholds = thresholdsData[configName];
+ Logger.log(`\nThresholds for ${configName}:`);
+ for (const [flagType, threshold] of Object.entries(configThresholds)) {
+ Logger.log(` - ${flagType}:`);
+ Logger.log(` minImpressions: ${threshold.minImpressions}`);
+ Logger.log(` minClicks: ${threshold.minClicks}`);
+ }
+ 
+ return `Diagnostic complete - see logs`;
+ 
+ } catch (error) {
+ Logger.log(`❌ Error in diagnoseThresholds: ${error.message}`);
+ throw error;
+ }
+}
 
+/**
+ * Quick helper to set staging mode ON (emails to admin only)
+ */
+function setStagingModeOn() {
+ try {
+ PropertiesService.getScriptProperties().setProperty('STAGING_MODE', 'Y');
+ Logger.log('✅ Staging mode set to ON - emails will route to admin only');
+ return 'Staging mode enabled';
+ } catch (error) {
+ Logger.log(`❌ Error setting staging mode: ${error.message}`);
+ throw error;
+ }
+}
+
+/**
+ * Quick helper to set staging mode OFF (emails to real recipients)
+ */
+function setStagingModeOff() {
+ try {
+ PropertiesService.getScriptProperties().setProperty('STAGING_MODE', 'N');
+ Logger.log('✅ Staging mode set to OFF - emails will route to real recipients');
+ return 'Staging mode disabled';
+ } catch (error) {
+ Logger.log(`❌ Error setting staging mode: ${error.message}`);
+ throw error;
+ }
+}
+
+/**
+ * Run a single config audit with detailed threshold logging
+ * Use this to test threshold behavior in staging mode
+ */
+function testAuditWithThresholdLogging(configName) {
+ try {
+ // Check staging mode status
+ const stagingMode = getStagingMode_();
+ Logger.log(`Current staging mode: ${stagingMode}`);
+ if (stagingMode !== 'Y') {
+ Logger.log('⚠️ WARNING: Staging mode is NOT enabled. Emails will go to real recipients!');
+ Logger.log('To enable: Run setStagingModeOn() first, then run this test again');
+ }
+ 
+ Logger.log(`\n=== TESTING AUDIT FOR ${configName} WITH THRESHOLD LOGGING ===\n`);
+ 
+ // Find the config
+ const configs = getAuditConfigs();
+ const config = configs.find(c => c.name === configName);
+ 
+ if (!config) {
+ Logger.log(`❌ Config "${configName}" not found`);
+ Logger.log(`Available configs: ${configs.map(c => c.name).join(', ')}`);
+ return `Config ${configName} not found`;
+ }
+ 
+ // Run the audit
+ Logger.log(`Starting audit for ${configName}...`);
+ const result = executeAudit(config);
+ 
+ Logger.log(`\n=== AUDIT COMPLETE ===`);
+ Logger.log(`Status: ${result.status}`);
+ Logger.log(`Flagged count: ${result.flaggedCount || 0}`);
+ Logger.log(`Email sent: ${result.emailSent}`);
+ 
+ return result;
+ 
+ } catch (error) {
+ Logger.log(`❌ Error in testAuditWithThresholdLogging: ${error.message}`);
+ throw error;
+ }
+}
 
 
 
