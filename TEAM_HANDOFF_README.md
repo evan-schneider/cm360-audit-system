@@ -67,8 +67,10 @@ ewadmin@horizonmedia.com
 
 #### Code.js Fallback (Secondary Location)
 1. In Apps Script editor, open **Code.js**
-2. Find line ~29: eturn 'evschneider@horizonmedia.com';
-3. Change to: eturn 'newadmin@horizonmedia.com';
+2. Find line ~29: 
+eturn 'evschneider@horizonmedia.com';
+3. Change to: 
+eturn 'newadmin@horizonmedia.com';
 4. Save and deploy
 
 **Why This Matters:**
@@ -100,9 +102,12 @@ To reinstall triggers under new admin:
 5. Verify in **Triggers** (clock icon) that all triggers are created
 
 **Expected Triggers:**
-- unBatchedDailyAudits - Multiple times daily (6am-4pm)
-- unNightlyMaintenance - Daily at 2:20 AM
-- unNightlyExternalSync - Daily at 2:00 AM
+- 
+unBatchedDailyAudits - Multiple times daily (6am-4pm)
+- 
+unNightlyMaintenance - Daily at 2:20 AM
+- 
+unNightlyExternalSync - Daily at 2:00 AM
 - sendDailySummaryFailover - Daily at 6:30 PM
 
 ---
@@ -153,7 +158,8 @@ To reinstall triggers under new admin:
 ### Normal Daily Flow
 
 **6:00 AM - 4:00 PM** (Every ~2 hours)
-1. unBatchedDailyAudits trigger fires
+1. 
+unBatchedDailyAudits trigger fires
 2. Fetches CM360 reports from Gmail labels
 3. Merges reports per configuration
 4. Flags discrepancies based on thresholds
@@ -169,12 +175,14 @@ To reinstall triggers under new admin:
    - ewarburton@horizonmedia.com
 
 **2:00 AM** (Next day)
-1. unNightlyExternalSync syncs External Config  Admin spreadsheet
+1. 
+unNightlyExternalSync syncs External Config  Admin spreadsheet
 2. Copies Recipients, Thresholds, Exclusions sheets
 3. Preserves formatting, validations, dimensions
 
 **2:20 AM**
-1. unNightlyMaintenance performs housekeeping:
+1. 
+unNightlyMaintenance performs housekeeping:
    - Rebalances audit batches
    - Updates placement names from reports
    - Cleans up Drive files older than 60 days
@@ -257,10 +265,13 @@ To reinstall triggers under new admin:
 
 | Trigger | Function | Frequency | Purpose |
 |---------|----------|-----------|---------|
-| Batched Audits | unBatchedDailyAudits | Every 2 hours (6am-4pm) | Process audit reports in batches of 2 configs |
+| Batched Audits | 
+unBatchedDailyAudits | Every 2 hours (6am-4pm) | Process audit reports in batches of 2 configs |
 | Summary Failover | sendDailySummaryFailover | Daily 6:30 PM | Send consolidated summary email |
-| External Sync | unNightlyExternalSync | Daily 2:00 AM | Sync External Config  Admin spreadsheet |
-| Nightly Maintenance | unNightlyMaintenance | Daily 2:20 AM | Cleanup, rebalancing, email deletion |
+| External Sync | 
+unNightlyExternalSync | Daily 2:00 AM | Sync External Config  Admin spreadsheet |
+| Nightly Maintenance | 
+unNightlyMaintenance | Daily 2:20 AM | Cleanup, rebalancing, email deletion |
 
 ### Delivery Modes
 
@@ -446,12 +457,34 @@ getCombinedAuditResults_()
 
 ### Daily (Automated - Monitor Only)
 
--  Audit runs (6am-4pm)
--  Summary email (6:30pm)
--  Config sync (2:00am)
--  Cleanup tasks (2:20am)
+**Audit Batch Runs (6:00 AM - 4:00 PM):**
+- ✅ `runDailyAuditsBatch1` through `runDailyAuditsBatch12` (12 batches total)
+- Each batch processes 2 configs, staggered throughout the day
+- Typical execution: 1-4 minutes per batch
 
-**Your Task:** Review summary email, respond to errors
+**Nightly Maintenance (2:00 AM - 3:00 AM):**
+- ✅ `runNightlyMaintenance` @ 2:24 AM (~6 minutes)
+  - Rebalances audit batches
+  - Updates placement names
+  - Cleans up Drive files (60+ days old)
+  - Deletes Gmail emails (90+ days old)
+  - Clears daily script properties
+- ✅ `cleanupOldAuditFiles` @ 2:32 AM (~5 minutes)
+  - Continuation of Drive file cleanup if needed
+
+**Monitoring & Alerting:**
+- ✅ `auditWatchdogCheck` - Every 3 hours (checks for stuck audits)
+- ✅ `forwardGASFailureNotificationsToAdmin` - Hourly (forwards script failures)
+- ✅ `sendDailySummaryFailover` @ 9:25 AM (sends consolidated daily summary)
+
+**Configuration Sync:**
+- ✅ `runDeliveryModeSync` - Every 3 hours (syncs staging/production mode)
+- ✅ `autoFixRequestsSheet_` - Every 4 hours (maintenance for requests sheet)
+
+**Health Checks:**
+- ✅ `runHealthCheckAndEmail` @ 5:04 AM (system health report)
+
+**Your Task:** Review summary email, respond to errors, monitor execution logs for failures
 
 ### Weekly (Manual)
 
@@ -866,13 +899,3 @@ Use this format when documenting system changes:
 - [ ] Automatic threshold tuning based on historical data
 - [ ] Multi-region support for international clients
 - [ ] API integration for CM360 (remove email dependency)
-
-### Thanks
-
-Thank you for taking over this system. It's been refined over many iterations to be robust and maintainable. The key to success is monitoring the daily summary email and addressing issues promptly.
-
-If you need to reach me during transition, use my personal email: [Your personal email if you want to provide it]
-
-Good luck!
-
- Evan Schneider
