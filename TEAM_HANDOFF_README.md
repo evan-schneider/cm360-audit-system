@@ -1172,67 +1172,127 @@ Thresholds are **minimum volume requirements**, not percentage tolerances. A row
 #### How to Check Current Mode
 
 **Method 1: Admin Spreadsheet (Fastest)**
-- Open Admin Spreadsheet (Instructions tab)
-- Check Row 1: `🟢 PRODUCTION MODE` or `🟡 STAGING MODE`
-- This indicator updates automatically via triggers
+- Open Admin Spreadsheet
+- Look at **Row 1** (very first row of Instructions sheet)
+- Check indicator:
+  - `🟢 PRODUCTION MODE - Live email delivery` → Production active
+  - `🟡 STAGING MODE - All emails to ADMIN_EMAIL` → Staging active
+- This indicator updates automatically every 3 hours (or manually via Sync Delivery Mode)
 
-**Method 2: Script Properties (Authoritative)**
+**Method 2: Script Properties (Authoritative Source)**
 1. Open Admin Spreadsheet
-2. Extensions > Apps Script
-3. Project Settings (gear icon) > Script Properties
-4. Look for STAGING_MODE property:
-   - Value = `Y` → Staging Mode ACTIVE
-   - Value = `N` → Production Mode ACTIVE
-   - Missing → Defaults to Production Mode (`N`)
+2. Click **Extensions** → **Apps Script**
+3. Click **⚙️ Project Settings** (gear icon in left sidebar)
+4. Scroll to **Script Properties** section at bottom
+5. Look for `STAGING_MODE` property:
+   - **Value = `Y`** → Staging Mode ACTIVE (all emails to admin)
+   - **Value = `N`** → Production Mode ACTIVE (normal email routing)
+   - **Property missing** → Defaults to Production Mode (`N`)
 
-**Method 3: Admin Controls Menu**
-- Admin Controls > Debug Email Delivery
-- Opens dialog showing current delivery mode and ADMIN_EMAIL
-- Useful for quick verification
+**Method 3: Admin Controls Menu (Quick Check)**
+- Click **Admin Controls** → **📮 Debug Email Delivery**
+- Dialog shows:
+  - **Current Mode:** `STAGING` or `PRODUCTION`
+  - **Admin Email:** Shows current ADMIN_EMAIL address
+  - **Email Quota Remaining:** Shows daily quota left
+- Useful for quick verification without opening Apps Script editor
 
 #### How to Enable Staging Mode
 
 **Step 1: Set Script Property**
-1. Admin Spreadsheet > Extensions > Apps Script
-2. Project Settings (gear icon) > Script Properties
-3. If STAGING_MODE exists: Click edit, change value to `Y`
-4. If STAGING_MODE missing: Click "Add script property"
-   - Property: `STAGING_MODE`
-   - Value: `Y`
-5. Click Save
+
+1. **Open the Admin Spreadsheet** in your browser
+2. Click **Extensions** (top menu bar) → **Apps Script**
+   - New tab opens with Apps Script editor
+3. In Apps Script editor, click the **⚙️ Project Settings** icon (gear icon in left sidebar)
+4. Scroll down to **Script Properties** section at bottom of page
+5. Look for a property named `STAGING_MODE`:
+   
+   **If STAGING_MODE property exists:**
+   - Click the **Edit** (pencil icon) next to the STAGING_MODE row
+   - Change the **Value** field from `N` to `Y`
+   - Click **Save script property**
+   
+   **If STAGING_MODE property does NOT exist:**
+   - Click **+ Add script property** button
+   - In **Property** field, type exactly: `STAGING_MODE`
+   - In **Value** field, type exactly: `Y`
+   - Click **Save script property**
+
+6. Verify the Script Properties section now shows:
+   ```
+   Property: STAGING_MODE
+   Value: Y
+   ```
 
 **Step 2: Update Delivery Mode Indicator**
-1. Return to Admin Spreadsheet
-2. Admin Controls > Sync Delivery Mode Now
-3. Row 1 should now show: `🟡 STAGING MODE - All emails to ADMIN_EMAIL`
-4. Verify ADMIN_EMAIL is correct (should appear in instruction line)
+
+1. **Return to the Admin Spreadsheet tab** in your browser
+2. Click **Admin Controls** in the top menu bar
+3. Click **🔄 Sync Delivery Mode Now**
+   - Wait 5-10 seconds for function to complete
+4. Look at **Row 1** of the Instructions sheet
+   - Should now show: `🟡 STAGING MODE - All emails to ADMIN_EMAIL`
+   - Verify the ADMIN_EMAIL address shown is correct
 
 **Step 3: Verify Staging Mode Active**
-1. Admin Controls > Debug Email Delivery
-2. Confirm dialog shows: "Current Mode: STAGING"
-3. Confirm ADMIN_EMAIL address is correct
-4. Optionally: Admin Controls > Send Test Email (should arrive at ADMIN_EMAIL only)
+
+1. Click **Admin Controls** → **📮 Debug Email Delivery**
+2. Dialog box appears showing:
+   - **Current Mode:** Should say `STAGING`
+   - **ADMIN_EMAIL:** Should show correct email address
+3. Click **OK** to close dialog
+4. **(Optional) Send test email:**
+   - Admin Controls → **✉️ Send Test Admin Email**
+   - Check that test email arrives at ADMIN_EMAIL only
+   - This confirms staging mode is working
+
+**✅ Staging mode is now ACTIVE** - all system emails will go to ADMIN_EMAIL only
 
 #### How to Disable Staging Mode (Return to Production)
 
 **Step 1: Set Script Property**
-1. Admin Spreadsheet > Extensions > Apps Script
-2. Project Settings > Script Properties
-3. Find STAGING_MODE property
-4. Change value to `N`
-5. Click Save
+
+1. **Open the Admin Spreadsheet** in your browser
+2. Click **Extensions** (top menu bar) → **Apps Script**
+   - Apps Script editor opens in new tab
+3. Click the **⚙️ Project Settings** icon (gear icon in left sidebar)
+4. Scroll down to **Script Properties** section
+5. Find the `STAGING_MODE` property row
+6. Click the **Edit** (pencil icon) next to STAGING_MODE
+7. Change the **Value** field from `Y` to `N`
+8. Click **Save script property**
+9. Verify Script Properties now shows:
+   ```
+   Property: STAGING_MODE
+   Value: N
+   ```
 
 **Step 2: Update Delivery Mode Indicator**
-1. Return to Admin Spreadsheet
-2. Admin Controls > Sync Delivery Mode Now
-3. Row 1 should now show: `🟢 PRODUCTION MODE - Live email delivery`
+
+1. **Return to the Admin Spreadsheet tab** in your browser
+2. Click **Admin Controls** (top menu bar)
+3. Click **🔄 Sync Delivery Mode Now**
+   - Wait 5-10 seconds for function to complete
+4. Look at **Row 1** of the Instructions sheet
+   - Should now show: `🟢 PRODUCTION MODE - Live email delivery`
+   - This confirms production mode is active
 
 **Step 3: Verify Production Mode Active**
-1. Admin Controls > Debug Email Delivery
-2. Confirm dialog shows: "Current Mode: PRODUCTION"
-3. Optionally: Send test email to confirm proper delivery
 
-**⚠️ IMPORTANT:** Always disable staging mode after testing is complete! Leaving staging mode enabled prevents stakeholders from receiving audit reports.
+1. Click **Admin Controls** → **📮 Debug Email Delivery**
+2. Dialog box appears showing:
+   - **Current Mode:** Should say `PRODUCTION`
+   - **ADMIN_EMAIL:** Shows for reference
+3. Click **OK** to close dialog
+4. **(Optional) Test production email routing:**
+   - Wait for next scheduled batch (8-9 AM EST)
+   - Verify audit emails go to configured recipients (not just ADMIN_EMAIL)
+   - Check one audit email was received by actual client
+
+**✅ Production mode is now ACTIVE** - emails will be sent to configured recipients
+
+**⚠️ CRITICAL REMINDER:** Always verify production mode is restored before end of business day! Double-check Row 1 shows green `🟢 PRODUCTION MODE`.
 
 #### Staging Mode Testing Workflow
 
