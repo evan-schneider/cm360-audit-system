@@ -1,4 +1,4 @@
-﻿# CM360 Daily Audit System - Team Handoff Documentation
+# CM360 Daily Audit System - Team Handoff Documentation
 
 **Last Updated:** October 29, 2025  
 **Prepared By:** Evan Schneider (evschneider@horizonmedia.com)  
@@ -56,11 +56,11 @@ The CM360 Daily Audit System automatically:
 **IMPORTANT:** This system runs under the shared service account **platformsolutionshmi@gmail.com**, NOT under Evan's personal account.
 
 **What this means:**
-- ✅ Triggers will continue working after Evan leaves
-- ✅ CM360 report emails go to platformsolutionshmi@gmail.com
-- ✅ All Drive files stored in platformsolutionshmi@gmail.com Drive
-- ✅ No disruption to automated processes
-- ✅ No need to reinstall triggers or transfer spreadsheet ownership
+- ? Triggers will continue working after Evan leaves
+- ? CM360 report emails go to platformsolutionshmi@gmail.com
+- ? All Drive files stored in platformsolutionshmi@gmail.com Drive
+- ? No disruption to automated processes
+- ? No need to reinstall triggers or transfer spreadsheet ownership
 
 **What DOES need to be updated:** ADMIN_EMAIL for error notifications and staging mode
 
@@ -240,7 +240,7 @@ The **Admin Controls** menu appears at the top of the Admin Spreadsheet when you
 
 If you don't see the menu:
 1. Refresh the page (Ctrl+R / Cmd+R)
-2. If still missing: Admin Controls > **⚙️ Prepare Environment**
+2. If still missing: Admin Controls > **?? Prepare Environment**
 3. Last resort: Extensions > Apps Script > Run > `forceCreateMenu`
 
 ### Menu Categories
@@ -251,7 +251,7 @@ The Admin Controls menu is organized into functional groups:
 
 ### Setup & Configuration
 
-#### ⚙️ Prepare Environment
+#### ?? Prepare Environment
 **Purpose:** Initial setup for new configurations  
 **What it does:**
 - Creates missing Gmail labels for all configs
@@ -266,7 +266,7 @@ The Admin Controls menu is organized into functional groups:
 
 ---
 
-#### 📄 Thresholds (create/open)
+#### ?? Thresholds (create/open)
 **Purpose:** Manage threshold configuration sheet  
 **What it does:**
 - Opens existing Audit Thresholds sheet
@@ -281,7 +281,7 @@ The Admin Controls menu is organized into functional groups:
 
 ---
 
-#### 🚫 Exclusions (create/open)
+#### ?? Exclusions (create/open)
 **Purpose:** Manage exclusions configuration sheet  
 **What it does:**
 - Opens existing Audit Exclusions sheet
@@ -298,7 +298,7 @@ The Admin Controls menu is organized into functional groups:
 
 ---
 
-#### 📧 Recipients (create/open)
+#### ?? Recipients (create/open)
 **Purpose:** Manage email recipients sheet  
 **What it does:**
 - Opens existing Audit Recipients sheet
@@ -315,7 +315,7 @@ The Admin Controls menu is organized into functional groups:
 
 ---
 
-#### 🧩 CM360 Config Builder…
+#### ?? CM360 Config Builder�
 **Purpose:** Guided wizard for adding new configurations  
 **What it does:**
 - Opens interactive sidebar
@@ -329,7 +329,7 @@ The Admin Controls menu is organized into functional groups:
 
 ### External Config Sync
 
-#### 📤 Sync TO External Config
+#### ?? Sync TO External Config
 **Purpose:** Push Admin spreadsheet changes to External Config  
 **What it does:**
 - Copies Recipients, Thresholds, Exclusions, Requests sheets
@@ -346,7 +346,7 @@ The Admin Controls menu is organized into functional groups:
 
 ---
 
-#### 📥 Sync FROM External Config
+#### ?? Sync FROM External Config
 **Purpose:** Pull latest configuration from External Config  
 **What it does:**
 - Copies Recipients, Thresholds, Exclusions, Requests sheets
@@ -366,7 +366,7 @@ The Admin Controls menu is organized into functional groups:
 
 ### Audit Requests
 
-#### 📝 Create Audit Request...
+#### ?? Create Audit Request...
 **Purpose:** Submit one-off audit request  
 **What it does:**
 - Opens config picker sidebar
@@ -377,7 +377,7 @@ The Admin Controls menu is organized into functional groups:
 
 ---
 
-#### ▶️ Process Audit Requests
+#### ?? Process Audit Requests
 **Purpose:** Execute pending one-off requests manually  
 **What it does:**
 - Reads Audit Requests sheet
@@ -389,7 +389,7 @@ The Admin Controls menu is organized into functional groups:
 
 ---
 
-#### 🛠️ Fix Audit Requests Sheet
+#### ??? Fix Audit Requests Sheet
 **Purpose:** Repair corrupted Requests sheet  
 **What it does:**
 - Reapplies headers
@@ -402,7 +402,7 @@ The Admin Controls menu is organized into functional groups:
 
 ### Tools & Diagnostics
 
-#### 🔁 Update Placement Names
+#### ?? Update Placement Names
 **Purpose:** Auto-populate placement names in Exclusions  
 **What it does:**
 - Reads latest merged audit reports
@@ -416,7 +416,7 @@ The Admin Controls menu is organized into functional groups:
 
 ---
 
-#### 🔐 Check Authorization
+#### ?? Check Authorization
 **Purpose:** Verify script permissions  
 **What it does:**
 - Tests Gmail access
@@ -431,7 +431,7 @@ The Admin Controls menu is organized into functional groups:
 
 ---
 
-#### 🧾 Validate Configs
+#### ?? Validate Configs
 **Purpose:** Check configuration integrity  
 **What it does:**
 - Validates all audit configs
@@ -446,7 +446,7 @@ The Admin Controls menu is organized into functional groups:
 
 ---
 
-#### ⏱️ Install All Triggers
+#### ?? Install All Triggers
 **Purpose:** Reinstall automation triggers  
 **What it does:**
 - Deletes existing triggers (except batch stubs)
@@ -468,7 +468,7 @@ The Admin Controls menu is organized into functional groups:
 
 ---
 
-#### 🔄 Sync Delivery Mode Now
+#### ?? Sync Delivery Mode Now
 **Purpose:** Update delivery mode indicator  
 **What it does:**
 - Reads STAGING_MODE from Script Properties
@@ -481,7 +481,7 @@ The Admin Controls menu is organized into functional groups:
 
 ---
 
-#### 📮 Debug Email Delivery
+#### ?? Debug Email Delivery
 **Purpose:** Check email system status  
 **What it does:**
 - Logs delivery mode (STAGING/PRODUCTION)
@@ -494,7 +494,7 @@ The Admin Controls menu is organized into functional groups:
 
 ---
 
-#### ✉️ Send Test Admin Email
+#### ?? Send Test Admin Email
 **Purpose:** Verify email plumbing works  
 **What it does:**
 - Sends simple test message to ADMIN_EMAIL
@@ -507,7 +507,7 @@ The Admin Controls menu is organized into functional groups:
 
 ---
 
-#### 👀 Preview Daily Summary
+#### ?? Preview Daily Summary
 **Purpose:** See daily summary without sending  
 **What it does:**
 - Builds daily summary email HTML
@@ -521,7 +521,7 @@ The Admin Controls menu is organized into functional groups:
 
 ---
 
-#### 🔎 Silent Withhold Check…
+#### ?? Silent Withhold Check�
 **Purpose:** Test email withhold logic  
 **What it does:**
 - Pick a config
@@ -536,7 +536,7 @@ The Admin Controls menu is organized into functional groups:
 
 ---
 
-#### 🩺 Run Health Check (Admin)
+#### ?? Run Health Check (Admin)
 **Purpose:** System health diagnostic  
 **What it does:**
 - Fast read-only checks:
@@ -557,7 +557,7 @@ The Admin Controls menu is organized into functional groups:
 
 ---
 
-#### 🧪 Test Thresholds…
+#### ?? Test Thresholds�
 **Purpose:** Debug threshold flagging  
 **What it does:**
 - Pick a config
@@ -574,7 +574,7 @@ The Admin Controls menu is organized into functional groups:
 
 ### Manual Audit Execution
 
-#### 🧪 [TEST] Run Batch or Config
+#### ?? [TEST] Run Batch or Config
 **Purpose:** Test batch execution  
 **What it does:**
 - Opens picker: select batch (1-12) or specific config
@@ -588,7 +588,7 @@ The Admin Controls menu is organized into functional groups:
 
 ---
 
-#### ▶️ Run Audit for...
+#### ?? Run Audit for...
 **Purpose:** Run single config on demand  
 **What it does:**
 - Opens config picker
@@ -604,7 +604,7 @@ The Admin Controls menu is organized into functional groups:
 
 ### Monitoring & Access
 
-#### 📦 Batch Assignments
+#### ?? Batch Assignments
 **Purpose:** View batch distribution  
 **What it does:**
 - Shows which configs assigned to each batch (1-12)
@@ -618,7 +618,7 @@ The Admin Controls menu is organized into functional groups:
 
 ---
 
-#### ⏰ Install Health Check Trigger
+#### ? Install Health Check Trigger
 **Purpose:** Enable daily health reports  
 **What it does:**
 - Installs daily trigger (5:04 AM EST)
@@ -629,7 +629,7 @@ The Admin Controls menu is organized into functional groups:
 
 ---
 
-#### 🛡️ Install Audit Watchdog Trigger
+#### ??? Install Audit Watchdog Trigger
 **Purpose:** Enable timeout monitoring  
 **What it does:**
 - Installs 3-hour interval trigger
@@ -640,7 +640,7 @@ The Admin Controls menu is organized into functional groups:
 
 ---
 
-#### ℹ️ About Admin Controls…
+#### ?? About Admin Controls�
 **Purpose:** Help documentation  
 **What it does:**
 - Shows this reference guide
@@ -684,13 +684,13 @@ The Admin Controls menu is organized into functional groups:
 
 ```
 1. You edit External Config Spreadsheet
-   ↓
+   ?
 2. Wait for nightly sync (2:00 AM EST automatic)
    OR
-   Run sync manually (Admin Controls > 📥 Sync FROM External Config)
-   ↓
+   Run sync manually (Admin Controls > ?? Sync FROM External Config)
+   ?
 3. Changes copied to Admin Spreadsheet
-   ↓
+   ?
 4. Next audit run (8-9 AM EST) uses updated configuration
 ```
 
@@ -699,20 +699,20 @@ The Admin Controls menu is organized into functional groups:
 **Example 1: Automatic Sync**
 - 3:00 PM Monday: You add new threshold to External Config
 - 2:00 AM Tuesday: Automatic sync copies change to Admin
-- 8:00 AM Tuesday: Morning audits use new threshold ✅
+- 8:00 AM Tuesday: Morning audits use new threshold ?
 
 **Example 2: Immediate Sync (Manual)**
 - 3:00 PM Monday: You add new threshold to External Config
-- 3:05 PM Monday: You run Admin Controls > 📥 Sync FROM External Config
-- 3:10 PM Monday: You run test audit - uses new threshold ✅
+- 3:05 PM Monday: You run Admin Controls > ?? Sync FROM External Config
+- 3:10 PM Monday: You run test audit - uses new threshold ?
 - 2:00 AM Tuesday: Automatic sync runs (no changes, already synced)
-- 8:00 AM Tuesday: Morning audits continue using threshold ✅
+- 8:00 AM Tuesday: Morning audits continue using threshold ?
 
 **Example 3: Same-Day Updates**
 - 7:00 AM Tuesday: You update External Config
-- 8:00 AM Tuesday: Morning audits run - **uses OLD config** ❌ (sync hasn't run)
+- 8:00 AM Tuesday: Morning audits run - **uses OLD config** ? (sync hasn't run)
 - 2:00 AM Wednesday: Automatic sync copies change
-- 8:00 AM Wednesday: Morning audits use NEW config ✅
+- 8:00 AM Wednesday: Morning audits use NEW config ?
 
 **Solution for same-day:** Run manual sync immediately after editing
 
@@ -730,10 +730,10 @@ The External Config Spreadsheet contains 4 configuration sheets:
 
 | Column | Required | Description | Example |
 |--------|----------|-------------|---------|
-| Config Name | ✅ Yes | Unique identifier (no spaces recommended) | `ACMECorp` |
-| To | ✅ Yes | Primary recipients (comma-separated emails) | `client@acme.com,am@horizonmedia.com` |
+| Config Name | ? Yes | Unique identifier (no spaces recommended) | `ACMECorp` |
+| To | ? Yes | Primary recipients (comma-separated emails) | `client@acme.com,am@horizonmedia.com` |
 | CC | No | Carbon copy recipients | `manager@acme.com` |
-| Gmail Label | ✅ Yes | Where to find reports in Gmail | `Daily Audits/CM360/ACMECorp` |
+| Gmail Label | ? Yes | Where to find reports in Gmail | `Daily Audits/CM360/ACMECorp` |
 | Withhold Mode | No | `Silent` or leave blank for normal | `Silent` |
 
 **Special Features:**
@@ -741,7 +741,7 @@ The External Config Spreadsheet contains 4 configuration sheets:
 **Delivery Mode Instruction (Row 1):**
 - First row shows current delivery mode
 - Updates automatically when mode changes
-- Format: `🟢 PRODUCTION MODE` or `🟡 STAGING MODE`
+- Format: `?? PRODUCTION MODE` or `?? STAGING MODE`
 
 **Withhold Mode (Silent):**
 - Set to `Silent` to suppress emails unless discrepancies found
@@ -772,7 +772,7 @@ The External Config Spreadsheet contains 4 configuration sheets:
 **Flag Types:**
 - `clicks_greater_than_impressions` - Flags rows where clicks > impressions (data quality issue)
 - `out_of_flight_dates` - Flags rows with dates outside placement flight dates
-- `pixel_size_mismatch` - Flags rows where placement pixel ≠ creative pixel
+- `pixel_size_mismatch` - Flags rows where placement pixel ? creative pixel
 - `default_ad_serving` - Flags rows with "default" ad type
 
 **Each config needs 4 threshold rows** (one per flag type) for complete coverage.
@@ -833,9 +833,9 @@ Thresholds are **minimum volume requirements**, not percentage tolerances. A row
 
 | Column | Required | Description | Example |
 |--------|----------|-------------|---------|
-| Config Name | ✅ Yes | Which audit this applies to | `ACMECorp` |
-| Placement ID | ✅ Yes | CM360 Placement ID | `123456789` |
-| Placement Name | ⚠️ Auto-filled | Populated by system (read-only) | `Homepage Banner` |
+| Config Name | ? Yes | Which audit this applies to | `ACMECorp` |
+| Placement ID | ? Yes | CM360 Placement ID | `123456789` |
+| Placement Name | ?? Auto-filled | Populated by system (read-only) | `Homepage Banner` |
 | Match Mode | No | `Exact`, `Contains`, `Regex` | `Exact` |
 | Reason | Recommended | Why excluded (for documentation) | `Test placement` |
 
@@ -844,7 +844,7 @@ Thresholds are **minimum volume requirements**, not percentage tolerances. A row
 **Auto-Population of Placement Names:**
 - Add Placement ID
 - Leave Placement Name blank
-- Run: Admin Controls > 🔁 Update Placement Names
+- Run: Admin Controls > ?? Update Placement Names
 - System reads latest audit reports
 - Fills in Placement Name automatically (function runs nightly)
 
@@ -882,9 +882,9 @@ Thresholds are **minimum volume requirements**, not percentage tolerances. A row
 | Requested By | Who submitted request | `evschneider@horizonmedia.com` |
 
 **How It Works:**
-1. Add row to Requests sheet (or use Admin Controls > 📝 Create Audit Request)
+1. Add row to Requests sheet (or use Admin Controls > ?? Create Audit Request)
 2. Set Status to `Pending`
-3. System processes on next trigger OR run Admin Controls > ▶️ Process Audit Requests
+3. System processes on next trigger OR run Admin Controls > ?? Process Audit Requests
 4. Status updates to `Completed` or `Failed`
 
 **Use Cases:**
@@ -899,15 +899,15 @@ Thresholds are **minimum volume requirements**, not percentage tolerances. A row
 #### Editing Workflow
 
 **Recommended:**
-1. ✅ Edit External Config Spreadsheet
-2. ✅ Run manual sync if urgent (Admin Controls > 📥 Sync FROM)
-3. ✅ Test with single config before broad deployment
-4. ✅ Monitor first few audit runs after change
+1. ? Edit External Config Spreadsheet
+2. ? Run manual sync if urgent (Admin Controls > ?? Sync FROM)
+3. ? Test with single config before broad deployment
+4. ? Monitor first few audit runs after change
 
 **Not Recommended:**
-1. ❌ Editing Admin Spreadsheet directly (changes overwritten at 2 AM)
-2. ❌ Making changes at 7-8 AM without manual sync (won't apply same day)
-3. ❌ Deleting rows (breaks array formulas - clear cells instead)
+1. ? Editing Admin Spreadsheet directly (changes overwritten at 2 AM)
+2. ? Making changes at 7-8 AM without manual sync (won't apply same day)
+3. ? Deleting rows (breaks array formulas - clear cells instead)
 
 #### Change Management
 
@@ -968,12 +968,12 @@ Thresholds are **minimum volume requirements**, not percentage tolerances. A row
 3. If not recoverable, use Admin Spreadsheet as temporary source
 4. Create new External Config Spreadsheet (as platformsolutionshmi@gmail.com)
 5. Update EXTERNAL_CONFIG_SHEET_ID in Code.js Script Properties
-6. Run Admin Controls > 📤 Sync TO External Config
+6. Run Admin Controls > ?? Sync TO External Config
 
 **If External Config corrupted:**
 1. File > Version history > See version history
 2. Restore last known good version
-3. Run manual sync (Admin Controls > 📥 Sync FROM External Config)
+3. Run manual sync (Admin Controls > ?? Sync FROM External Config)
 4. Verify configs
 
 **Note:** All file operations happen in platformsolutionshmi@gmail.com account, so recovery requires access to that account.
@@ -986,7 +986,7 @@ Thresholds are **minimum volume requirements**, not percentage tolerances. A row
 
 **Solutions:**
 1. Verify you edited External Config (not Admin)
-2. Check sync ran: Admin Controls > 📥 Sync FROM External Config
+2. Check sync ran: Admin Controls > ?? Sync FROM External Config
 3. Check audit used synced config (timing issue if before 2 AM)
 4. Verify Config Name matches exactly (case-sensitive)
 
@@ -1035,7 +1035,7 @@ Thresholds are **minimum volume requirements**, not percentage tolerances. A row
 
 **2:24 AM EST** (Next day - Nightly maintenance)
 1. `runNightlyMaintenance` performs comprehensive housekeeping:
-   - **Syncs External Config → Admin spreadsheet** (Recipients, Thresholds, Exclusions)
+   - **Syncs External Config ? Admin spreadsheet** (Recipients, Thresholds, Exclusions)
    - Rebalances audit batches for even distribution
    - Updates placement names in Exclusions from latest reports
    - Cleans up Drive files older than 60 days
@@ -1155,7 +1155,7 @@ Thresholds are **minimum volume requirements**, not percentage tolerances. A row
 
 #### When to Use Staging Mode
 
-**✅ USE STAGING MODE FOR:**
+**? USE STAGING MODE FOR:**
 - Testing new threshold configurations before rolling to production
 - Validating External Config changes (new recipients, exclusions, etc.)
 - Testing code deployments or script modifications
@@ -1164,7 +1164,7 @@ Thresholds are **minimum volume requirements**, not percentage tolerances. A row
 - Debugging email delivery problems
 - Verifying audit logic changes
 
-**❌ DO NOT USE STAGING MODE FOR:**
+**? DO NOT USE STAGING MODE FOR:**
 - Normal daily operations
 - When stakeholders need audit reports delivered
 - Extended periods (prevents stakeholders from receiving notifications)
@@ -1175,22 +1175,22 @@ Thresholds are **minimum volume requirements**, not percentage tolerances. A row
 - Open Admin Spreadsheet
 - Look at **Row 1** (very first row of Instructions sheet)
 - Check indicator:
-  - `🟢 PRODUCTION MODE - Live email delivery` → Production active
-  - `🟡 STAGING MODE - All emails to ADMIN_EMAIL` → Staging active
+  - `?? PRODUCTION MODE - Live email delivery` ? Production active
+  - `?? STAGING MODE - All emails to ADMIN_EMAIL` ? Staging active
 - This indicator updates automatically every 3 hours (or manually via Sync Delivery Mode)
 
 **Method 2: Script Properties (Authoritative Source)**
 1. Open Admin Spreadsheet
-2. Click **Extensions** → **Apps Script**
-3. Click **⚙️ Project Settings** (gear icon in left sidebar)
+2. Click **Extensions** ? **Apps Script**
+3. Click **?? Project Settings** (gear icon in left sidebar)
 4. Scroll to **Script Properties** section at bottom
 5. Look for `STAGING_MODE` property:
-   - **Value = `Y`** → Staging Mode ACTIVE (all emails to admin)
-   - **Value = `N`** → Production Mode ACTIVE (normal email routing)
-   - **Property missing** → Defaults to Production Mode (`N`)
+   - **Value = `Y`** ? Staging Mode ACTIVE (all emails to admin)
+   - **Value = `N`** ? Production Mode ACTIVE (normal email routing)
+   - **Property missing** ? Defaults to Production Mode (`N`)
 
 **Method 3: Admin Controls Menu (Quick Check)**
-- Click **Admin Controls** → **📮 Debug Email Delivery**
+- Click **Admin Controls** ? **?? Debug Email Delivery**
 - Dialog shows:
   - **Current Mode:** `STAGING` or `PRODUCTION`
   - **Admin Email:** Shows current ADMIN_EMAIL address
@@ -1202,9 +1202,9 @@ Thresholds are **minimum volume requirements**, not percentage tolerances. A row
 **Step 1: Set Script Property**
 
 1. **Open the Admin Spreadsheet** in your browser
-2. Click **Extensions** (top menu bar) → **Apps Script**
+2. Click **Extensions** (top menu bar) ? **Apps Script**
    - New tab opens with Apps Script editor
-3. In Apps Script editor, click the **⚙️ Project Settings** icon (gear icon in left sidebar)
+3. In Apps Script editor, click the **?? Project Settings** icon (gear icon in left sidebar)
 4. Scroll down to **Script Properties** section at bottom of page
 5. Look for a property named `STAGING_MODE`:
    
@@ -1229,34 +1229,34 @@ Thresholds are **minimum volume requirements**, not percentage tolerances. A row
 
 1. **Return to the Admin Spreadsheet tab** in your browser
 2. Click **Admin Controls** in the top menu bar
-3. Click **🔄 Sync Delivery Mode Now**
+3. Click **?? Sync Delivery Mode Now**
    - Wait 5-10 seconds for function to complete
 4. Look at **Row 1** of the Instructions sheet
-   - Should now show: `🟡 STAGING MODE - All emails to ADMIN_EMAIL`
+   - Should now show: `?? STAGING MODE - All emails to ADMIN_EMAIL`
    - Verify the ADMIN_EMAIL address shown is correct
 
 **Step 3: Verify Staging Mode Active**
 
-1. Click **Admin Controls** → **📮 Debug Email Delivery**
+1. Click **Admin Controls** ? **?? Debug Email Delivery**
 2. Dialog box appears showing:
    - **Current Mode:** Should say `STAGING`
    - **ADMIN_EMAIL:** Should show correct email address
 3. Click **OK** to close dialog
 4. **(Optional) Send test email:**
-   - Admin Controls → **✉️ Send Test Admin Email**
+   - Admin Controls ? **?? Send Test Admin Email**
    - Check that test email arrives at ADMIN_EMAIL only
    - This confirms staging mode is working
 
-**✅ Staging mode is now ACTIVE** - all system emails will go to ADMIN_EMAIL only
+**? Staging mode is now ACTIVE** - all system emails will go to ADMIN_EMAIL only
 
 #### How to Disable Staging Mode (Return to Production)
 
 **Step 1: Set Script Property**
 
 1. **Open the Admin Spreadsheet** in your browser
-2. Click **Extensions** (top menu bar) → **Apps Script**
+2. Click **Extensions** (top menu bar) ? **Apps Script**
    - Apps Script editor opens in new tab
-3. Click the **⚙️ Project Settings** icon (gear icon in left sidebar)
+3. Click the **?? Project Settings** icon (gear icon in left sidebar)
 4. Scroll down to **Script Properties** section
 5. Find the `STAGING_MODE` property row
 6. Click the **Edit** (pencil icon) next to STAGING_MODE
@@ -1272,15 +1272,15 @@ Thresholds are **minimum volume requirements**, not percentage tolerances. A row
 
 1. **Return to the Admin Spreadsheet tab** in your browser
 2. Click **Admin Controls** (top menu bar)
-3. Click **🔄 Sync Delivery Mode Now**
+3. Click **?? Sync Delivery Mode Now**
    - Wait 5-10 seconds for function to complete
 4. Look at **Row 1** of the Instructions sheet
-   - Should now show: `🟢 PRODUCTION MODE - Live email delivery`
+   - Should now show: `?? PRODUCTION MODE - Live email delivery`
    - This confirms production mode is active
 
 **Step 3: Verify Production Mode Active**
 
-1. Click **Admin Controls** → **📮 Debug Email Delivery**
+1. Click **Admin Controls** ? **?? Debug Email Delivery**
 2. Dialog box appears showing:
    - **Current Mode:** Should say `PRODUCTION`
    - **ADMIN_EMAIL:** Shows for reference
@@ -1290,9 +1290,9 @@ Thresholds are **minimum volume requirements**, not percentage tolerances. A row
    - Verify audit emails go to configured recipients (not just ADMIN_EMAIL)
    - Check one audit email was received by actual client
 
-**✅ Production mode is now ACTIVE** - emails will be sent to configured recipients
+**? Production mode is now ACTIVE** - emails will be sent to configured recipients
 
-**⚠️ CRITICAL REMINDER:** Always verify production mode is restored before end of business day! Double-check Row 1 shows green `🟢 PRODUCTION MODE`.
+**?? CRITICAL REMINDER:** Always verify production mode is restored before end of business day! Double-check Row 1 shows green `?? PRODUCTION MODE`.
 
 #### Staging Mode Testing Workflow
 
@@ -1429,7 +1429,7 @@ The system automatically rebalances batches **every night at 2:24 AM EST** durin
 - **Config added/removed:** Next nightly rebalance redistributes all configs
 
 **To View Current Batch Assignments:**
-- Admin Controls > 📦 Batch Assignments
+- Admin Controls > ?? Batch Assignments
 - Shows which configs are in each batch (1-12)
 - Displays balance across batches
 
@@ -1600,33 +1600,33 @@ getCombinedAuditResults_()
 ### Daily (Automated - Monitor Only)
 
 **Audit Batch Runs (8:00 AM - 9:00 AM EST):**
-- ✅ `runDailyAuditsBatch1` through `runDailyAuditsBatch12` (12 batches total)
+- ? `runDailyAuditsBatch1` through `runDailyAuditsBatch12` (12 batches total)
 - Batches distributed throughout 8 AM hour (typically 8:05-8:58 AM start times)
 - Google Apps Script spreads triggers to prevent simultaneous load
 - Each batch processes 2 configs
 - Typical execution: 1-4 minutes per batch
 
 **Nightly Maintenance (2:00 AM - 3:00 AM EST):**
-- ✅ `runNightlyMaintenance` @ 2:24 AM (~6 minutes)
+- ? `runNightlyMaintenance` @ 2:24 AM (~6 minutes)
   - Rebalances audit batches
   - Updates placement names
   - Cleans up Drive files (60+ days old)
   - Deletes Gmail emails (90+ days old)
   - Clears daily script properties
-- ✅ `cleanupOldAuditFiles` @ 2:32 AM (~5 minutes)
+- ? `cleanupOldAuditFiles` @ 2:32 AM (~5 minutes)
   - Continuation of Drive file cleanup if needed
 
 **Monitoring & Alerting:**
-- ✅ `auditWatchdogCheck` - Every 3 hours (checks for stuck audits)
-- ✅ `forwardGASFailureNotificationsToAdmin` - Hourly (forwards script failures)
-- ✅ `sendDailySummaryFailover` @ 9:25 AM EST (sends consolidated daily summary)
+- ? `auditWatchdogCheck` - Every 3 hours (checks for stuck audits)
+- ? `forwardGASFailureNotificationsToAdmin` - Hourly (forwards script failures)
+- ? `sendDailySummaryFailover` @ 9:25 AM EST (sends consolidated daily summary)
 
 **Configuration Sync:**
-- ✅ `runDeliveryModeSync` - Every 3 hours (syncs staging/production mode)
-- ✅ `autoFixRequestsSheet_` - Every 4 hours (maintenance for requests sheet)
+- ? `runDeliveryModeSync` - Every 3 hours (syncs staging/production mode)
+- ? `autoFixRequestsSheet_` - Every 4 hours (maintenance for requests sheet)
 
 **Health Checks:**
-- ✅ `runHealthCheckAndEmail` @ 5:04 AM EST (system health report)
+- ? `runHealthCheckAndEmail` @ 5:04 AM EST (system health report)
 
 **Your Task:** Review summary email (arrives ~9:30 AM), respond to errors, monitor execution logs for failures
 
@@ -1881,7 +1881,7 @@ Daily Audits
    - Log into platformsolutionshmi@gmail.com
    - Open Admin Spreadsheet
    - Open Apps Script editor
-   - Run a manual audit (Admin Controls > ▶️ Run Audit for...)
+   - Run a manual audit (Admin Controls > ?? Run Audit for...)
    - Verify error notifications go to new ADMIN_EMAIL
 
 5. **Monitor first week:**
@@ -1891,10 +1891,10 @@ Daily Audits
    - Confirm nightly maintenance runs
 
 **What does NOT need to happen:**
-- ❌ No trigger reinstallation required
-- ❌ No spreadsheet ownership transfer required
-- ❌ No Drive folder migration required
-- ❌ No Gmail label recreation required
+- ? No trigger reinstallation required
+- ? No spreadsheet ownership transfer required
+- ? No Drive folder migration required
+- ? No Gmail label recreation required
 
 **Why it's seamless:**
 - All resources owned by service account
@@ -1980,25 +1980,24 @@ pm install -g @google/clasp
 ### Code Repository
 
 **GitHub:** https://github.com/evan-schneider/cm360-audit-system  
-**Branch:** integrate-2025-09-29
+**Branch:** master
 
 **To Clone:**
-`ash
+```bash
 git clone https://github.com/evan-schneider/cm360-audit-system.git
 cd cm360-audit-system
-git checkout integrate-2025-09-29
-`
+```
 
 **To Deploy Changes:**
-`ash
+```bash
 # Edit Code.js locally
 git add Code.js
 git commit -m "Description of changes"
-git push origin integrate-2025-09-29
+git push origin master
 
 # Push to Apps Script
 npx clasp push
-`
+```
 
 ---
 
