@@ -1,0 +1,48 @@
+﻿HOW TO VIEW THE CM360 AUDIT WORKFLOW DIAGRAM
+
+STEP 1: DOWNLOAD THE FILE
+- Click the link in the email to download CM360_Audit_Workflow.drawio
+- Save it to your computer (Downloads folder is fine)
+
+STEP 2: OPEN IN YOUR BROWSER
+- Go to https://app.diagrams.net (no installation needed)
+- Click "Open Existing Diagram"
+- Click "Device" and select the file you just downloaded
+- The diagram will open automatically
+
+NAVIGATING THE DIAGRAM
+- Zoom: Use your mouse wheel or the zoom buttons (bottom-right corner)
+- Pan: Click and drag, or use scroll bars
+- Fit to screen: Click the rectangular "fit" icon (bottom-right)
+
+UNDERSTANDING THE WORKFLOW
+The diagram shows 6 main phases (blue boxes):
+1. Trigger & Initialization - Daily scheduled start
+2. Email Report Retrieval - Fetch reports from Gmail
+3. Excel Merging & Validation - Combine and clean data
+4. Audit Flagging Engine - Check for 4 types of issues
+5. Email Delivery Logic - Send alerts to teams
+6. Batch Completion & Summary - Finalize and cleanup
+
+COLOR CODING (see legend at bottom of diagram):
+- Yellow = Data processing steps
+- Green = Success/clean paths
+- Red = Alert/issue paths
+- Purple = Decision points
+- Gray = Output files
+
+FOR PRESENTATIONS
+Export to PDF: File  Export as  PDF
+Export to image: File  Export as  PNG
+Then insert into PowerPoint or Google Slides
+
+TROUBLESHOOTING
+- File won't open? Make sure it ends in .drawio (not .txt)
+- Diagram looks blank? Click the "Fit" button (bottom-right)
+- Try a different browser if issues persist (Chrome works best)
+
+QUESTIONS?
+Contact the Platform Solutions Team for diagram content questions
+Or see https://www.diagrams.net/doc/ for Draw.io help
+
+Last Updated: October 21, 2025

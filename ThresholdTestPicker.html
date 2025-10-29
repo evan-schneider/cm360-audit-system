@@ -1,0 +1,56 @@
+﻿<!DOCTYPE html>
+<html>
+ <head>
+ <base target="_top">
+ <style>
+ body {
+ font-family: Arial, sans-serif;
+ font-size: 13px;
+ padding: 10px;
+ }
+ select, button {
+ margin-top: 8px;
+ width: 100%;
+ font-size: 13px;
+ }
+ .info {
+ margin-top: 12px;
+ padding: 8px;
+ background: #e8f4fd;
+ border-left: 3px solid #2196F3;
+ font-size: 11px;
+ color: #333;
+ }
+ </style>
+ </head>
+ <body>
+ <label for="config">Select Audit Config:</label>
+ <select id="config">
+ <? for (let config of auditConfigs) { ?>
+ <option value="<?= config.name ?>"><?= config.name ?></option>
+ <? } ?>
+ </select>
+ <button onclick="runTest()">Run Threshold Test</button>
+ <div class="info">
+ This will run a full audit with detailed threshold logging. Check the Apps Script logs for detailed output.
+ </div>
+ <div id="status" style="margin-top:12px; font-size:12px; color:#555;"></div>
+ <script>
+ function runTest() {
+ const config = document.getElementById('config').value;
+ const statusEl = document.getElementById('status');
+ statusEl.textContent = 'Running threshold test for "' + config + '"...';
+
+ google.script.run
+ .withSuccessHandler(() => {
+statusEl.textContent = 'Threshold test for "' + config + '" completed. Check Apps Script logs for details.';
+ setTimeout(() => google.script.host.close(), 3000);
+ })
+ .withFailureHandler(error => {
+statusEl.textContent = 'Test failed: ' + error.message;
+ })
+ .testAuditWithThresholdLogging(config);
+ }
+ </script>
+ </body>
+</html>

@@ -267,6 +267,7 @@ npm run deploy
 - **Manual**: Use ConfigPicker dialog for ad-hoc runs
 - **Monitoring**: Dashboard shows recent activity and status
 - **Maintenance**: Admin tools for placement name updates and config validation
+- **Batch ordering**: Nightly rebalance uses flagged-row counts from the latest summary; if a summary fails to produce metrics, that config is treated as having 100 flagged rows so it stays in the high-priority queue.
 
 ## 📊 Thresholds and Exclusions
 

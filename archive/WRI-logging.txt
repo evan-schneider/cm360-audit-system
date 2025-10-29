@@ -1,0 +1,775 @@
+Head	testAuditWithThresholdLogging	Unknown	Oct 20, 2025, 5:40:20 PM	1.838 s	
+Running
+Cloud logs
+Oct 20, 2025, 5:41:16 PM	Info	✅ [THRESHOLD] WRI01 - default_ad_serving: minImpressions=20, minClicks=0
+Oct 20, 2025, 5:41:16 PM	Info	✅ [THRESHOLD] WRI01 - clicks_greater_than_impressions: minImpressions=20, minClicks=20
+Oct 20, 2025, 5:41:16 PM	Info	🔍 [THRESHOLD CHECK] WRI01 - Row p306658_impossible foods_general_hx_the trade desk_programmatic_display_banner_cross_dcpm_third party served_300x50_category_3p_na_ntb_na_na_na_kroger offsite_competitive pbm buyers: impressions=18, clicks=0, dominant=impressions, dominantValue=18, appliedThreshold=20, meetsThreshold=false, clicks>impressions=false
+Oct 20, 2025, 5:41:16 PM	Info	✅ [THRESHOLD] WRI01 - out_of_flight_dates: minImpressions=50, minClicks=0
+Oct 20, 2025, 5:41:16 PM	Info	✅ [THRESHOLD] WRI01 - pixel_size_mismatch: minImpressions=0, minClicks=0
+Oct 20, 2025, 5:41:16 PM	Info	✅ [THRESHOLD] WRI01 - default_ad_serving: minImpressions=20, minClicks=0
+Oct 20, 2025, 5:41:16 PM	Info	✅ [THRESHOLD] WRI01 - clicks_greater_than_impressions: minImpressions=20, minClicks=20
+Oct 20, 2025, 5:41:16 PM	Info	🔍 [THRESHOLD CHECK] WRI01 - Row p306658_impossible foods_general_hx_the trade desk_programmatic_display_banner_cross_dcpm_third party served_300x50_category_3p_na_ntb_na_na_na_kroger offsite_competitive pbm buyers: impressions=557, clicks=0, dominant=impressions, dominantValue=557, appliedThreshold=20, meetsThreshold=true, clicks>impressions=false
+Oct 20, 2025, 5:41:16 PM	Info	✅ [THRESHOLD] WRI01 - out_of_flight_dates: minImpressions=50, minClicks=0
+Oct 20, 2025, 5:41:16 PM	Info	✅ [THRESHOLD] WRI01 - pixel_size_mismatch: minImpressions=0, minClicks=0
+Oct 20, 2025, 5:41:16 PM	Info	✅ [THRESHOLD] WRI01 - default_ad_serving: minImpressions=20, minClicks=0
+Oct 20, 2025, 5:41:16 PM	Info	✅ [THRESHOLD] WRI01 - clicks_greater_than_impressions: minImpressions=20, minClicks=20
+Oct 20, 2025, 5:41:16 PM	Info	🔍 [THRESHOLD CHECK] WRI01 - Row p306654_impossible foods_general_hx_the trade desk_programmatic_display_banner_cross_dcpm_third party served_300x250_category_3p_na_ntb_na_na_na_kroger offsite_competitive pbm buyers: impressions=98, clicks=0, dominant=impressions, dominantValue=98, appliedThreshold=20, meetsThreshold=true, clicks>impressions=false
+Oct 20, 2025, 5:41:16 PM	Info	✅ [THRESHOLD] WRI01 - out_of_flight_dates: minImpressions=50, minClicks=0
+Oct 20, 2025, 5:41:16 PM	Info	✅ [THRESHOLD] WRI01 - pixel_size_mismatch: minImpressions=0, minClicks=0
+Oct 20, 2025, 5:41:16 PM	Info	✅ [THRESHOLD] WRI01 - default_ad_serving: minImpressions=20, minClicks=0
+Oct 20, 2025, 5:41:16 PM	Info	✅ [THRESHOLD] WRI01 - clicks_greater_than_impressions: minImpressions=20, minClicks=20
+Oct 20, 2025, 5:41:16 PM	Info	🔍 [THRESHOLD CHECK] WRI01 - Row p306654_impossible foods_general_hx_the trade desk_programmatic_display_banner_cross_dcpm_third party served_300x250_category_3p_na_ntb_na_na_na_kroger offsite_competitive pbm buyers: impressions=73, clicks=0, dominant=impressions, dominantValue=73, appliedThreshold=20, meetsThreshold=true, clicks>impressions=false
+Oct 20, 2025, 5:41:16 PM	Info	✅ [THRESHOLD] WRI01 - out_of_flight_dates: minImpressions=50, minClicks=0
+Oct 20, 2025, 5:41:16 PM	Info	✅ [THRESHOLD] WRI01 - pixel_size_mismatch: minImpressions=0, minClicks=0
+Oct 20, 2025, 5:41:16 PM	Info	✅ [THRESHOLD] WRI01 - default_ad_serving: minImpressions=20, minClicks=0
+Oct 20, 2025, 5:41:16 PM	Info	✅ [THRESHOLD] WRI01 - clicks_greater_than_impressions: minImpressions=20, minClicks=20
+Oct 20, 2025, 5:41:16 PM	Info	🔍 [THRESHOLD CHECK] WRI01 - Row p306654_impossible foods_general_hx_the trade desk_programmatic_display_banner_cross_dcpm_third party served_300x250_category_3p_na_ntb_na_na_na_kroger offsite_competitive pbm buyers: impressions=90, clicks=0, dominant=impressions, dominantValue=90, appliedThreshold=20, meetsThreshold=true, clicks>impressions=false
+Oct 20, 2025, 5:41:16 PM	Info	✅ [THRESHOLD] WRI01 - out_of_flight_dates: minImpressions=50, minClicks=0
+Oct 20, 2025, 5:41:16 PM	Info	✅ [THRESHOLD] WRI01 - pixel_size_mismatch: minImpressions=0, minClicks=0
+Oct 20, 2025, 5:41:16 PM	Info	✅ [THRESHOLD] WRI01 - default_ad_serving: minImpressions=20, minClicks=0
+Oct 20, 2025, 5:41:16 PM	Info	✅ [THRESHOLD] WRI01 - clicks_greater_than_impressions: minImpressions=20, minClicks=20
+Oct 20, 2025, 5:41:16 PM	Info	🔍 [THRESHOLD CHECK] WRI01 - Row p306657_impossible foods_general_hx_the trade desk_programmatic_display_banner_cross_dcpm_third party served_320x50_category_3p_na_ntb_na_na_na_kroger offsite_competitive pbm buyers: impressions=707, clicks=1, dominant=impressions, dominantValue=707, appliedThreshold=20, meetsThreshold=true, clicks>impressions=false
+Oct 20, 2025, 5:41:16 PM	Info	✅ [THRESHOLD] WRI01 - out_of_flight_dates: minImpressions=50, minClicks=0
+Oct 20, 2025, 5:41:16 PM	Info	✅ [THRESHOLD] WRI01 - pixel_size_mismatch: minImpressions=0, minClicks=0
+Oct 20, 2025, 5:41:16 PM	Info	✅ [THRESHOLD] WRI01 - default_ad_serving: minImpressions=20, minClicks=0
+Oct 20, 2025, 5:41:16 PM	Info	✅ [THRESHOLD] WRI01 - clicks_greater_than_impressions: minImpressions=20, minClicks=20
+Oct 20, 2025, 5:41:16 PM	Info	🔍 [THRESHOLD CHECK] WRI01 - Row p306657_impossible foods_general_hx_the trade desk_programmatic_display_banner_cross_dcpm_third party served_320x50_category_3p_na_ntb_na_na_na_kroger offsite_competitive pbm buyers: impressions=741, clicks=0, dominant=impressions, dominantValue=741, appliedThreshold=20, meetsThreshold=true, clicks>impressions=false
+Oct 20, 2025, 5:41:16 PM	Info	✅ [THRESHOLD] WRI01 - out_of_flight_dates: minImpressions=50, minClicks=0
+Oct 20, 2025, 5:41:16 PM	Info	✅ [THRESHOLD] WRI01 - pixel_size_mismatch: minImpressions=0, minClicks=0
+Oct 20, 2025, 5:41:16 PM	Info	✅ [THRESHOLD] WRI01 - default_ad_serving: minImpressions=20, minClicks=0
+Oct 20, 2025, 5:41:16 PM	Info	✅ [THRESHOLD] WRI01 - clicks_greater_than_impressions: minImpressions=20, minClicks=20
+Oct 20, 2025, 5:41:16 PM	Info	🔍 [THRESHOLD CHECK] WRI01 - Row p306657_impossible foods_general_hx_the trade desk_programmatic_display_banner_cross_dcpm_third party served_320x50_category_3p_na_ntb_na_na_na_kroger offsite_competitive pbm buyers: impressions=756, clicks=0, dominant=impressions, dominantValue=756, appliedThreshold=20, meetsThreshold=true, clicks>impressions=false
+Oct 20, 2025, 5:41:16 PM	Info	✅ [THRESHOLD] WRI01 - out_of_flight_dates: minImpressions=50, minClicks=0
+Oct 20, 2025, 5:41:16 PM	Info	✅ [THRESHOLD] WRI01 - pixel_size_mismatch: minImpressions=0, minClicks=0
+Oct 20, 2025, 5:41:16 PM	Info	✅ [THRESHOLD] WRI01 - default_ad_serving: minImpressions=20, minClicks=0
+Oct 20, 2025, 5:41:16 PM	Info	✅ [THRESHOLD] WRI01 - clicks_greater_than_impressions: minImpressions=20, minClicks=20
+Oct 20, 2025, 5:41:16 PM	Info	🔍 [THRESHOLD CHECK] WRI01 - Row p306653_impossible foods_general_hx_the trade desk_programmatic_display_banner_cross_dcpm_third party served_300x600_category_3p_na_ntb_na_na_na_kroger offsite_competitive pbm buyers: impressions=1, clicks=0, dominant=impressions, dominantValue=1, appliedThreshold=20, meetsThreshold=false, clicks>impressions=false
+Oct 20, 2025, 5:41:16 PM	Info	✅ [THRESHOLD] WRI01 - out_of_flight_dates: minImpressions=50, minClicks=0
+Oct 20, 2025, 5:41:16 PM	Info	✅ [THRESHOLD] WRI01 - pixel_size_mismatch: minImpressions=0, minClicks=0
+Oct 20, 2025, 5:41:16 PM	Info	✅ [THRESHOLD] WRI01 - default_ad_serving: minImpressions=20, minClicks=0
+Oct 20, 2025, 5:41:16 PM	Info	✅ [THRESHOLD] WRI01 - clicks_greater_than_impressions: minImpressions=20, minClicks=20
+Oct 20, 2025, 5:41:16 PM	Info	🔍 [THRESHOLD CHECK] WRI01 - Row p306653_impossible foods_general_hx_the trade desk_programmatic_display_banner_cross_dcpm_third party served_300x600_category_3p_na_ntb_na_na_na_kroger offsite_competitive pbm buyers: impressions=1, clicks=0, dominant=impressions, dominantValue=1, appliedThreshold=20, meetsThreshold=false, clicks>impressions=false
+Oct 20, 2025, 5:41:16 PM	Info	✅ [THRESHOLD] WRI01 - out_of_flight_dates: minImpressions=50, minClicks=0
+Oct 20, 2025, 5:41:16 PM	Info	✅ [THRESHOLD] WRI01 - pixel_size_mismatch: minImpressions=0, minClicks=0
+Oct 20, 2025, 5:41:16 PM	Info	✅ [THRESHOLD] WRI01 - default_ad_serving: minImpressions=20, minClicks=0
+Oct 20, 2025, 5:41:16 PM	Info	✅ [THRESHOLD] WRI01 - clicks_greater_than_impressions: minImpressions=20, minClicks=20
+Oct 20, 2025, 5:41:16 PM	Info	🔍 [THRESHOLD CHECK] WRI01 - Row p306653_impossible foods_general_hx_the trade desk_programmatic_display_banner_cross_dcpm_third party served_300x600_category_3p_na_ntb_na_na_na_kroger offsite_competitive pbm buyers: impressions=3, clicks=0, dominant=impressions, dominantValue=3, appliedThreshold=20, meetsThreshold=false, clicks>impressions=false
+Oct 20, 2025, 5:41:16 PM	Info	✅ [THRESHOLD] WRI01 - out_of_flight_dates: minImpressions=50, minClicks=0
+Oct 20, 2025, 5:41:16 PM	Info	✅ [THRESHOLD] WRI01 - pixel_size_mismatch: minImpressions=0, minClicks=0
+Oct 20, 2025, 5:41:16 PM	Info	✅ [THRESHOLD] WRI01 - default_ad_serving: minImpressions=20, minClicks=0
+Oct 20, 2025, 5:41:16 PM	Info	✅ [THRESHOLD] WRI01 - clicks_greater_than_impressions: minImpressions=20, minClicks=20
+Oct 20, 2025, 5:41:16 PM	Info	🔍 [THRESHOLD CHECK] WRI01 - Row p30660q_impossible foods_general_hx_the trade desk_programmatic_display_banner_cross_dcpm_third party served_728x90_category_3p_na_ntb_na_na_na_kroger offsite_lapsed impossible buyers: impressions=500, clicks=0, dominant=impressions, dominantValue=500, appliedThreshold=20, meetsThreshold=true, clicks>impressions=false
+Oct 20, 2025, 5:41:16 PM	Info	✅ [THRESHOLD] WRI01 - out_of_flight_dates: minImpressions=50, minClicks=0
+Oct 20, 2025, 5:41:16 PM	Info	✅ [THRESHOLD] WRI01 - pixel_size_mismatch: minImpressions=0, minClicks=0
+Oct 20, 2025, 5:41:16 PM	Info	✅ [THRESHOLD] WRI01 - default_ad_serving: minImpressions=20, minClicks=0
+Oct 20, 2025, 5:41:16 PM	Info	✅ [THRESHOLD] WRI01 - clicks_greater_than_impressions: minImpressions=20, minClicks=20
+Oct 20, 2025, 5:41:16 PM	Info	🔍 [THRESHOLD CHECK] WRI01 - Row p30660q_impossible foods_general_hx_the trade desk_programmatic_display_banner_cross_dcpm_third party served_728x90_category_3p_na_ntb_na_na_na_kroger offsite_lapsed impossible buyers: impressions=501, clicks=1, dominant=impressions, dominantValue=501, appliedThreshold=20, meetsThreshold=true, clicks>impressions=false
+Oct 20, 2025, 5:41:16 PM	Info	✅ [THRESHOLD] WRI01 - out_of_flight_dates: minImpressions=50, minClicks=0
+Oct 20, 2025, 5:41:16 PM	Info	✅ [THRESHOLD] WRI01 - pixel_size_mismatch: minImpressions=0, minClicks=0
+Oct 20, 2025, 5:41:16 PM	Info	✅ [THRESHOLD] WRI01 - default_ad_serving: minImpressions=20, minClicks=0
+Oct 20, 2025, 5:41:16 PM	Info	✅ [THRESHOLD] WRI01 - clicks_greater_than_impressions: minImpressions=20, minClicks=20
+Oct 20, 2025, 5:41:16 PM	Info	🔍 [THRESHOLD CHECK] WRI01 - Row p30660q_impossible foods_general_hx_the trade desk_programmatic_display_banner_cross_dcpm_third party served_728x90_category_3p_na_ntb_na_na_na_kroger offsite_lapsed impossible buyers: impressions=457, clicks=0, dominant=impressions, dominantValue=457, appliedThreshold=20, meetsThreshold=true, clicks>impressions=false
+Oct 20, 2025, 5:41:16 PM	Info	✅ [THRESHOLD] WRI01 - out_of_flight_dates: minImpressions=50, minClicks=0
+Oct 20, 2025, 5:41:16 PM	Info	✅ [THRESHOLD] WRI01 - pixel_size_mismatch: minImpressions=0, minClicks=0
+Oct 20, 2025, 5:41:16 PM	Info	✅ [THRESHOLD] WRI01 - default_ad_serving: minImpressions=20, minClicks=0
+Oct 20, 2025, 5:41:16 PM	Info	✅ [THRESHOLD] WRI01 - clicks_greater_than_impressions: minImpressions=20, minClicks=20
+Oct 20, 2025, 5:41:16 PM	Info	🔍 [THRESHOLD CHECK] WRI01 - Row p306574_impossible foods_general_hx_the trade desk_programmatic_display_banner_cross_dcpm_third party served_300x600_category_3p_na_ntb_na_na_na_kroger offsite_lapsed impossible buyers: impressions=9, clicks=0, dominant=impressions, dominantValue=9, appliedThreshold=20, meetsThreshold=false, clicks>impressions=false
+Oct 20, 2025, 5:41:16 PM	Info	✅ [THRESHOLD] WRI01 - out_of_flight_dates: minImpressions=50, minClicks=0
+Oct 20, 2025, 5:41:16 PM	Info	✅ [THRESHOLD] WRI01 - pixel_size_mismatch: minImpressions=0, minClicks=0
+Oct 20, 2025, 5:41:16 PM	Info	✅ [THRESHOLD] WRI01 - default_ad_serving: minImpressions=20, minClicks=0
+Oct 20, 2025, 5:41:16 PM	Info	✅ [THRESHOLD] WRI01 - clicks_greater_than_impressions: minImpressions=20, minClicks=20
+Oct 20, 2025, 5:41:16 PM	Info	🔍 [THRESHOLD CHECK] WRI01 - Row p306574_impossible foods_general_hx_the trade desk_programmatic_display_banner_cross_dcpm_third party served_300x600_category_3p_na_ntb_na_na_na_kroger offsite_lapsed impossible buyers: impressions=19, clicks=0, dominant=impressions, dominantValue=19, appliedThreshold=20, meetsThreshold=false, clicks>impressions=false
+Oct 20, 2025, 5:41:16 PM	Info	✅ [THRESHOLD] WRI01 - out_of_flight_dates: minImpressions=50, minClicks=0
+Oct 20, 2025, 5:41:16 PM	Info	✅ [THRESHOLD] WRI01 - pixel_size_mismatch: minImpressions=0, minClicks=0
+Oct 20, 2025, 5:41:16 PM	Info	✅ [THRESHOLD] WRI01 - default_ad_serving: minImpressions=20, minClicks=0
+Oct 20, 2025, 5:41:16 PM	Info	✅ [THRESHOLD] WRI01 - clicks_greater_than_impressions: minImpressions=20, minClicks=20
+Oct 20, 2025, 5:41:16 PM	Info	🔍 [THRESHOLD CHECK] WRI01 - Row p306574_impossible foods_general_hx_the trade desk_programmatic_display_banner_cross_dcpm_third party served_300x600_category_3p_na_ntb_na_na_na_kroger offsite_lapsed impossible buyers: impressions=9, clicks=0, dominant=impressions, dominantValue=9, appliedThreshold=20, meetsThreshold=false, clicks>impressions=false
+Oct 20, 2025, 5:41:16 PM	Info	✅ [THRESHOLD] WRI01 - out_of_flight_dates: minImpressions=50, minClicks=0
+Oct 20, 2025, 5:41:16 PM	Info	✅ [THRESHOLD] WRI01 - pixel_size_mismatch: minImpressions=0, minClicks=0
+Oct 20, 2025, 5:41:16 PM	Info	✅ [THRESHOLD] WRI01 - default_ad_serving: minImpressions=20, minClicks=0
+Oct 20, 2025, 5:41:16 PM	Info	✅ [THRESHOLD] WRI01 - clicks_greater_than_impressions: minImpressions=20, minClicks=20
+Oct 20, 2025, 5:41:16 PM	Info	🔍 [THRESHOLD CHECK] WRI01 - Row p3065bx_impossible foods_general_hx_the trade desk_programmatic_display_banner_cross_dcpm_third party served_320x50_category_3p_na_ntb_na_na_na_kroger offsite_lapsed impossible buyers: impressions=1308, clicks=1, dominant=impressions, dominantValue=1308, appliedThreshold=20, meetsThreshold=true, clicks>impressions=false
+Oct 20, 2025, 5:41:16 PM	Info	✅ [THRESHOLD] WRI01 - out_of_flight_dates: minImpressions=50, minClicks=0
+Oct 20, 2025, 5:41:16 PM	Info	✅ [THRESHOLD] WRI01 - pixel_size_mismatch: minImpressions=0, minClicks=0
+Oct 20, 2025, 5:41:16 PM	Info	✅ [THRESHOLD] WRI01 - default_ad_serving: minImpressions=20, minClicks=0
+Oct 20, 2025, 5:41:16 PM	Info	✅ [THRESHOLD] WRI01 - clicks_greater_than_impressions: minImpressions=20, minClicks=20
+Oct 20, 2025, 5:41:16 PM	Info	🔍 [THRESHOLD CHECK] WRI01 - Row p3065bx_impossible foods_general_hx_the trade desk_programmatic_display_banner_cross_dcpm_third party served_320x50_category_3p_na_ntb_na_na_na_kroger offsite_lapsed impossible buyers: impressions=1333, clicks=1, dominant=impressions, dominantValue=1333, appliedThreshold=20, meetsThreshold=true, clicks>impressions=false
+Oct 20, 2025, 5:41:16 PM	Info	✅ [THRESHOLD] WRI01 - out_of_flight_dates: minImpressions=50, minClicks=0
+Oct 20, 2025, 5:41:16 PM	Info	✅ [THRESHOLD] WRI01 - pixel_size_mismatch: minImpressions=0, minClicks=0
+Oct 20, 2025, 5:41:16 PM	Info	✅ [THRESHOLD] WRI01 - default_ad_serving: minImpressions=20, minClicks=0
+Oct 20, 2025, 5:41:16 PM	Info	✅ [THRESHOLD] WRI01 - clicks_greater_than_impressions: minImpressions=20, minClicks=20
+Oct 20, 2025, 5:41:16 PM	Info	🔍 [THRESHOLD CHECK] WRI01 - Row p3065bx_impossible foods_general_hx_the trade desk_programmatic_display_banner_cross_dcpm_third party served_320x50_category_3p_na_ntb_na_na_na_kroger offsite_lapsed impossible buyers: impressions=1361, clicks=3, dominant=impressions, dominantValue=1361, appliedThreshold=20, meetsThreshold=true, clicks>impressions=false
+Oct 20, 2025, 5:41:16 PM	Info	✅ [THRESHOLD] WRI01 - out_of_flight_dates: minImpressions=50, minClicks=0
+Oct 20, 2025, 5:41:16 PM	Info	✅ [THRESHOLD] WRI01 - pixel_size_mismatch: minImpressions=0, minClicks=0
+Oct 20, 2025, 5:41:16 PM	Info	✅ [THRESHOLD] WRI01 - default_ad_serving: minImpressions=20, minClicks=0
+Oct 20, 2025, 5:41:16 PM	Info	✅ [THRESHOLD] WRI01 - clicks_greater_than_impressions: minImpressions=20, minClicks=20
+Oct 20, 2025, 5:41:16 PM	Info	🔍 [THRESHOLD CHECK] WRI01 - Row p306585_impossible foods_general_hx_the trade desk_programmatic_display_banner_cross_dcpm_third party served_160x600_category_3p_na_ntb_na_na_na_kroger offsite_lapsed impossible buyers: impressions=9, clicks=0, dominant=impressions, dominantValue=9, appliedThreshold=20, meetsThreshold=false, clicks>impressions=false
+Oct 20, 2025, 5:41:16 PM	Info	✅ [THRESHOLD] WRI01 - out_of_flight_dates: minImpressions=50, minClicks=0
+Oct 20, 2025, 5:41:16 PM	Info	✅ [THRESHOLD] WRI01 - pixel_size_mismatch: minImpressions=0, minClicks=0
+Oct 20, 2025, 5:41:16 PM	Info	✅ [THRESHOLD] WRI01 - default_ad_serving: minImpressions=20, minClicks=0
+Oct 20, 2025, 5:41:16 PM	Info	✅ [THRESHOLD] WRI01 - clicks_greater_than_impressions: minImpressions=20, minClicks=20
+Oct 20, 2025, 5:41:16 PM	Info	🔍 [THRESHOLD CHECK] WRI01 - Row p306585_impossible foods_general_hx_the trade desk_programmatic_display_banner_cross_dcpm_third party served_160x600_category_3p_na_ntb_na_na_na_kroger offsite_lapsed impossible buyers: impressions=12, clicks=0, dominant=impressions, dominantValue=12, appliedThreshold=20, meetsThreshold=false, clicks>impressions=false
+Oct 20, 2025, 5:41:16 PM	Info	✅ [THRESHOLD] WRI01 - out_of_flight_dates: minImpressions=50, minClicks=0
+Oct 20, 2025, 5:41:16 PM	Info	✅ [THRESHOLD] WRI01 - pixel_size_mismatch: minImpressions=0, minClicks=0
+Oct 20, 2025, 5:41:17 PM	Info	✅ [THRESHOLD] WRI01 - default_ad_serving: minImpressions=20, minClicks=0
+Oct 20, 2025, 5:41:17 PM	Info	✅ [THRESHOLD] WRI01 - clicks_greater_than_impressions: minImpressions=20, minClicks=20
+Oct 20, 2025, 5:41:17 PM	Info	🔍 [THRESHOLD CHECK] WRI01 - Row p306585_impossible foods_general_hx_the trade desk_programmatic_display_banner_cross_dcpm_third party served_160x600_category_3p_na_ntb_na_na_na_kroger offsite_lapsed impossible buyers: impressions=19, clicks=0, dominant=impressions, dominantValue=19, appliedThreshold=20, meetsThreshold=false, clicks>impressions=false
+Oct 20, 2025, 5:41:17 PM	Info	✅ [THRESHOLD] WRI01 - out_of_flight_dates: minImpressions=50, minClicks=0
+Oct 20, 2025, 5:41:17 PM	Info	✅ [THRESHOLD] WRI01 - pixel_size_mismatch: minImpressions=0, minClicks=0
+Oct 20, 2025, 5:41:17 PM	Info	✅ [THRESHOLD] WRI01 - default_ad_serving: minImpressions=20, minClicks=0
+Oct 20, 2025, 5:41:17 PM	Info	✅ [THRESHOLD] WRI01 - clicks_greater_than_impressions: minImpressions=20, minClicks=20
+Oct 20, 2025, 5:41:17 PM	Info	🔍 [THRESHOLD CHECK] WRI01 - Row p306655_impossible foods_general_hx_the trade desk_programmatic_display_banner_cross_dcpm_third party served_970x250_category_3p_na_ntb_na_na_na_kroger offsite_competitive pbm buyers: impressions=15, clicks=0, dominant=impressions, dominantValue=15, appliedThreshold=20, meetsThreshold=false, clicks>impressions=false
+Oct 20, 2025, 5:41:17 PM	Info	✅ [THRESHOLD] WRI01 - out_of_flight_dates: minImpressions=50, minClicks=0
+Oct 20, 2025, 5:41:17 PM	Info	✅ [THRESHOLD] WRI01 - pixel_size_mismatch: minImpressions=0, minClicks=0
+Oct 20, 2025, 5:41:17 PM	Info	✅ [THRESHOLD] WRI01 - default_ad_serving: minImpressions=20, minClicks=0
+Oct 20, 2025, 5:41:17 PM	Info	✅ [THRESHOLD] WRI01 - clicks_greater_than_impressions: minImpressions=20, minClicks=20
+Oct 20, 2025, 5:41:17 PM	Info	🔍 [THRESHOLD CHECK] WRI01 - Row p306655_impossible foods_general_hx_the trade desk_programmatic_display_banner_cross_dcpm_third party served_970x250_category_3p_na_ntb_na_na_na_kroger offsite_competitive pbm buyers: impressions=18, clicks=0, dominant=impressions, dominantValue=18, appliedThreshold=20, meetsThreshold=false, clicks>impressions=false
+Oct 20, 2025, 5:41:17 PM	Info	✅ [THRESHOLD] WRI01 - out_of_flight_dates: minImpressions=50, minClicks=0
+Oct 20, 2025, 5:41:17 PM	Info	✅ [THRESHOLD] WRI01 - pixel_size_mismatch: minImpressions=0, minClicks=0
+Oct 20, 2025, 5:41:17 PM	Info	✅ [THRESHOLD] WRI01 - default_ad_serving: minImpressions=20, minClicks=0
+Oct 20, 2025, 5:41:17 PM	Info	✅ [THRESHOLD] WRI01 - clicks_greater_than_impressions: minImpressions=20, minClicks=20
+Oct 20, 2025, 5:41:17 PM	Info	🔍 [THRESHOLD CHECK] WRI01 - Row p306655_impossible foods_general_hx_the trade desk_programmatic_display_banner_cross_dcpm_third party served_970x250_category_3p_na_ntb_na_na_na_kroger offsite_competitive pbm buyers: impressions=20, clicks=0, dominant=impressions, dominantValue=20, appliedThreshold=20, meetsThreshold=true, clicks>impressions=false
+Oct 20, 2025, 5:41:17 PM	Info	✅ [THRESHOLD] WRI01 - out_of_flight_dates: minImpressions=50, minClicks=0
+Oct 20, 2025, 5:41:17 PM	Info	✅ [THRESHOLD] WRI01 - pixel_size_mismatch: minImpressions=0, minClicks=0
+Oct 20, 2025, 5:41:17 PM	Info	✅ [THRESHOLD] WRI01 - default_ad_serving: minImpressions=20, minClicks=0
+Oct 20, 2025, 5:41:17 PM	Info	✅ [THRESHOLD] WRI01 - clicks_greater_than_impressions: minImpressions=20, minClicks=20
+Oct 20, 2025, 5:41:17 PM	Info	🔍 [THRESHOLD CHECK] WRI01 - Row p306659_impossible foods_general_hx_the trade desk_programmatic_display_banner_cross_dcpm_third party served_728x90_category_3p_na_ntb_na_na_na_kroger offsite_competitive pbm buyers: impressions=312, clicks=1, dominant=impressions, dominantValue=312, appliedThreshold=20, meetsThreshold=true, clicks>impressions=false
+Oct 20, 2025, 5:41:17 PM	Info	✅ [THRESHOLD] WRI01 - out_of_flight_dates: minImpressions=50, minClicks=0
+Oct 20, 2025, 5:41:17 PM	Info	✅ [THRESHOLD] WRI01 - pixel_size_mismatch: minImpressions=0, minClicks=0
+Oct 20, 2025, 5:41:17 PM	Info	✅ [THRESHOLD] WRI01 - default_ad_serving: minImpressions=20, minClicks=0
+Oct 20, 2025, 5:41:17 PM	Info	✅ [THRESHOLD] WRI01 - clicks_greater_than_impressions: minImpressions=20, minClicks=20
+Oct 20, 2025, 5:41:17 PM	Info	🔍 [THRESHOLD CHECK] WRI01 - Row p306659_impossible foods_general_hx_the trade desk_programmatic_display_banner_cross_dcpm_third party served_728x90_category_3p_na_ntb_na_na_na_kroger offsite_competitive pbm buyers: impressions=329, clicks=0, dominant=impressions, dominantValue=329, appliedThreshold=20, meetsThreshold=true, clicks>impressions=false
+Oct 20, 2025, 5:41:17 PM	Info	✅ [THRESHOLD] WRI01 - out_of_flight_dates: minImpressions=50, minClicks=0
+Oct 20, 2025, 5:41:17 PM	Info	✅ [THRESHOLD] WRI01 - pixel_size_mismatch: minImpressions=0, minClicks=0
+Oct 20, 2025, 5:41:17 PM	Info	✅ [THRESHOLD] WRI01 - default_ad_serving: minImpressions=20, minClicks=0
+Oct 20, 2025, 5:41:17 PM	Info	✅ [THRESHOLD] WRI01 - clicks_greater_than_impressions: minImpressions=20, minClicks=20
+Oct 20, 2025, 5:41:17 PM	Info	🔍 [THRESHOLD CHECK] WRI01 - Row p306659_impossible foods_general_hx_the trade desk_programmatic_display_banner_cross_dcpm_third party served_728x90_category_3p_na_ntb_na_na_na_kroger offsite_competitive pbm buyers: impressions=309, clicks=0, dominant=impressions, dominantValue=309, appliedThreshold=20, meetsThreshold=true, clicks>impressions=false
+Oct 20, 2025, 5:41:17 PM	Info	✅ [THRESHOLD] WRI01 - out_of_flight_dates: minImpressions=50, minClicks=0
+Oct 20, 2025, 5:41:17 PM	Info	✅ [THRESHOLD] WRI01 - pixel_size_mismatch: minImpressions=0, minClicks=0
+Oct 20, 2025, 5:41:17 PM	Info	✅ [THRESHOLD] WRI01 - default_ad_serving: minImpressions=20, minClicks=0
+Oct 20, 2025, 5:41:17 PM	Info	✅ [THRESHOLD] WRI01 - clicks_greater_than_impressions: minImpressions=20, minClicks=20
+Oct 20, 2025, 5:41:17 PM	Info	🔍 [THRESHOLD CHECK] WRI01 - Row p306656_impossible foods_general_hx_the trade desk_programmatic_display_banner_cross_dcpm_third party served_160x600_category_3p_na_ntb_na_na_na_kroger offsite_competitive pbm buyers: impressions=4, clicks=0, dominant=impressions, dominantValue=4, appliedThreshold=20, meetsThreshold=false, clicks>impressions=false
+Oct 20, 2025, 5:41:17 PM	Info	✅ [THRESHOLD] WRI01 - out_of_flight_dates: minImpressions=50, minClicks=0
+Oct 20, 2025, 5:41:17 PM	Info	✅ [THRESHOLD] WRI01 - pixel_size_mismatch: minImpressions=0, minClicks=0
+Oct 20, 2025, 5:41:17 PM	Info	✅ [THRESHOLD] WRI01 - default_ad_serving: minImpressions=20, minClicks=0
+Oct 20, 2025, 5:41:17 PM	Info	✅ [THRESHOLD] WRI01 - clicks_greater_than_impressions: minImpressions=20, minClicks=20
+Oct 20, 2025, 5:41:17 PM	Info	🔍 [THRESHOLD CHECK] WRI01 - Row p306656_impossible foods_general_hx_the trade desk_programmatic_display_banner_cross_dcpm_third party served_160x600_category_3p_na_ntb_na_na_na_kroger offsite_competitive pbm buyers: impressions=3, clicks=0, dominant=impressions, dominantValue=3, appliedThreshold=20, meetsThreshold=false, clicks>impressions=false
+Oct 20, 2025, 5:41:17 PM	Info	✅ [THRESHOLD] WRI01 - out_of_flight_dates: minImpressions=50, minClicks=0
+Oct 20, 2025, 5:41:17 PM	Info	✅ [THRESHOLD] WRI01 - pixel_size_mismatch: minImpressions=0, minClicks=0
+Oct 20, 2025, 5:41:17 PM	Info	✅ [THRESHOLD] WRI01 - default_ad_serving: minImpressions=20, minClicks=0
+Oct 20, 2025, 5:41:17 PM	Info	✅ [THRESHOLD] WRI01 - clicks_greater_than_impressions: minImpressions=20, minClicks=20
+Oct 20, 2025, 5:41:17 PM	Info	🔍 [THRESHOLD CHECK] WRI01 - Row p306656_impossible foods_general_hx_the trade desk_programmatic_display_banner_cross_dcpm_third party served_160x600_category_3p_na_ntb_na_na_na_kroger offsite_competitive pbm buyers: impressions=7, clicks=0, dominant=impressions, dominantValue=7, appliedThreshold=20, meetsThreshold=false, clicks>impressions=false
+Oct 20, 2025, 5:41:17 PM	Info	✅ [THRESHOLD] WRI01 - out_of_flight_dates: minImpressions=50, minClicks=0
+Oct 20, 2025, 5:41:17 PM	Info	✅ [THRESHOLD] WRI01 - pixel_size_mismatch: minImpressions=0, minClicks=0
+Oct 20, 2025, 5:41:17 PM	Info	✅ [THRESHOLD] WRI01 - default_ad_serving: minImpressions=20, minClicks=0
+Oct 20, 2025, 5:41:17 PM	Info	✅ [THRESHOLD] WRI01 - clicks_greater_than_impressions: minImpressions=20, minClicks=20
+Oct 20, 2025, 5:41:17 PM	Info	🔍 [THRESHOLD CHECK] WRI01 - Row p30656p_impossible foods_general_hx_the trade desk_programmatic_display_banner_cross_dcpm_third party served_300x50_category_3p_na_ntb_na_na_na_kroger offsite_lapsed impossible buyers: impressions=344, clicks=0, dominant=impressions, dominantValue=344, appliedThreshold=20, meetsThreshold=true, clicks>impressions=false
+Oct 20, 2025, 5:41:17 PM	Info	✅ [THRESHOLD] WRI01 - out_of_flight_dates: minImpressions=50, minClicks=0
+Oct 20, 2025, 5:41:17 PM	Info	✅ [THRESHOLD] WRI01 - pixel_size_mismatch: minImpressions=0, minClicks=0
+Oct 20, 2025, 5:41:17 PM	Info	✅ [THRESHOLD] WRI01 - default_ad_serving: minImpressions=20, minClicks=0
+Oct 20, 2025, 5:41:17 PM	Info	✅ [THRESHOLD] WRI01 - clicks_greater_than_impressions: minImpressions=20, minClicks=20
+Oct 20, 2025, 5:41:17 PM	Info	🔍 [THRESHOLD CHECK] WRI01 - Row p30656p_impossible foods_general_hx_the trade desk_programmatic_display_banner_cross_dcpm_third party served_300x50_category_3p_na_ntb_na_na_na_kroger offsite_lapsed impossible buyers: impressions=346, clicks=0, dominant=impressions, dominantValue=346, appliedThreshold=20, meetsThreshold=true, clicks>impressions=false
+Oct 20, 2025, 5:41:17 PM	Info	✅ [THRESHOLD] WRI01 - out_of_flight_dates: minImpressions=50, minClicks=0
+Oct 20, 2025, 5:41:17 PM	Info	✅ [THRESHOLD] WRI01 - pixel_size_mismatch: minImpressions=0, minClicks=0
+Oct 20, 2025, 5:41:17 PM	Info	✅ [THRESHOLD] WRI01 - default_ad_serving: minImpressions=20, minClicks=0
+Oct 20, 2025, 5:41:17 PM	Info	✅ [THRESHOLD] WRI01 - clicks_greater_than_impressions: minImpressions=20, minClicks=20
+Oct 20, 2025, 5:41:17 PM	Info	🔍 [THRESHOLD CHECK] WRI01 - Row p30656p_impossible foods_general_hx_the trade desk_programmatic_display_banner_cross_dcpm_third party served_300x50_category_3p_na_ntb_na_na_na_kroger offsite_lapsed impossible buyers: impressions=342, clicks=0, dominant=impressions, dominantValue=342, appliedThreshold=20, meetsThreshold=true, clicks>impressions=false
+Oct 20, 2025, 5:41:17 PM	Info	✅ [THRESHOLD] WRI01 - out_of_flight_dates: minImpressions=50, minClicks=0
+Oct 20, 2025, 5:41:17 PM	Info	✅ [THRESHOLD] WRI01 - pixel_size_mismatch: minImpressions=0, minClicks=0
+Oct 20, 2025, 5:41:17 PM	Info	✅ [THRESHOLD] WRI01 - default_ad_serving: minImpressions=20, minClicks=0
+Oct 20, 2025, 5:41:17 PM	Info	✅ [THRESHOLD] WRI01 - clicks_greater_than_impressions: minImpressions=20, minClicks=20
+Oct 20, 2025, 5:41:17 PM	Info	🔍 [THRESHOLD CHECK] WRI01 - Row p3065rb_impossible foods_general_hx_the trade desk_programmatic_display_banner_cross_dcpm_third party served_970x250_category_3p_na_ntb_na_na_na_kroger offsite_lapsed impossible buyers: impressions=17, clicks=0, dominant=impressions, dominantValue=17, appliedThreshold=20, meetsThreshold=false, clicks>impressions=false
+Oct 20, 2025, 5:41:17 PM	Info	✅ [THRESHOLD] WRI01 - out_of_flight_dates: minImpressions=50, minClicks=0
+Oct 20, 2025, 5:41:17 PM	Info	✅ [THRESHOLD] WRI01 - pixel_size_mismatch: minImpressions=0, minClicks=0
+Oct 20, 2025, 5:41:17 PM	Info	✅ [THRESHOLD] WRI01 - default_ad_serving: minImpressions=20, minClicks=0
+Oct 20, 2025, 5:41:17 PM	Info	✅ [THRESHOLD] WRI01 - clicks_greater_than_impressions: minImpressions=20, minClicks=20
+Oct 20, 2025, 5:41:17 PM	Info	🔍 [THRESHOLD CHECK] WRI01 - Row p3065rb_impossible foods_general_hx_the trade desk_programmatic_display_banner_cross_dcpm_third party served_970x250_category_3p_na_ntb_na_na_na_kroger offsite_lapsed impossible buyers: impressions=28, clicks=0, dominant=impressions, dominantValue=28, appliedThreshold=20, meetsThreshold=true, clicks>impressions=false
+Oct 20, 2025, 5:41:17 PM	Info	✅ [THRESHOLD] WRI01 - out_of_flight_dates: minImpressions=50, minClicks=0
+Oct 20, 2025, 5:41:17 PM	Info	✅ [THRESHOLD] WRI01 - pixel_size_mismatch: minImpressions=0, minClicks=0
+Oct 20, 2025, 5:41:17 PM	Info	✅ [THRESHOLD] WRI01 - default_ad_serving: minImpressions=20, minClicks=0
+Oct 20, 2025, 5:41:17 PM	Info	✅ [THRESHOLD] WRI01 - clicks_greater_than_impressions: minImpressions=20, minClicks=20
+Oct 20, 2025, 5:41:17 PM	Info	🔍 [THRESHOLD CHECK] WRI01 - Row p3065rb_impossible foods_general_hx_the trade desk_programmatic_display_banner_cross_dcpm_third party served_970x250_category_3p_na_ntb_na_na_na_kroger offsite_lapsed impossible buyers: impressions=25, clicks=0, dominant=impressions, dominantValue=25, appliedThreshold=20, meetsThreshold=true, clicks>impressions=false
+Oct 20, 2025, 5:41:17 PM	Info	✅ [THRESHOLD] WRI01 - out_of_flight_dates: minImpressions=50, minClicks=0
+Oct 20, 2025, 5:41:17 PM	Info	✅ [THRESHOLD] WRI01 - pixel_size_mismatch: minImpressions=0, minClicks=0
+Oct 20, 2025, 5:41:17 PM	Info	✅ [THRESHOLD] WRI01 - default_ad_serving: minImpressions=20, minClicks=0
+Oct 20, 2025, 5:41:17 PM	Info	✅ [THRESHOLD] WRI01 - clicks_greater_than_impressions: minImpressions=20, minClicks=20
+Oct 20, 2025, 5:41:17 PM	Info	🔍 [THRESHOLD CHECK] WRI01 - Row p33vv2k_impossible foods_general_hx_the trade desk_programmatic_display_banner_cross_dcpm_third party served_728x90_behavioral_3p_na_roas_na_na_na_kroger offsite_light (1x l52w) and medium (4x l52w) brand buyers: impressions=400, clicks=0, dominant=impressions, dominantValue=400, appliedThreshold=20, meetsThreshold=true, clicks>impressions=false
+Oct 20, 2025, 5:41:17 PM	Info	✅ [THRESHOLD] WRI01 - out_of_flight_dates: minImpressions=50, minClicks=0
+Oct 20, 2025, 5:41:17 PM	Info	✅ [THRESHOLD] WRI01 - pixel_size_mismatch: minImpressions=0, minClicks=0
+Oct 20, 2025, 5:41:17 PM	Info	✅ [THRESHOLD] WRI01 - default_ad_serving: minImpressions=20, minClicks=0
+Oct 20, 2025, 5:41:17 PM	Info	✅ [THRESHOLD] WRI01 - clicks_greater_than_impressions: minImpressions=20, minClicks=20
+Oct 20, 2025, 5:41:17 PM	Info	🔍 [THRESHOLD CHECK] WRI01 - Row p33vv2k_impossible foods_general_hx_the trade desk_programmatic_display_banner_cross_dcpm_third party served_728x90_behavioral_3p_na_roas_na_na_na_kroger offsite_light (1x l52w) and medium (4x l52w) brand buyers: impressions=365, clicks=1, dominant=impressions, dominantValue=365, appliedThreshold=20, meetsThreshold=true, clicks>impressions=false
+Oct 20, 2025, 5:41:17 PM	Info	✅ [THRESHOLD] WRI01 - out_of_flight_dates: minImpressions=50, minClicks=0
+Oct 20, 2025, 5:41:17 PM	Info	✅ [THRESHOLD] WRI01 - pixel_size_mismatch: minImpressions=0, minClicks=0
+Oct 20, 2025, 5:41:17 PM	Info	✅ [THRESHOLD] WRI01 - default_ad_serving: minImpressions=20, minClicks=0
+Oct 20, 2025, 5:41:17 PM	Info	✅ [THRESHOLD] WRI01 - clicks_greater_than_impressions: minImpressions=20, minClicks=20
+Oct 20, 2025, 5:41:17 PM	Info	🔍 [THRESHOLD CHECK] WRI01 - Row p33vv2k_impossible foods_general_hx_the trade desk_programmatic_display_banner_cross_dcpm_third party served_728x90_behavioral_3p_na_roas_na_na_na_kroger offsite_light (1x l52w) and medium (4x l52w) brand buyers: impressions=367, clicks=0, dominant=impressions, dominantValue=367, appliedThreshold=20, meetsThreshold=true, clicks>impressions=false
+Oct 20, 2025, 5:41:17 PM	Info	✅ [THRESHOLD] WRI01 - out_of_flight_dates: minImpressions=50, minClicks=0
+Oct 20, 2025, 5:41:17 PM	Info	✅ [THRESHOLD] WRI01 - pixel_size_mismatch: minImpressions=0, minClicks=0
+Oct 20, 2025, 5:41:17 PM	Info	✅ [THRESHOLD] WRI01 - default_ad_serving: minImpressions=20, minClicks=0
+Oct 20, 2025, 5:41:17 PM	Info	✅ [THRESHOLD] WRI01 - clicks_greater_than_impressions: minImpressions=20, minClicks=20
+Oct 20, 2025, 5:41:17 PM	Info	🔍 [THRESHOLD CHECK] WRI01 - Row p33vv2g_impossible foods_general_hx_the trade desk_programmatic_display_banner_cross_dcpm_third party served_300x50_behavioral_3p_na_roas_na_na_na_kroger offsite_light (1x l52w) and medium (4x l52w) brand buyers: impressions=250, clicks=1, dominant=impressions, dominantValue=250, appliedThreshold=20, meetsThreshold=true, clicks>impressions=false
+Oct 20, 2025, 5:41:17 PM	Info	✅ [THRESHOLD] WRI01 - out_of_flight_dates: minImpressions=50, minClicks=0
+Oct 20, 2025, 5:41:17 PM	Info	✅ [THRESHOLD] WRI01 - pixel_size_mismatch: minImpressions=0, minClicks=0
+Oct 20, 2025, 5:41:17 PM	Info	✅ [THRESHOLD] WRI01 - default_ad_serving: minImpressions=20, minClicks=0
+Oct 20, 2025, 5:41:17 PM	Info	✅ [THRESHOLD] WRI01 - clicks_greater_than_impressions: minImpressions=20, minClicks=20
+Oct 20, 2025, 5:41:17 PM	Info	🔍 [THRESHOLD CHECK] WRI01 - Row p33vv2g_impossible foods_general_hx_the trade desk_programmatic_display_banner_cross_dcpm_third party served_300x50_behavioral_3p_na_roas_na_na_na_kroger offsite_light (1x l52w) and medium (4x l52w) brand buyers: impressions=246, clicks=0, dominant=impressions, dominantValue=246, appliedThreshold=20, meetsThreshold=true, clicks>impressions=false
+Oct 20, 2025, 5:41:17 PM	Info	✅ [THRESHOLD] WRI01 - out_of_flight_dates: minImpressions=50, minClicks=0
+Oct 20, 2025, 5:41:17 PM	Info	✅ [THRESHOLD] WRI01 - pixel_size_mismatch: minImpressions=0, minClicks=0
+Oct 20, 2025, 5:41:17 PM	Info	✅ [THRESHOLD] WRI01 - default_ad_serving: minImpressions=20, minClicks=0
+Oct 20, 2025, 5:41:17 PM	Info	✅ [THRESHOLD] WRI01 - clicks_greater_than_impressions: minImpressions=20, minClicks=20
+Oct 20, 2025, 5:41:17 PM	Info	🔍 [THRESHOLD CHECK] WRI01 - Row p33vv2g_impossible foods_general_hx_the trade desk_programmatic_display_banner_cross_dcpm_third party served_300x50_behavioral_3p_na_roas_na_na_na_kroger offsite_light (1x l52w) and medium (4x l52w) brand buyers: impressions=248, clicks=0, dominant=impressions, dominantValue=248, appliedThreshold=20, meetsThreshold=true, clicks>impressions=false
+Oct 20, 2025, 5:41:17 PM	Info	✅ [THRESHOLD] WRI01 - out_of_flight_dates: minImpressions=50, minClicks=0
+Oct 20, 2025, 5:41:17 PM	Info	✅ [THRESHOLD] WRI01 - pixel_size_mismatch: minImpressions=0, minClicks=0
+Oct 20, 2025, 5:41:17 PM	Info	✅ [THRESHOLD] WRI01 - default_ad_serving: minImpressions=20, minClicks=0
+Oct 20, 2025, 5:41:17 PM	Info	✅ [THRESHOLD] WRI01 - clicks_greater_than_impressions: minImpressions=20, minClicks=20
+Oct 20, 2025, 5:41:17 PM	Info	🔍 [THRESHOLD CHECK] WRI01 - Row p33vv2n_impossible foods_general_hx_the trade desk_programmatic_display_banner_cross_dcpm_third party served_160x600_behavioral_3p_na_roas_na_na_na_kroger offsite_light (1x l52w) and medium (4x l52w) brand buyers: impressions=10, clicks=0, dominant=impressions, dominantValue=10, appliedThreshold=20, meetsThreshold=false, clicks>impressions=false
+Oct 20, 2025, 5:41:17 PM	Info	✅ [THRESHOLD] WRI01 - out_of_flight_dates: minImpressions=50, minClicks=0
+Oct 20, 2025, 5:41:17 PM	Info	✅ [THRESHOLD] WRI01 - pixel_size_mismatch: minImpressions=0, minClicks=0
+Oct 20, 2025, 5:41:17 PM	Info	✅ [THRESHOLD] WRI01 - default_ad_serving: minImpressions=20, minClicks=0
+Oct 20, 2025, 5:41:17 PM	Info	✅ [THRESHOLD] WRI01 - clicks_greater_than_impressions: minImpressions=20, minClicks=20
+Oct 20, 2025, 5:41:17 PM	Info	🔍 [THRESHOLD CHECK] WRI01 - Row p33vv2n_impossible foods_general_hx_the trade desk_programmatic_display_banner_cross_dcpm_third party served_160x600_behavioral_3p_na_roas_na_na_na_kroger offsite_light (1x l52w) and medium (4x l52w) brand buyers: impressions=11, clicks=0, dominant=impressions, dominantValue=11, appliedThreshold=20, meetsThreshold=false, clicks>impressions=false
+Oct 20, 2025, 5:41:17 PM	Info	✅ [THRESHOLD] WRI01 - out_of_flight_dates: minImpressions=50, minClicks=0
+Oct 20, 2025, 5:41:17 PM	Info	✅ [THRESHOLD] WRI01 - pixel_size_mismatch: minImpressions=0, minClicks=0
+Oct 20, 2025, 5:41:17 PM	Info	✅ [THRESHOLD] WRI01 - default_ad_serving: minImpressions=20, minClicks=0
+Oct 20, 2025, 5:41:17 PM	Info	✅ [THRESHOLD] WRI01 - clicks_greater_than_impressions: minImpressions=20, minClicks=20
+Oct 20, 2025, 5:41:17 PM	Info	🔍 [THRESHOLD CHECK] WRI01 - Row p33vv2n_impossible foods_general_hx_the trade desk_programmatic_display_banner_cross_dcpm_third party served_160x600_behavioral_3p_na_roas_na_na_na_kroger offsite_light (1x l52w) and medium (4x l52w) brand buyers: impressions=6, clicks=0, dominant=impressions, dominantValue=6, appliedThreshold=20, meetsThreshold=false, clicks>impressions=false
+Oct 20, 2025, 5:41:17 PM	Info	✅ [THRESHOLD] WRI01 - out_of_flight_dates: minImpressions=50, minClicks=0
+Oct 20, 2025, 5:41:17 PM	Info	✅ [THRESHOLD] WRI01 - pixel_size_mismatch: minImpressions=0, minClicks=0
+Oct 20, 2025, 5:41:17 PM	Info	✅ [THRESHOLD] WRI01 - default_ad_serving: minImpressions=20, minClicks=0
+Oct 20, 2025, 5:41:17 PM	Info	✅ [THRESHOLD] WRI01 - clicks_greater_than_impressions: minImpressions=20, minClicks=20
+Oct 20, 2025, 5:41:17 PM	Info	🔍 [THRESHOLD CHECK] WRI01 - Row p33w4qj_impossible foods_general_hx_the trade desk_programmatic_display_banner_cross_dcpm_third party served_970x250_behavioral_3p_na_roas_na_na_na_kroger offsite_meat-free grocery buyers*: impressions=48, clicks=0, dominant=impressions, dominantValue=48, appliedThreshold=20, meetsThreshold=true, clicks>impressions=false
+Oct 20, 2025, 5:41:17 PM	Info	✅ [THRESHOLD] WRI01 - out_of_flight_dates: minImpressions=50, minClicks=0
+Oct 20, 2025, 5:41:17 PM	Info	✅ [THRESHOLD] WRI01 - pixel_size_mismatch: minImpressions=0, minClicks=0
+Oct 20, 2025, 5:41:17 PM	Info	✅ [THRESHOLD] WRI01 - default_ad_serving: minImpressions=20, minClicks=0
+Oct 20, 2025, 5:41:17 PM	Info	✅ [THRESHOLD] WRI01 - clicks_greater_than_impressions: minImpressions=20, minClicks=20
+Oct 20, 2025, 5:41:17 PM	Info	🔍 [THRESHOLD CHECK] WRI01 - Row p33w4qj_impossible foods_general_hx_the trade desk_programmatic_display_banner_cross_dcpm_third party served_970x250_behavioral_3p_na_roas_na_na_na_kroger offsite_meat-free grocery buyers*: impressions=42, clicks=0, dominant=impressions, dominantValue=42, appliedThreshold=20, meetsThreshold=true, clicks>impressions=false
+Oct 20, 2025, 5:41:17 PM	Info	✅ [THRESHOLD] WRI01 - out_of_flight_dates: minImpressions=50, minClicks=0
+Oct 20, 2025, 5:41:17 PM	Info	✅ [THRESHOLD] WRI01 - pixel_size_mismatch: minImpressions=0, minClicks=0
+Oct 20, 2025, 5:41:17 PM	Info	✅ [THRESHOLD] WRI01 - default_ad_serving: minImpressions=20, minClicks=0
+Oct 20, 2025, 5:41:17 PM	Info	✅ [THRESHOLD] WRI01 - clicks_greater_than_impressions: minImpressions=20, minClicks=20
+Oct 20, 2025, 5:41:17 PM	Info	🔍 [THRESHOLD CHECK] WRI01 - Row p33w4qj_impossible foods_general_hx_the trade desk_programmatic_display_banner_cross_dcpm_third party served_970x250_behavioral_3p_na_roas_na_na_na_kroger offsite_meat-free grocery buyers*: impressions=36, clicks=0, dominant=impressions, dominantValue=36, appliedThreshold=20, meetsThreshold=true, clicks>impressions=false
+Oct 20, 2025, 5:41:17 PM	Info	✅ [THRESHOLD] WRI01 - out_of_flight_dates: minImpressions=50, minClicks=0
+Oct 20, 2025, 5:41:17 PM	Info	✅ [THRESHOLD] WRI01 - pixel_size_mismatch: minImpressions=0, minClicks=0
+Oct 20, 2025, 5:41:17 PM	Info	✅ [THRESHOLD] WRI01 - default_ad_serving: minImpressions=20, minClicks=0
+Oct 20, 2025, 5:41:17 PM	Info	✅ [THRESHOLD] WRI01 - clicks_greater_than_impressions: minImpressions=20, minClicks=20
+Oct 20, 2025, 5:41:17 PM	Info	🔍 [THRESHOLD CHECK] WRI01 - Row p33w4qf_impossible foods_general_hx_the trade desk_programmatic_display_banner_cross_dcpm_third party served_300x50_behavioral_3p_na_roas_na_na_na_kroger offsite_meat-free grocery buyers*: impressions=4581, clicks=0, dominant=impressions, dominantValue=4581, appliedThreshold=20, meetsThreshold=true, clicks>impressions=false
+Oct 20, 2025, 5:41:17 PM	Info	✅ [THRESHOLD] WRI01 - out_of_flight_dates: minImpressions=50, minClicks=0
+Oct 20, 2025, 5:41:17 PM	Info	✅ [THRESHOLD] WRI01 - pixel_size_mismatch: minImpressions=0, minClicks=0
+Oct 20, 2025, 5:41:17 PM	Info	✅ [THRESHOLD] WRI01 - default_ad_serving: minImpressions=20, minClicks=0
+Oct 20, 2025, 5:41:17 PM	Info	✅ [THRESHOLD] WRI01 - clicks_greater_than_impressions: minImpressions=20, minClicks=20
+Oct 20, 2025, 5:41:17 PM	Info	🔍 [THRESHOLD CHECK] WRI01 - Row p33w4qf_impossible foods_general_hx_the trade desk_programmatic_display_banner_cross_dcpm_third party served_300x50_behavioral_3p_na_roas_na_na_na_kroger offsite_meat-free grocery buyers*: impressions=4744, clicks=7, dominant=impressions, dominantValue=4744, appliedThreshold=20, meetsThreshold=true, clicks>impressions=false
+Oct 20, 2025, 5:41:17 PM	Info	✅ [THRESHOLD] WRI01 - out_of_flight_dates: minImpressions=50, minClicks=0
+Oct 20, 2025, 5:41:17 PM	Info	✅ [THRESHOLD] WRI01 - pixel_size_mismatch: minImpressions=0, minClicks=0
+Oct 20, 2025, 5:41:17 PM	Info	✅ [THRESHOLD] WRI01 - default_ad_serving: minImpressions=20, minClicks=0
+Oct 20, 2025, 5:41:17 PM	Info	✅ [THRESHOLD] WRI01 - clicks_greater_than_impressions: minImpressions=20, minClicks=20
+Oct 20, 2025, 5:41:17 PM	Info	🔍 [THRESHOLD CHECK] WRI01 - Row p33w4qf_impossible foods_general_hx_the trade desk_programmatic_display_banner_cross_dcpm_third party served_300x50_behavioral_3p_na_roas_na_na_na_kroger offsite_meat-free grocery buyers*: impressions=4799, clicks=3, dominant=impressions, dominantValue=4799, appliedThreshold=20, meetsThreshold=true, clicks>impressions=false
+Oct 20, 2025, 5:41:17 PM	Info	✅ [THRESHOLD] WRI01 - out_of_flight_dates: minImpressions=50, minClicks=0
+Oct 20, 2025, 5:41:17 PM	Info	✅ [THRESHOLD] WRI01 - pixel_size_mismatch: minImpressions=0, minClicks=0
+Oct 20, 2025, 5:41:17 PM	Info	✅ [THRESHOLD] WRI01 - default_ad_serving: minImpressions=20, minClicks=0
+Oct 20, 2025, 5:41:17 PM	Info	✅ [THRESHOLD] WRI01 - clicks_greater_than_impressions: minImpressions=20, minClicks=20
+Oct 20, 2025, 5:41:17 PM	Info	🔍 [THRESHOLD CHECK] WRI01 - Row p33vv2p_impossible foods_general_hx_the trade desk_programmatic_display_banner_cross_dcpm_third party served_300x250_behavioral_3p_na_roas_na_na_na_kroger offsite_light (1x l52w) and medium (4x l52w) brand buyers: impressions=143, clicks=0, dominant=impressions, dominantValue=143, appliedThreshold=20, meetsThreshold=true, clicks>impressions=false
+Oct 20, 2025, 5:41:17 PM	Info	✅ [THRESHOLD] WRI01 - out_of_flight_dates: minImpressions=50, minClicks=0
+Oct 20, 2025, 5:41:17 PM	Info	✅ [THRESHOLD] WRI01 - pixel_size_mismatch: minImpressions=0, minClicks=0
+Oct 20, 2025, 5:41:17 PM	Info	✅ [THRESHOLD] WRI01 - default_ad_serving: minImpressions=20, minClicks=0
+Oct 20, 2025, 5:41:17 PM	Info	✅ [THRESHOLD] WRI01 - clicks_greater_than_impressions: minImpressions=20, minClicks=20
+Oct 20, 2025, 5:41:17 PM	Info	🔍 [THRESHOLD CHECK] WRI01 - Row p33vv2p_impossible foods_general_hx_the trade desk_programmatic_display_banner_cross_dcpm_third party served_300x250_behavioral_3p_na_roas_na_na_na_kroger offsite_light (1x l52w) and medium (4x l52w) brand buyers: impressions=109, clicks=0, dominant=impressions, dominantValue=109, appliedThreshold=20, meetsThreshold=true, clicks>impressions=false
+Oct 20, 2025, 5:41:17 PM	Info	✅ [THRESHOLD] WRI01 - out_of_flight_dates: minImpressions=50, minClicks=0
+Oct 20, 2025, 5:41:17 PM	Info	✅ [THRESHOLD] WRI01 - pixel_size_mismatch: minImpressions=0, minClicks=0
+Oct 20, 2025, 5:41:17 PM	Info	✅ [THRESHOLD] WRI01 - default_ad_serving: minImpressions=20, minClicks=0
+Oct 20, 2025, 5:41:17 PM	Info	✅ [THRESHOLD] WRI01 - clicks_greater_than_impressions: minImpressions=20, minClicks=20
+Oct 20, 2025, 5:41:17 PM	Info	🔍 [THRESHOLD CHECK] WRI01 - Row p33vv2p_impossible foods_general_hx_the trade desk_programmatic_display_banner_cross_dcpm_third party served_300x250_behavioral_3p_na_roas_na_na_na_kroger offsite_light (1x l52w) and medium (4x l52w) brand buyers: impressions=152, clicks=0, dominant=impressions, dominantValue=152, appliedThreshold=20, meetsThreshold=true, clicks>impressions=false
+Oct 20, 2025, 5:41:17 PM	Info	✅ [THRESHOLD] WRI01 - out_of_flight_dates: minImpressions=50, minClicks=0
+Oct 20, 2025, 5:41:17 PM	Info	✅ [THRESHOLD] WRI01 - pixel_size_mismatch: minImpressions=0, minClicks=0
+Oct 20, 2025, 5:41:17 PM	Info	✅ [THRESHOLD] WRI01 - default_ad_serving: minImpressions=20, minClicks=0
+Oct 20, 2025, 5:41:17 PM	Info	✅ [THRESHOLD] WRI01 - clicks_greater_than_impressions: minImpressions=20, minClicks=20
+Oct 20, 2025, 5:41:17 PM	Info	🔍 [THRESHOLD CHECK] WRI01 - Row p33w4qk_impossible foods_general_hx_the trade desk_programmatic_display_banner_cross_dcpm_third party served_728x90_behavioral_3p_na_roas_na_na_na_kroger offsite_meat-free grocery buyers*: impressions=8662, clicks=5, dominant=impressions, dominantValue=8662, appliedThreshold=20, meetsThreshold=true, clicks>impressions=false
+Oct 20, 2025, 5:41:17 PM	Info	✅ [THRESHOLD] WRI01 - out_of_flight_dates: minImpressions=50, minClicks=0
+Oct 20, 2025, 5:41:17 PM	Info	✅ [THRESHOLD] WRI01 - pixel_size_mismatch: minImpressions=0, minClicks=0
+Oct 20, 2025, 5:41:17 PM	Info	✅ [THRESHOLD] WRI01 - default_ad_serving: minImpressions=20, minClicks=0
+Oct 20, 2025, 5:41:17 PM	Info	✅ [THRESHOLD] WRI01 - clicks_greater_than_impressions: minImpressions=20, minClicks=20
+Oct 20, 2025, 5:41:17 PM	Info	🔍 [THRESHOLD CHECK] WRI01 - Row p33w4qk_impossible foods_general_hx_the trade desk_programmatic_display_banner_cross_dcpm_third party served_728x90_behavioral_3p_na_roas_na_na_na_kroger offsite_meat-free grocery buyers*: impressions=8616, clicks=8, dominant=impressions, dominantValue=8616, appliedThreshold=20, meetsThreshold=true, clicks>impressions=false
+Oct 20, 2025, 5:41:17 PM	Info	✅ [THRESHOLD] WRI01 - out_of_flight_dates: minImpressions=50, minClicks=0
+Oct 20, 2025, 5:41:17 PM	Info	✅ [THRESHOLD] WRI01 - pixel_size_mismatch: minImpressions=0, minClicks=0
+Oct 20, 2025, 5:41:17 PM	Info	✅ [THRESHOLD] WRI01 - default_ad_serving: minImpressions=20, minClicks=0
+Oct 20, 2025, 5:41:17 PM	Info	✅ [THRESHOLD] WRI01 - clicks_greater_than_impressions: minImpressions=20, minClicks=20
+Oct 20, 2025, 5:41:17 PM	Info	🔍 [THRESHOLD CHECK] WRI01 - Row p33w4qk_impossible foods_general_hx_the trade desk_programmatic_display_banner_cross_dcpm_third party served_728x90_behavioral_3p_na_roas_na_na_na_kroger offsite_meat-free grocery buyers*: impressions=8579, clicks=9, dominant=impressions, dominantValue=8579, appliedThreshold=20, meetsThreshold=true, clicks>impressions=false
+Oct 20, 2025, 5:41:17 PM	Info	✅ [THRESHOLD] WRI01 - out_of_flight_dates: minImpressions=50, minClicks=0
+Oct 20, 2025, 5:41:17 PM	Info	✅ [THRESHOLD] WRI01 - pixel_size_mismatch: minImpressions=0, minClicks=0
+Oct 20, 2025, 5:41:17 PM	Info	✅ [THRESHOLD] WRI01 - default_ad_serving: minImpressions=20, minClicks=0
+Oct 20, 2025, 5:41:17 PM	Info	✅ [THRESHOLD] WRI01 - clicks_greater_than_impressions: minImpressions=20, minClicks=20
+Oct 20, 2025, 5:41:17 PM	Info	🔍 [THRESHOLD CHECK] WRI01 - Row p33w4qb_impossible foods_general_hx_the trade desk_programmatic_display_banner_cross_dcpm_third party served_300x250_behavioral_3p_na_roas_na_na_na_kroger offsite_meat-free grocery buyers*: impressions=1139, clicks=0, dominant=impressions, dominantValue=1139, appliedThreshold=20, meetsThreshold=true, clicks>impressions=false
+Oct 20, 2025, 5:41:17 PM	Info	✅ [THRESHOLD] WRI01 - out_of_flight_dates: minImpressions=50, minClicks=0
+Oct 20, 2025, 5:41:17 PM	Info	✅ [THRESHOLD] WRI01 - pixel_size_mismatch: minImpressions=0, minClicks=0
+Oct 20, 2025, 5:41:17 PM	Info	✅ [THRESHOLD] WRI01 - default_ad_serving: minImpressions=20, minClicks=0
+Oct 20, 2025, 5:41:17 PM	Info	✅ [THRESHOLD] WRI01 - clicks_greater_than_impressions: minImpressions=20, minClicks=20
+Oct 20, 2025, 5:41:17 PM	Info	🔍 [THRESHOLD CHECK] WRI01 - Row p33w4qb_impossible foods_general_hx_the trade desk_programmatic_display_banner_cross_dcpm_third party served_300x250_behavioral_3p_na_roas_na_na_na_kroger offsite_meat-free grocery buyers*: impressions=1146, clicks=0, dominant=impressions, dominantValue=1146, appliedThreshold=20, meetsThreshold=true, clicks>impressions=false
+Oct 20, 2025, 5:41:17 PM	Info	✅ [THRESHOLD] WRI01 - out_of_flight_dates: minImpressions=50, minClicks=0
+Oct 20, 2025, 5:41:17 PM	Info	✅ [THRESHOLD] WRI01 - pixel_size_mismatch: minImpressions=0, minClicks=0
+Oct 20, 2025, 5:41:17 PM	Info	✅ [THRESHOLD] WRI01 - default_ad_serving: minImpressions=20, minClicks=0
+Oct 20, 2025, 5:41:17 PM	Info	✅ [THRESHOLD] WRI01 - clicks_greater_than_impressions: minImpressions=20, minClicks=20
+Oct 20, 2025, 5:41:17 PM	Info	🔍 [THRESHOLD CHECK] WRI01 - Row p33w4qb_impossible foods_general_hx_the trade desk_programmatic_display_banner_cross_dcpm_third party served_300x250_behavioral_3p_na_roas_na_na_na_kroger offsite_meat-free grocery buyers*: impressions=1083, clicks=1, dominant=impressions, dominantValue=1083, appliedThreshold=20, meetsThreshold=true, clicks>impressions=false
+Oct 20, 2025, 5:41:17 PM	Info	✅ [THRESHOLD] WRI01 - out_of_flight_dates: minImpressions=50, minClicks=0
+Oct 20, 2025, 5:41:17 PM	Info	✅ [THRESHOLD] WRI01 - pixel_size_mismatch: minImpressions=0, minClicks=0
+Oct 20, 2025, 5:41:17 PM	Info	✅ [THRESHOLD] WRI01 - default_ad_serving: minImpressions=20, minClicks=0
+Oct 20, 2025, 5:41:17 PM	Info	✅ [THRESHOLD] WRI01 - clicks_greater_than_impressions: minImpressions=20, minClicks=20
+Oct 20, 2025, 5:41:17 PM	Info	🔍 [THRESHOLD CHECK] WRI01 - Row p33vv2h_impossible foods_general_hx_the trade desk_programmatic_display_banner_cross_dcpm_third party served_320x50_behavioral_3p_na_roas_na_na_na_kroger offsite_light (1x l52w) and medium (4x l52w) brand buyers: impressions=944, clicks=1, dominant=impressions, dominantValue=944, appliedThreshold=20, meetsThreshold=true, clicks>impressions=false
+Oct 20, 2025, 5:41:17 PM	Info	✅ [THRESHOLD] WRI01 - out_of_flight_dates: minImpressions=50, minClicks=0
+Oct 20, 2025, 5:41:17 PM	Info	✅ [THRESHOLD] WRI01 - pixel_size_mismatch: minImpressions=0, minClicks=0
+Oct 20, 2025, 5:41:17 PM	Info	✅ [THRESHOLD] WRI01 - default_ad_serving: minImpressions=20, minClicks=0
+Oct 20, 2025, 5:41:17 PM	Info	✅ [THRESHOLD] WRI01 - clicks_greater_than_impressions: minImpressions=20, minClicks=20
+Oct 20, 2025, 5:41:17 PM	Info	🔍 [THRESHOLD CHECK] WRI01 - Row p33vv2h_impossible foods_general_hx_the trade desk_programmatic_display_banner_cross_dcpm_third party served_320x50_behavioral_3p_na_roas_na_na_na_kroger offsite_light (1x l52w) and medium (4x l52w) brand buyers: impressions=1018, clicks=1, dominant=impressions, dominantValue=1018, appliedThreshold=20, meetsThreshold=true, clicks>impressions=false
+Oct 20, 2025, 5:41:17 PM	Info	✅ [THRESHOLD] WRI01 - out_of_flight_dates: minImpressions=50, minClicks=0
+Oct 20, 2025, 5:41:17 PM	Info	✅ [THRESHOLD] WRI01 - pixel_size_mismatch: minImpressions=0, minClicks=0
+Oct 20, 2025, 5:41:17 PM	Info	✅ [THRESHOLD] WRI01 - default_ad_serving: minImpressions=20, minClicks=0
+Oct 20, 2025, 5:41:17 PM	Info	✅ [THRESHOLD] WRI01 - clicks_greater_than_impressions: minImpressions=20, minClicks=20
+Oct 20, 2025, 5:41:17 PM	Info	🔍 [THRESHOLD CHECK] WRI01 - Row p33vv2h_impossible foods_general_hx_the trade desk_programmatic_display_banner_cross_dcpm_third party served_320x50_behavioral_3p_na_roas_na_na_na_kroger offsite_light (1x l52w) and medium (4x l52w) brand buyers: impressions=974, clicks=1, dominant=impressions, dominantValue=974, appliedThreshold=20, meetsThreshold=true, clicks>impressions=false
+Oct 20, 2025, 5:41:17 PM	Info	✅ [THRESHOLD] WRI01 - out_of_flight_dates: minImpressions=50, minClicks=0
+Oct 20, 2025, 5:41:17 PM	Info	✅ [THRESHOLD] WRI01 - pixel_size_mismatch: minImpressions=0, minClicks=0
+Oct 20, 2025, 5:41:17 PM	Info	✅ [THRESHOLD] WRI01 - default_ad_serving: minImpressions=20, minClicks=0
+Oct 20, 2025, 5:41:17 PM	Info	✅ [THRESHOLD] WRI01 - clicks_greater_than_impressions: minImpressions=20, minClicks=20
+Oct 20, 2025, 5:41:17 PM	Info	🔍 [THRESHOLD CHECK] WRI01 - Row p33vv2l_impossible foods_general_hx_the trade desk_programmatic_display_banner_cross_dcpm_third party served_300x600_behavioral_3p_na_roas_na_na_na_kroger offsite_light (1x l52w) and medium (4x l52w) brand buyers: impressions=7, clicks=0, dominant=impressions, dominantValue=7, appliedThreshold=20, meetsThreshold=false, clicks>impressions=false
+Oct 20, 2025, 5:41:17 PM	Info	✅ [THRESHOLD] WRI01 - out_of_flight_dates: minImpressions=50, minClicks=0
+Oct 20, 2025, 5:41:17 PM	Info	✅ [THRESHOLD] WRI01 - pixel_size_mismatch: minImpressions=0, minClicks=0
+Oct 20, 2025, 5:41:17 PM	Info	✅ [THRESHOLD] WRI01 - default_ad_serving: minImpressions=20, minClicks=0
+Oct 20, 2025, 5:41:17 PM	Info	✅ [THRESHOLD] WRI01 - clicks_greater_than_impressions: minImpressions=20, minClicks=20
+Oct 20, 2025, 5:41:17 PM	Info	🔍 [THRESHOLD CHECK] WRI01 - Row p33vv2l_impossible foods_general_hx_the trade desk_programmatic_display_banner_cross_dcpm_third party served_300x600_behavioral_3p_na_roas_na_na_na_kroger offsite_light (1x l52w) and medium (4x l52w) brand buyers: impressions=9, clicks=0, dominant=impressions, dominantValue=9, appliedThreshold=20, meetsThreshold=false, clicks>impressions=false
+Oct 20, 2025, 5:41:17 PM	Info	✅ [THRESHOLD] WRI01 - out_of_flight_dates: minImpressions=50, minClicks=0
+Oct 20, 2025, 5:41:17 PM	Info	✅ [THRESHOLD] WRI01 - pixel_size_mismatch: minImpressions=0, minClicks=0
+Oct 20, 2025, 5:41:17 PM	Info	✅ [THRESHOLD] WRI01 - default_ad_serving: minImpressions=20, minClicks=0
+Oct 20, 2025, 5:41:17 PM	Info	✅ [THRESHOLD] WRI01 - clicks_greater_than_impressions: minImpressions=20, minClicks=20
+Oct 20, 2025, 5:41:17 PM	Info	🔍 [THRESHOLD CHECK] WRI01 - Row p33vv2l_impossible foods_general_hx_the trade desk_programmatic_display_banner_cross_dcpm_third party served_300x600_behavioral_3p_na_roas_na_na_na_kroger offsite_light (1x l52w) and medium (4x l52w) brand buyers: impressions=8, clicks=0, dominant=impressions, dominantValue=8, appliedThreshold=20, meetsThreshold=false, clicks>impressions=false
+Oct 20, 2025, 5:41:17 PM	Info	✅ [THRESHOLD] WRI01 - out_of_flight_dates: minImpressions=50, minClicks=0
+Oct 20, 2025, 5:41:17 PM	Info	✅ [THRESHOLD] WRI01 - pixel_size_mismatch: minImpressions=0, minClicks=0
+Oct 20, 2025, 5:41:17 PM	Info	✅ [THRESHOLD] WRI01 - default_ad_serving: minImpressions=20, minClicks=0
+Oct 20, 2025, 5:41:17 PM	Info	✅ [THRESHOLD] WRI01 - clicks_greater_than_impressions: minImpressions=20, minClicks=20
+Oct 20, 2025, 5:41:17 PM	Info	🔍 [THRESHOLD CHECK] WRI01 - Row p33w4qg_impossible foods_general_hx_the trade desk_programmatic_display_banner_cross_dcpm_third party served_320x50_behavioral_3p_na_roas_na_na_na_kroger offsite_meat-free grocery buyers*: impressions=26251, clicks=10, dominant=impressions, dominantValue=26251, appliedThreshold=20, meetsThreshold=true, clicks>impressions=false
+Oct 20, 2025, 5:41:17 PM	Info	✅ [THRESHOLD] WRI01 - out_of_flight_dates: minImpressions=50, minClicks=0
+Oct 20, 2025, 5:41:17 PM	Info	✅ [THRESHOLD] WRI01 - pixel_size_mismatch: minImpressions=0, minClicks=0
+Oct 20, 2025, 5:41:17 PM	Info	✅ [THRESHOLD] WRI01 - default_ad_serving: minImpressions=20, minClicks=0
+Oct 20, 2025, 5:41:17 PM	Info	✅ [THRESHOLD] WRI01 - clicks_greater_than_impressions: minImpressions=20, minClicks=20
+Oct 20, 2025, 5:41:17 PM	Info	🔍 [THRESHOLD CHECK] WRI01 - Row p33w4qg_impossible foods_general_hx_the trade desk_programmatic_display_banner_cross_dcpm_third party served_320x50_behavioral_3p_na_roas_na_na_na_kroger offsite_meat-free grocery buyers*: impressions=26246, clicks=21, dominant=impressions, dominantValue=26246, appliedThreshold=20, meetsThreshold=true, clicks>impressions=false
+Oct 20, 2025, 5:41:17 PM	Info	✅ [THRESHOLD] WRI01 - out_of_flight_dates: minImpressions=50, minClicks=0
+Oct 20, 2025, 5:41:17 PM	Info	✅ [THRESHOLD] WRI01 - pixel_size_mismatch: minImpressions=0, minClicks=0
+Oct 20, 2025, 5:41:17 PM	Info	✅ [THRESHOLD] WRI01 - default_ad_serving: minImpressions=20, minClicks=0
+Oct 20, 2025, 5:41:17 PM	Info	✅ [THRESHOLD] WRI01 - clicks_greater_than_impressions: minImpressions=20, minClicks=20
+Oct 20, 2025, 5:41:17 PM	Info	🔍 [THRESHOLD CHECK] WRI01 - Row p33w4qg_impossible foods_general_hx_the trade desk_programmatic_display_banner_cross_dcpm_third party served_320x50_behavioral_3p_na_roas_na_na_na_kroger offsite_meat-free grocery buyers*: impressions=25897, clicks=15, dominant=impressions, dominantValue=25897, appliedThreshold=20, meetsThreshold=true, clicks>impressions=false
+Oct 20, 2025, 5:41:17 PM	Info	✅ [THRESHOLD] WRI01 - out_of_flight_dates: minImpressions=50, minClicks=0
+Oct 20, 2025, 5:41:17 PM	Info	✅ [THRESHOLD] WRI01 - pixel_size_mismatch: minImpressions=0, minClicks=0
+Oct 20, 2025, 5:41:17 PM	Info	✅ [THRESHOLD] WRI01 - default_ad_serving: minImpressions=20, minClicks=0
+Oct 20, 2025, 5:41:17 PM	Info	✅ [THRESHOLD] WRI01 - clicks_greater_than_impressions: minImpressions=20, minClicks=20
+Oct 20, 2025, 5:41:17 PM	Info	🔍 [THRESHOLD CHECK] WRI01 - Row p33w4qd_impossible foods_general_hx_the trade desk_programmatic_display_banner_cross_dcpm_third party served_160x600_behavioral_3p_na_roas_na_na_na_kroger offsite_meat-free grocery buyers*: impressions=146, clicks=0, dominant=impressions, dominantValue=146, appliedThreshold=20, meetsThreshold=true, clicks>impressions=false
+Oct 20, 2025, 5:41:17 PM	Info	✅ [THRESHOLD] WRI01 - out_of_flight_dates: minImpressions=50, minClicks=0
+Oct 20, 2025, 5:41:17 PM	Info	✅ [THRESHOLD] WRI01 - pixel_size_mismatch: minImpressions=0, minClicks=0
+Oct 20, 2025, 5:41:17 PM	Info	✅ [THRESHOLD] WRI01 - default_ad_serving: minImpressions=20, minClicks=0
+Oct 20, 2025, 5:41:17 PM	Info	✅ [THRESHOLD] WRI01 - clicks_greater_than_impressions: minImpressions=20, minClicks=20
+Oct 20, 2025, 5:41:17 PM	Info	🔍 [THRESHOLD CHECK] WRI01 - Row p33w4qd_impossible foods_general_hx_the trade desk_programmatic_display_banner_cross_dcpm_third party served_160x600_behavioral_3p_na_roas_na_na_na_kroger offsite_meat-free grocery buyers*: impressions=159, clicks=0, dominant=impressions, dominantValue=159, appliedThreshold=20, meetsThreshold=true, clicks>impressions=false
+Oct 20, 2025, 5:41:17 PM	Info	✅ [THRESHOLD] WRI01 - out_of_flight_dates: minImpressions=50, minClicks=0
+Oct 20, 2025, 5:41:17 PM	Info	✅ [THRESHOLD] WRI01 - pixel_size_mismatch: minImpressions=0, minClicks=0
+Oct 20, 2025, 5:41:17 PM	Info	✅ [THRESHOLD] WRI01 - default_ad_serving: minImpressions=20, minClicks=0
+Oct 20, 2025, 5:41:17 PM	Info	✅ [THRESHOLD] WRI01 - clicks_greater_than_impressions: minImpressions=20, minClicks=20
+Oct 20, 2025, 5:41:17 PM	Info	🔍 [THRESHOLD CHECK] WRI01 - Row p33w4qd_impossible foods_general_hx_the trade desk_programmatic_display_banner_cross_dcpm_third party served_160x600_behavioral_3p_na_roas_na_na_na_kroger offsite_meat-free grocery buyers*: impressions=139, clicks=0, dominant=impressions, dominantValue=139, appliedThreshold=20, meetsThreshold=true, clicks>impressions=false
+Oct 20, 2025, 5:41:17 PM	Info	✅ [THRESHOLD] WRI01 - out_of_flight_dates: minImpressions=50, minClicks=0
+Oct 20, 2025, 5:41:17 PM	Info	✅ [THRESHOLD] WRI01 - pixel_size_mismatch: minImpressions=0, minClicks=0
+Oct 20, 2025, 5:41:17 PM	Info	✅ [THRESHOLD] WRI01 - default_ad_serving: minImpressions=20, minClicks=0
+Oct 20, 2025, 5:41:17 PM	Info	✅ [THRESHOLD] WRI01 - clicks_greater_than_impressions: minImpressions=20, minClicks=20
+Oct 20, 2025, 5:41:17 PM	Info	🔍 [THRESHOLD CHECK] WRI01 - Row p33vv2j_impossible foods_general_hx_the trade desk_programmatic_display_banner_cross_dcpm_third party served_970x250_behavioral_3p_na_roas_na_na_na_kroger offsite_light (1x l52w) and medium (4x l52w) brand buyers: impressions=17, clicks=0, dominant=impressions, dominantValue=17, appliedThreshold=20, meetsThreshold=false, clicks>impressions=false
+Oct 20, 2025, 5:41:17 PM	Info	✅ [THRESHOLD] WRI01 - out_of_flight_dates: minImpressions=50, minClicks=0
+Oct 20, 2025, 5:41:17 PM	Info	✅ [THRESHOLD] WRI01 - pixel_size_mismatch: minImpressions=0, minClicks=0
+Oct 20, 2025, 5:41:17 PM	Info	✅ [THRESHOLD] WRI01 - default_ad_serving: minImpressions=20, minClicks=0
+Oct 20, 2025, 5:41:17 PM	Info	✅ [THRESHOLD] WRI01 - clicks_greater_than_impressions: minImpressions=20, minClicks=20
+Oct 20, 2025, 5:41:17 PM	Info	🔍 [THRESHOLD CHECK] WRI01 - Row p33vv2j_impossible foods_general_hx_the trade desk_programmatic_display_banner_cross_dcpm_third party served_970x250_behavioral_3p_na_roas_na_na_na_kroger offsite_light (1x l52w) and medium (4x l52w) brand buyers: impressions=14, clicks=0, dominant=impressions, dominantValue=14, appliedThreshold=20, meetsThreshold=false, clicks>impressions=false
+Oct 20, 2025, 5:41:17 PM	Info	✅ [THRESHOLD] WRI01 - out_of_flight_dates: minImpressions=50, minClicks=0
+Oct 20, 2025, 5:41:17 PM	Info	✅ [THRESHOLD] WRI01 - pixel_size_mismatch: minImpressions=0, minClicks=0
+Oct 20, 2025, 5:41:17 PM	Info	✅ [THRESHOLD] WRI01 - default_ad_serving: minImpressions=20, minClicks=0
+Oct 20, 2025, 5:41:17 PM	Info	✅ [THRESHOLD] WRI01 - clicks_greater_than_impressions: minImpressions=20, minClicks=20
+Oct 20, 2025, 5:41:17 PM	Info	🔍 [THRESHOLD CHECK] WRI01 - Row p33vv2j_impossible foods_general_hx_the trade desk_programmatic_display_banner_cross_dcpm_third party served_970x250_behavioral_3p_na_roas_na_na_na_kroger offsite_light (1x l52w) and medium (4x l52w) brand buyers: impressions=19, clicks=0, dominant=impressions, dominantValue=19, appliedThreshold=20, meetsThreshold=false, clicks>impressions=false
+Oct 20, 2025, 5:41:17 PM	Info	✅ [THRESHOLD] WRI01 - out_of_flight_dates: minImpressions=50, minClicks=0
+Oct 20, 2025, 5:41:17 PM	Info	✅ [THRESHOLD] WRI01 - pixel_size_mismatch: minImpressions=0, minClicks=0
+Oct 20, 2025, 5:41:17 PM	Info	✅ [THRESHOLD] WRI01 - default_ad_serving: minImpressions=20, minClicks=0
+Oct 20, 2025, 5:41:17 PM	Info	✅ [THRESHOLD] WRI01 - clicks_greater_than_impressions: minImpressions=20, minClicks=20
+Oct 20, 2025, 5:41:17 PM	Info	🔍 [THRESHOLD CHECK] WRI01 - Row p33w4qc_impossible foods_general_hx_the trade desk_programmatic_display_banner_cross_dcpm_third party served_300x600_behavioral_3p_na_roas_na_na_na_kroger offsite_meat-free grocery buyers*: impressions=62, clicks=0, dominant=impressions, dominantValue=62, appliedThreshold=20, meetsThreshold=true, clicks>impressions=false
+Oct 20, 2025, 5:41:17 PM	Info	✅ [THRESHOLD] WRI01 - out_of_flight_dates: minImpressions=50, minClicks=0
+Oct 20, 2025, 5:41:17 PM	Info	✅ [THRESHOLD] WRI01 - pixel_size_mismatch: minImpressions=0, minClicks=0
+Oct 20, 2025, 5:41:17 PM	Info	✅ [THRESHOLD] WRI01 - default_ad_serving: minImpressions=20, minClicks=0
+Oct 20, 2025, 5:41:17 PM	Info	✅ [THRESHOLD] WRI01 - clicks_greater_than_impressions: minImpressions=20, minClicks=20
+Oct 20, 2025, 5:41:17 PM	Info	🔍 [THRESHOLD CHECK] WRI01 - Row p33w4qc_impossible foods_general_hx_the trade desk_programmatic_display_banner_cross_dcpm_third party served_300x600_behavioral_3p_na_roas_na_na_na_kroger offsite_meat-free grocery buyers*: impressions=64, clicks=0, dominant=impressions, dominantValue=64, appliedThreshold=20, meetsThreshold=true, clicks>impressions=false
+Oct 20, 2025, 5:41:17 PM	Info	✅ [THRESHOLD] WRI01 - out_of_flight_dates: minImpressions=50, minClicks=0
+Oct 20, 2025, 5:41:17 PM	Info	✅ [THRESHOLD] WRI01 - pixel_size_mismatch: minImpressions=0, minClicks=0
+Oct 20, 2025, 5:41:17 PM	Info	✅ [THRESHOLD] WRI01 - default_ad_serving: minImpressions=20, minClicks=0
+Oct 20, 2025, 5:41:17 PM	Info	✅ [THRESHOLD] WRI01 - clicks_greater_than_impressions: minImpressions=20, minClicks=20
+Oct 20, 2025, 5:41:17 PM	Info	🔍 [THRESHOLD CHECK] WRI01 - Row p33w4qc_impossible foods_general_hx_the trade desk_programmatic_display_banner_cross_dcpm_third party served_300x600_behavioral_3p_na_roas_na_na_na_kroger offsite_meat-free grocery buyers*: impressions=66, clicks=0, dominant=impressions, dominantValue=66, appliedThreshold=20, meetsThreshold=true, clicks>impressions=false
+Oct 20, 2025, 5:41:17 PM	Info	✅ [THRESHOLD] WRI01 - out_of_flight_dates: minImpressions=50, minClicks=0
+Oct 20, 2025, 5:41:17 PM	Info	✅ [THRESHOLD] WRI01 - pixel_size_mismatch: minImpressions=0, minClicks=0
+Oct 20, 2025, 5:41:17 PM	Info	✅ [THRESHOLD] WRI01 - default_ad_serving: minImpressions=20, minClicks=0
+Oct 20, 2025, 5:41:17 PM	Info	✅ [THRESHOLD] WRI01 - clicks_greater_than_impressions: minImpressions=20, minClicks=20
+Oct 20, 2025, 5:41:17 PM	Info	🔍 [THRESHOLD CHECK] WRI01 - Row p363j2q_impossible foods_general_hx_the trade desk_programmatic_display_banner_cross_dcpm_third party served_300x600_category_3p_na_ntb_na_na_na_target offsite_frozen_xd_frozen: impressions=266, clicks=0, dominant=impressions, dominantValue=266, appliedThreshold=20, meetsThreshold=true, clicks>impressions=false
+Oct 20, 2025, 5:41:17 PM	Info	✅ [THRESHOLD] WRI01 - out_of_flight_dates: minImpressions=50, minClicks=0
+Oct 20, 2025, 5:41:17 PM	Info	✅ [THRESHOLD] WRI01 - pixel_size_mismatch: minImpressions=0, minClicks=0
+Oct 20, 2025, 5:41:17 PM	Info	✅ [THRESHOLD] WRI01 - default_ad_serving: minImpressions=20, minClicks=0
+Oct 20, 2025, 5:41:17 PM	Info	✅ [THRESHOLD] WRI01 - clicks_greater_than_impressions: minImpressions=20, minClicks=20
+Oct 20, 2025, 5:41:17 PM	Info	🔍 [THRESHOLD CHECK] WRI01 - Row p363hkn_impossible foods_general_hx_the trade desk_programmatic_display_banner_cross_dcpm_third party served_300x50_category_3p_na_ntb_na_na_na_target offsite_frozen_xd_nonbrand category: impressions=3, clicks=0, dominant=impressions, dominantValue=3, appliedThreshold=20, meetsThreshold=false, clicks>impressions=false
+Oct 20, 2025, 5:41:17 PM	Info	✅ [THRESHOLD] WRI01 - out_of_flight_dates: minImpressions=50, minClicks=0
+Oct 20, 2025, 5:41:17 PM	Info	✅ [THRESHOLD] WRI01 - pixel_size_mismatch: minImpressions=0, minClicks=0
+Oct 20, 2025, 5:41:17 PM	Info	✅ [THRESHOLD] WRI01 - default_ad_serving: minImpressions=20, minClicks=0
+Oct 20, 2025, 5:41:17 PM	Info	✅ [THRESHOLD] WRI01 - clicks_greater_than_impressions: minImpressions=20, minClicks=20
+Oct 20, 2025, 5:41:17 PM	Info	🔍 [THRESHOLD CHECK] WRI01 - Row p363h8d_impossible foods_general_hx_the trade desk_programmatic_display_banner_cross_dcpm_third party served_320x50_category_3p_na_ntb_na_na_na_target offsite_frozen_xd_noncategory: impressions=2, clicks=0, dominant=impressions, dominantValue=2, appliedThreshold=20, meetsThreshold=false, clicks>impressions=false
+Oct 20, 2025, 5:41:17 PM	Info	✅ [THRESHOLD] WRI01 - out_of_flight_dates: minImpressions=50, minClicks=0
+Oct 20, 2025, 5:41:17 PM	Info	✅ [THRESHOLD] WRI01 - pixel_size_mismatch: minImpressions=0, minClicks=0
+Oct 20, 2025, 5:41:17 PM	Info	✅ [THRESHOLD] WRI01 - default_ad_serving: minImpressions=20, minClicks=0
+Oct 20, 2025, 5:41:17 PM	Info	✅ [THRESHOLD] WRI01 - clicks_greater_than_impressions: minImpressions=20, minClicks=20
+Oct 20, 2025, 5:41:17 PM	Info	🔍 [THRESHOLD CHECK] WRI01 - Row p363j7y_impossible foods_general_hx_the trade desk_programmatic_display_banner_cross_dcpm_third party served_300x250_category_3p_na_ntb_na_na_na_target offsite_fresh_xd_noncategory: impressions=2, clicks=0, dominant=impressions, dominantValue=2, appliedThreshold=20, meetsThreshold=false, clicks>impressions=false
+Oct 20, 2025, 5:41:17 PM	Info	✅ [THRESHOLD] WRI01 - out_of_flight_dates: minImpressions=50, minClicks=0
+Oct 20, 2025, 5:41:17 PM	Info	✅ [THRESHOLD] WRI01 - pixel_size_mismatch: minImpressions=0, minClicks=0
+Oct 20, 2025, 5:41:17 PM	Info	✅ [THRESHOLD] WRI01 - default_ad_serving: minImpressions=20, minClicks=0
+Oct 20, 2025, 5:41:17 PM	Info	✅ [THRESHOLD] WRI01 - clicks_greater_than_impressions: minImpressions=20, minClicks=20
+Oct 20, 2025, 5:41:17 PM	Info	🔍 [THRESHOLD CHECK] WRI01 - Row p363j2p_impossible foods_general_hx_the trade desk_programmatic_display_banner_cross_dcpm_third party served_728x90_category_3p_na_ntb_na_na_na_target offsite_frozen_xd_frozen: impressions=3604, clicks=3, dominant=impressions, dominantValue=3604, appliedThreshold=20, meetsThreshold=true, clicks>impressions=false
+Oct 20, 2025, 5:41:17 PM	Info	✅ [THRESHOLD] WRI01 - out_of_flight_dates: minImpressions=50, minClicks=0
+Oct 20, 2025, 5:41:17 PM	Info	✅ [THRESHOLD] WRI01 - pixel_size_mismatch: minImpressions=0, minClicks=0
+Oct 20, 2025, 5:41:17 PM	Info	✅ [THRESHOLD] WRI01 - default_ad_serving: minImpressions=20, minClicks=0
+Oct 20, 2025, 5:41:17 PM	Info	✅ [THRESHOLD] WRI01 - clicks_greater_than_impressions: minImpressions=20, minClicks=20
+Oct 20, 2025, 5:41:17 PM	Info	🔍 [THRESHOLD CHECK] WRI01 - Row p363j2x_impossible foods_general_hx_the trade desk_programmatic_display_banner_cross_dcpm_third party served_300x50_category_3p_na_ntb_na_na_na_target offsite_frozen_xd_frozen: impressions=8, clicks=0, dominant=impressions, dominantValue=8, appliedThreshold=20, meetsThreshold=false, clicks>impressions=false
+Oct 20, 2025, 5:41:17 PM	Info	✅ [THRESHOLD] WRI01 - out_of_flight_dates: minImpressions=50, minClicks=0
+Oct 20, 2025, 5:41:17 PM	Info	✅ [THRESHOLD] WRI01 - pixel_size_mismatch: minImpressions=0, minClicks=0
+Oct 20, 2025, 5:41:17 PM	Info	✅ [THRESHOLD] WRI01 - default_ad_serving: minImpressions=20, minClicks=0
+Oct 20, 2025, 5:41:17 PM	Info	✅ [THRESHOLD] WRI01 - clicks_greater_than_impressions: minImpressions=20, minClicks=20
+Oct 20, 2025, 5:41:17 PM	Info	🔍 [THRESHOLD CHECK] WRI01 - Row p363hkl_impossible foods_general_hx_the trade desk_programmatic_display_banner_cross_dcpm_third party served_300x250_category_3p_na_ntb_na_na_na_target offsite_frozen_xd_nonbrand category: impressions=46, clicks=0, dominant=impressions, dominantValue=46, appliedThreshold=20, meetsThreshold=true, clicks>impressions=false
+Oct 20, 2025, 5:41:17 PM	Info	✅ [THRESHOLD] WRI01 - out_of_flight_dates: minImpressions=50, minClicks=0
+Oct 20, 2025, 5:41:17 PM	Info	✅ [THRESHOLD] WRI01 - pixel_size_mismatch: minImpressions=0, minClicks=0
+Oct 20, 2025, 5:41:17 PM	Info	✅ [THRESHOLD] WRI01 - default_ad_serving: minImpressions=20, minClicks=0
+Oct 20, 2025, 5:41:17 PM	Info	✅ [THRESHOLD] WRI01 - clicks_greater_than_impressions: minImpressions=20, minClicks=20
+Oct 20, 2025, 5:41:17 PM	Info	🔍 [THRESHOLD CHECK] WRI01 - Row p363jbw_impossible foods_general_hx_the trade desk_programmatic_display_banner_cross_dcpm_third party served_728x90_category_3p_na_ntb_na_na_na_target offsite_fresh_xd_nonbrand category: impressions=1, clicks=0, dominant=impressions, dominantValue=1, appliedThreshold=20, meetsThreshold=false, clicks>impressions=false
+Oct 20, 2025, 5:41:17 PM	Info	✅ [THRESHOLD] WRI01 - out_of_flight_dates: minImpressions=50, minClicks=0
+Oct 20, 2025, 5:41:17 PM	Info	✅ [THRESHOLD] WRI01 - pixel_size_mismatch: minImpressions=0, minClicks=0
+Oct 20, 2025, 5:41:17 PM	Info	✅ [THRESHOLD] WRI01 - default_ad_serving: minImpressions=20, minClicks=0
+Oct 20, 2025, 5:41:17 PM	Info	✅ [THRESHOLD] WRI01 - clicks_greater_than_impressions: minImpressions=20, minClicks=20
+Oct 20, 2025, 5:41:17 PM	Info	🔍 [THRESHOLD CHECK] WRI01 - Row p363jn5_impossible foods_general_hx_the trade desk_programmatic_display_banner_cross_dcpm_third party served_320x50_category_3p_na_ntb_na_na_na_target offsite_fresh_xd_brand purchasers: impressions=16, clicks=0, dominant=impressions, dominantValue=16, appliedThreshold=20, meetsThreshold=false, clicks>impressions=false
+Oct 20, 2025, 5:41:17 PM	Info	✅ [THRESHOLD] WRI01 - out_of_flight_dates: minImpressions=50, minClicks=0
+Oct 20, 2025, 5:41:17 PM	Info	✅ [THRESHOLD] WRI01 - pixel_size_mismatch: minImpressions=0, minClicks=0
+Oct 20, 2025, 5:41:17 PM	Info	✅ [THRESHOLD] WRI01 - default_ad_serving: minImpressions=20, minClicks=0
+Oct 20, 2025, 5:41:17 PM	Info	✅ [THRESHOLD] WRI01 - clicks_greater_than_impressions: minImpressions=20, minClicks=20
+Oct 20, 2025, 5:41:17 PM	Info	🔍 [THRESHOLD CHECK] WRI01 - Row p363j7t_impossible foods_general_hx_the trade desk_programmatic_display_banner_cross_dcpm_third party served_300x600_category_3p_na_ntb_na_na_na_target offsite_fresh_xd_noncategory: impressions=1, clicks=0, dominant=impressions, dominantValue=1, appliedThreshold=20, meetsThreshold=false, clicks>impressions=false
+Oct 20, 2025, 5:41:17 PM	Info	✅ [THRESHOLD] WRI01 - out_of_flight_dates: minImpressions=50, minClicks=0
+Oct 20, 2025, 5:41:17 PM	Info	✅ [THRESHOLD] WRI01 - pixel_size_mismatch: minImpressions=0, minClicks=0
+Oct 20, 2025, 5:41:17 PM	Info	✅ [THRESHOLD] WRI01 - default_ad_serving: minImpressions=20, minClicks=0
+Oct 20, 2025, 5:41:17 PM	Info	✅ [THRESHOLD] WRI01 - clicks_greater_than_impressions: minImpressions=20, minClicks=20
+Oct 20, 2025, 5:41:17 PM	Info	🔍 [THRESHOLD CHECK] WRI01 - Row p363hsf_impossible foods_general_hx_the trade desk_programmatic_display_banner_cross_dcpm_third party served_320x50_category_3p_na_ntb_na_na_na_target offsite_frozen_xd_brand purchasers: impressions=71, clicks=0, dominant=impressions, dominantValue=71, appliedThreshold=20, meetsThreshold=true, clicks>impressions=false
+Oct 20, 2025, 5:41:17 PM	Info	✅ [THRESHOLD] WRI01 - out_of_flight_dates: minImpressions=50, minClicks=0
+Oct 20, 2025, 5:41:17 PM	Info	✅ [THRESHOLD] WRI01 - pixel_size_mismatch: minImpressions=0, minClicks=0
+Oct 20, 2025, 5:41:17 PM	Info	✅ [THRESHOLD] WRI01 - default_ad_serving: minImpressions=20, minClicks=0
+Oct 20, 2025, 5:41:17 PM	Info	✅ [THRESHOLD] WRI01 - clicks_greater_than_impressions: minImpressions=20, minClicks=20
+Oct 20, 2025, 5:41:17 PM	Info	🔍 [THRESHOLD CHECK] WRI01 - Row p363jvc_impossible foods_general_hx_the trade desk_programmatic_display_banner_cross_dcpm_third party served_300x600_category_3p_na_ntb_na_na_na_target offsite_fresh_xd_bbq: impressions=3, clicks=0, dominant=impressions, dominantValue=3, appliedThreshold=20, meetsThreshold=false, clicks>impressions=false
+Oct 20, 2025, 5:41:17 PM	Info	✅ [THRESHOLD] WRI01 - out_of_flight_dates: minImpressions=50, minClicks=0
+Oct 20, 2025, 5:41:17 PM	Info	✅ [THRESHOLD] WRI01 - pixel_size_mismatch: minImpressions=0, minClicks=0
+Oct 20, 2025, 5:41:17 PM	Info	✅ [THRESHOLD] WRI01 - default_ad_serving: minImpressions=20, minClicks=0
+Oct 20, 2025, 5:41:17 PM	Info	✅ [THRESHOLD] WRI01 - clicks_greater_than_impressions: minImpressions=20, minClicks=20
+Oct 20, 2025, 5:41:17 PM	Info	🔍 [THRESHOLD CHECK] WRI01 - Row p363hkm_impossible foods_general_hx_the trade desk_programmatic_display_banner_cross_dcpm_third party served_160x600_category_3p_na_ntb_na_na_na_target offsite_frozen_xd_nonbrand category: impressions=1, clicks=0, dominant=impressions, dominantValue=1, appliedThreshold=20, meetsThreshold=false, clicks>impressions=false
+Oct 20, 2025, 5:41:17 PM	Info	✅ [THRESHOLD] WRI01 - out_of_flight_dates: minImpressions=50, minClicks=0
+Oct 20, 2025, 5:41:17 PM	Info	✅ [THRESHOLD] WRI01 - pixel_size_mismatch: minImpressions=0, minClicks=0
+Oct 20, 2025, 5:41:17 PM	Info	✅ [THRESHOLD] WRI01 - default_ad_serving: minImpressions=20, minClicks=0
+Oct 20, 2025, 5:41:17 PM	Info	✅ [THRESHOLD] WRI01 - clicks_greater_than_impressions: minImpressions=20, minClicks=20
+Oct 20, 2025, 5:41:17 PM	Info	🔍 [THRESHOLD CHECK] WRI01 - Row p363jn6_impossible foods_general_hx_the trade desk_programmatic_display_banner_cross_dcpm_third party served_300x250_category_3p_na_ntb_na_na_na_target offsite_fresh_xd_brand purchasers: impressions=42, clicks=0, dominant=impressions, dominantValue=42, appliedThreshold=20, meetsThreshold=true, clicks>impressions=false
+Oct 20, 2025, 5:41:17 PM	Info	✅ [THRESHOLD] WRI01 - out_of_flight_dates: minImpressions=50, minClicks=0
+Oct 20, 2025, 5:41:17 PM	Info	✅ [THRESHOLD] WRI01 - pixel_size_mismatch: minImpressions=0, minClicks=0
+Oct 20, 2025, 5:41:17 PM	Info	✅ [THRESHOLD] WRI01 - default_ad_serving: minImpressions=20, minClicks=0
+Oct 20, 2025, 5:41:17 PM	Info	✅ [THRESHOLD] WRI01 - clicks_greater_than_impressions: minImpressions=20, minClicks=20
+Oct 20, 2025, 5:41:17 PM	Info	🔍 [THRESHOLD CHECK] WRI01 - Row p363h8f_impossible foods_general_hx_the trade desk_programmatic_display_banner_cross_dcpm_third party served_728x90_category_3p_na_ntb_na_na_na_target offsite_frozen_xd_noncategory: impressions=12, clicks=0, dominant=impressions, dominantValue=12, appliedThreshold=20, meetsThreshold=false, clicks>impressions=false
+Oct 20, 2025, 5:41:17 PM	Info	✅ [THRESHOLD] WRI01 - out_of_flight_dates: minImpressions=50, minClicks=0
+Oct 20, 2025, 5:41:17 PM	Info	✅ [THRESHOLD] WRI01 - pixel_size_mismatch: minImpressions=0, minClicks=0
+Oct 20, 2025, 5:41:17 PM	Info	✅ [THRESHOLD] WRI01 - default_ad_serving: minImpressions=20, minClicks=0
+Oct 20, 2025, 5:41:17 PM	Info	✅ [THRESHOLD] WRI01 - clicks_greater_than_impressions: minImpressions=20, minClicks=20
+Oct 20, 2025, 5:41:17 PM	Info	🔍 [THRESHOLD CHECK] WRI01 - Row p363h8k_impossible foods_general_hx_the trade desk_programmatic_display_banner_cross_dcpm_third party served_300x50_category_3p_na_ntb_na_na_na_target offsite_frozen_xd_noncategory: impressions=2, clicks=0, dominant=impressions, dominantValue=2, appliedThreshold=20, meetsThreshold=false, clicks>impressions=false
+Oct 20, 2025, 5:41:17 PM	Info	✅ [THRESHOLD] WRI01 - out_of_flight_dates: minImpressions=50, minClicks=0
+Oct 20, 2025, 5:41:17 PM	Info	✅ [THRESHOLD] WRI01 - pixel_size_mismatch: minImpressions=0, minClicks=0
+Oct 20, 2025, 5:41:17 PM	Info	✅ [THRESHOLD] WRI01 - default_ad_serving: minImpressions=20, minClicks=0
+Oct 20, 2025, 5:41:17 PM	Info	✅ [THRESHOLD] WRI01 - clicks_greater_than_impressions: minImpressions=20, minClicks=20
+Oct 20, 2025, 5:41:17 PM	Info	🔍 [THRESHOLD CHECK] WRI01 - Row p363j7s_impossible foods_general_hx_the trade desk_programmatic_display_banner_cross_dcpm_third party served_728x90_category_3p_na_ntb_na_na_na_target offsite_fresh_xd_noncategory: impressions=3, clicks=0, dominant=impressions, dominantValue=3, appliedThreshold=20, meetsThreshold=false, clicks>impressions=false
+Oct 20, 2025, 5:41:17 PM	Info	✅ [THRESHOLD] WRI01 - out_of_flight_dates: minImpressions=50, minClicks=0
+Oct 20, 2025, 5:41:17 PM	Info	✅ [THRESHOLD] WRI01 - pixel_size_mismatch: minImpressions=0, minClicks=0
+Oct 20, 2025, 5:41:17 PM	Info	✅ [THRESHOLD] WRI01 - default_ad_serving: minImpressions=20, minClicks=0
+Oct 20, 2025, 5:41:17 PM	Info	✅ [THRESHOLD] WRI01 - clicks_greater_than_impressions: minImpressions=20, minClicks=20
+Oct 20, 2025, 5:41:17 PM	Info	🔍 [THRESHOLD CHECK] WRI01 - Row p363hsh_impossible foods_general_hx_the trade desk_programmatic_display_banner_cross_dcpm_third party served_300x250_category_3p_na_ntb_na_na_na_target offsite_frozen_xd_brand purchasers: impressions=181, clicks=0, dominant=impressions, dominantValue=181, appliedThreshold=20, meetsThreshold=true, clicks>impressions=false
+Oct 20, 2025, 5:41:17 PM	Info	✅ [THRESHOLD] WRI01 - out_of_flight_dates: minImpressions=50, minClicks=0
+Oct 20, 2025, 5:41:17 PM	Info	✅ [THRESHOLD] WRI01 - pixel_size_mismatch: minImpressions=0, minClicks=0
+Oct 20, 2025, 5:41:17 PM	Info	✅ [THRESHOLD] WRI01 - default_ad_serving: minImpressions=20, minClicks=0
+Oct 20, 2025, 5:41:17 PM	Info	✅ [THRESHOLD] WRI01 - clicks_greater_than_impressions: minImpressions=20, minClicks=20
+Oct 20, 2025, 5:41:17 PM	Info	🔍 [THRESHOLD CHECK] WRI01 - Row p363hsc_impossible foods_general_hx_the trade desk_programmatic_display_banner_cross_dcpm_third party served_300x600_category_3p_na_ntb_na_na_na_target offsite_frozen_xd_brand purchasers: impressions=8, clicks=0, dominant=impressions, dominantValue=8, appliedThreshold=20, meetsThreshold=false, clicks>impressions=false
+Oct 20, 2025, 5:41:17 PM	Info	✅ [THRESHOLD] WRI01 - out_of_flight_dates: minImpressions=50, minClicks=0
+Oct 20, 2025, 5:41:17 PM	Info	✅ [THRESHOLD] WRI01 - pixel_size_mismatch: minImpressions=0, minClicks=0
+Oct 20, 2025, 5:41:17 PM	Info	✅ [THRESHOLD] WRI01 - default_ad_serving: minImpressions=20, minClicks=0
+Oct 20, 2025, 5:41:17 PM	Info	✅ [THRESHOLD] WRI01 - clicks_greater_than_impressions: minImpressions=20, minClicks=20
+Oct 20, 2025, 5:41:17 PM	Info	🔍 [THRESHOLD CHECK] WRI01 - Row p363j2v_impossible foods_general_hx_the trade desk_programmatic_display_banner_cross_dcpm_third party served_300x250_category_3p_na_ntb_na_na_na_target offsite_frozen_xd_frozen: impressions=11597, clicks=4, dominant=impressions, dominantValue=11597, appliedThreshold=20, meetsThreshold=true, clicks>impressions=false
+Oct 20, 2025, 5:41:17 PM	Info	✅ [THRESHOLD] WRI01 - out_of_flight_dates: minImpressions=50, minClicks=0
+Oct 20, 2025, 5:41:17 PM	Info	✅ [THRESHOLD] WRI01 - pixel_size_mismatch: minImpressions=0, minClicks=0
+Oct 20, 2025, 5:41:17 PM	Info	✅ [THRESHOLD] WRI01 - default_ad_serving: minImpressions=20, minClicks=0
+Oct 20, 2025, 5:41:17 PM	Info	✅ [THRESHOLD] WRI01 - clicks_greater_than_impressions: minImpressions=20, minClicks=20
+Oct 20, 2025, 5:41:17 PM	Info	🔍 [THRESHOLD CHECK] WRI01 - Row p363jv6_impossible foods_general_hx_the trade desk_programmatic_display_banner_cross_dcpm_third party served_728x90_category_3p_na_ntb_na_na_na_target offsite_fresh_xd_bbq: impressions=5, clicks=0, dominant=impressions, dominantValue=5, appliedThreshold=20, meetsThreshold=false, clicks>impressions=false
+Oct 20, 2025, 5:41:17 PM	Info	✅ [THRESHOLD] WRI01 - out_of_flight_dates: minImpressions=50, minClicks=0
+Oct 20, 2025, 5:41:17 PM	Info	✅ [THRESHOLD] WRI01 - pixel_size_mismatch: minImpressions=0, minClicks=0
+Oct 20, 2025, 5:41:17 PM	Info	✅ [THRESHOLD] WRI01 - default_ad_serving: minImpressions=20, minClicks=0
+Oct 20, 2025, 5:41:17 PM	Info	✅ [THRESHOLD] WRI01 - clicks_greater_than_impressions: minImpressions=20, minClicks=20
+Oct 20, 2025, 5:41:17 PM	Info	🔍 [THRESHOLD CHECK] WRI01 - Row p363hkf_impossible foods_general_hx_the trade desk_programmatic_display_banner_cross_dcpm_third party served_728x90_category_3p_na_ntb_na_na_na_target offsite_frozen_xd_nonbrand category: impressions=4, clicks=0, dominant=impressions, dominantValue=4, appliedThreshold=20, meetsThreshold=false, clicks>impressions=false
+Oct 20, 2025, 5:41:17 PM	Info	✅ [THRESHOLD] WRI01 - out_of_flight_dates: minImpressions=50, minClicks=0
+Oct 20, 2025, 5:41:17 PM	Info	✅ [THRESHOLD] WRI01 - pixel_size_mismatch: minImpressions=0, minClicks=0
+Oct 20, 2025, 5:41:17 PM	Info	✅ [THRESHOLD] WRI01 - default_ad_serving: minImpressions=20, minClicks=0
+Oct 20, 2025, 5:41:17 PM	Info	✅ [THRESHOLD] WRI01 - clicks_greater_than_impressions: minImpressions=20, minClicks=20
+Oct 20, 2025, 5:41:17 PM	Info	🔍 [THRESHOLD CHECK] WRI01 - Row p363hkj_impossible foods_general_hx_the trade desk_programmatic_display_banner_cross_dcpm_third party served_320x50_category_3p_na_ntb_na_na_na_target offsite_frozen_xd_nonbrand category: impressions=5, clicks=0, dominant=impressions, dominantValue=5, appliedThreshold=20, meetsThreshold=false, clicks>impressions=false
+Oct 20, 2025, 5:41:17 PM	Info	✅ [THRESHOLD] WRI01 - out_of_flight_dates: minImpressions=50, minClicks=0
+Oct 20, 2025, 5:41:17 PM	Info	✅ [THRESHOLD] WRI01 - pixel_size_mismatch: minImpressions=0, minClicks=0
+Oct 20, 2025, 5:41:17 PM	Info	✅ [THRESHOLD] WRI01 - default_ad_serving: minImpressions=20, minClicks=0
+Oct 20, 2025, 5:41:17 PM	Info	✅ [THRESHOLD] WRI01 - clicks_greater_than_impressions: minImpressions=20, minClicks=20
+Oct 20, 2025, 5:41:17 PM	Info	🔍 [THRESHOLD CHECK] WRI01 - Row p363jrx_impossible foods_general_hx_the trade desk_programmatic_display_banner_cross_dcpm_third party served_300x250_category_3p_na_ntb_na_na_na_target offsite_fresh_xd_digital/delivery shoppers: impressions=4, clicks=0, dominant=impressions, dominantValue=4, appliedThreshold=20, meetsThreshold=false, clicks>impressions=false
+Oct 20, 2025, 5:41:17 PM	Info	✅ [THRESHOLD] WRI01 - out_of_flight_dates: minImpressions=50, minClicks=0
+Oct 20, 2025, 5:41:17 PM	Info	✅ [THRESHOLD] WRI01 - pixel_size_mismatch: minImpressions=0, minClicks=0
+Oct 20, 2025, 5:41:17 PM	Info	✅ [THRESHOLD] WRI01 - default_ad_serving: minImpressions=20, minClicks=0
+Oct 20, 2025, 5:41:17 PM	Info	✅ [THRESHOLD] WRI01 - clicks_greater_than_impressions: minImpressions=20, minClicks=20
+Oct 20, 2025, 5:41:17 PM	Info	🔍 [THRESHOLD CHECK] WRI01 - Row p363h8b_impossible foods_general_hx_the trade desk_programmatic_display_banner_cross_dcpm_third party served_300x250_category_3p_na_ntb_na_na_na_target offsite_frozen_xd_noncategory: impressions=26, clicks=0, dominant=impressions, dominantValue=26, appliedThreshold=20, meetsThreshold=true, clicks>impressions=false
+Oct 20, 2025, 5:41:17 PM	Info	✅ [THRESHOLD] WRI01 - out_of_flight_dates: minImpressions=50, minClicks=0
+Oct 20, 2025, 5:41:17 PM	Info	✅ [THRESHOLD] WRI01 - pixel_size_mismatch: minImpressions=0, minClicks=0
+Oct 20, 2025, 5:41:17 PM	Info	✅ [THRESHOLD] WRI01 - default_ad_serving: minImpressions=20, minClicks=0
+Oct 20, 2025, 5:41:17 PM	Info	✅ [THRESHOLD] WRI01 - clicks_greater_than_impressions: minImpressions=20, minClicks=20
+Oct 20, 2025, 5:41:17 PM	Info	🔍 [THRESHOLD CHECK] WRI01 - Row p363j2s_impossible foods_general_hx_the trade desk_programmatic_display_banner_cross_dcpm_third party served_320x50_category_3p_na_ntb_na_na_na_target offsite_frozen_xd_frozen: impressions=4207, clicks=1, dominant=impressions, dominantValue=4207, appliedThreshold=20, meetsThreshold=true, clicks>impressions=false
+Oct 20, 2025, 5:41:17 PM	Info	✅ [THRESHOLD] WRI01 - out_of_flight_dates: minImpressions=50, minClicks=0
+Oct 20, 2025, 5:41:17 PM	Info	✅ [THRESHOLD] WRI01 - pixel_size_mismatch: minImpressions=0, minClicks=0
+Oct 20, 2025, 5:41:17 PM	Info	✅ [THRESHOLD] WRI01 - default_ad_serving: minImpressions=20, minClicks=0
+Oct 20, 2025, 5:41:17 PM	Info	✅ [THRESHOLD] WRI01 - clicks_greater_than_impressions: minImpressions=20, minClicks=20
+Oct 20, 2025, 5:41:17 PM	Info	🔍 [THRESHOLD CHECK] WRI01 - Row p363jvb_impossible foods_general_hx_the trade desk_programmatic_display_banner_cross_dcpm_third party served_300x250_category_3p_na_ntb_na_na_na_target offsite_fresh_xd_bbq: impressions=6, clicks=0, dominant=impressions, dominantValue=6, appliedThreshold=20, meetsThreshold=false, clicks>impressions=false
+Oct 20, 2025, 5:41:17 PM	Info	✅ [THRESHOLD] WRI01 - out_of_flight_dates: minImpressions=50, minClicks=0
+Oct 20, 2025, 5:41:17 PM	Info	✅ [THRESHOLD] WRI01 - pixel_size_mismatch: minImpressions=0, minClicks=0
+Oct 20, 2025, 5:41:17 PM	Info	✅ [THRESHOLD] WRI01 - default_ad_serving: minImpressions=20, minClicks=0
+Oct 20, 2025, 5:41:17 PM	Info	✅ [THRESHOLD] WRI01 - clicks_greater_than_impressions: minImpressions=20, minClicks=20
+Oct 20, 2025, 5:41:17 PM	Info	🔍 [THRESHOLD CHECK] WRI01 - Row p363jv9_impossible foods_general_hx_the trade desk_programmatic_display_banner_cross_dcpm_third party served_320x50_category_3p_na_ntb_na_na_na_target offsite_fresh_xd_bbq: impressions=2, clicks=0, dominant=impressions, dominantValue=2, appliedThreshold=20, meetsThreshold=false, clicks>impressions=false
+Oct 20, 2025, 5:41:17 PM	Info	✅ [THRESHOLD] WRI01 - out_of_flight_dates: minImpressions=50, minClicks=0
+Oct 20, 2025, 5:41:17 PM	Info	✅ [THRESHOLD] WRI01 - pixel_size_mismatch: minImpressions=0, minClicks=0
+Oct 20, 2025, 5:41:17 PM	Info	✅ [THRESHOLD] WRI01 - default_ad_serving: minImpressions=20, minClicks=0
+Oct 20, 2025, 5:41:17 PM	Info	✅ [THRESHOLD] WRI01 - clicks_greater_than_impressions: minImpressions=20, minClicks=20
+Oct 20, 2025, 5:41:17 PM	Info	🔍 [THRESHOLD CHECK] WRI01 - Row p363hkg_impossible foods_general_hx_the trade desk_programmatic_display_banner_cross_dcpm_third party served_300x600_category_3p_na_ntb_na_na_na_target offsite_frozen_xd_nonbrand category: impressions=12, clicks=0, dominant=impressions, dominantValue=12, appliedThreshold=20, meetsThreshold=false, clicks>impressions=false
+Oct 20, 2025, 5:41:17 PM	Info	✅ [THRESHOLD] WRI01 - out_of_flight_dates: minImpressions=50, minClicks=0
+Oct 20, 2025, 5:41:17 PM	Info	✅ [THRESHOLD] WRI01 - pixel_size_mismatch: minImpressions=0, minClicks=0
+Oct 20, 2025, 5:41:17 PM	Info	✅ [THRESHOLD] WRI01 - default_ad_serving: minImpressions=20, minClicks=0
+Oct 20, 2025, 5:41:17 PM	Info	✅ [THRESHOLD] WRI01 - clicks_greater_than_impressions: minImpressions=20, minClicks=20
+Oct 20, 2025, 5:41:17 PM	Info	🔍 [THRESHOLD CHECK] WRI01 - Row p363jc0_impossible foods_general_hx_the trade desk_programmatic_display_banner_cross_dcpm_third party served_300x250_category_3p_na_ntb_na_na_na_target offsite_fresh_xd_nonbrand category: impressions=5, clicks=0, dominant=impressions, dominantValue=5, appliedThreshold=20, meetsThreshold=false, clicks>impressions=false
+Oct 20, 2025, 5:41:17 PM	Info	✅ [THRESHOLD] WRI01 - out_of_flight_dates: minImpressions=50, minClicks=0
+Oct 20, 2025, 5:41:17 PM	Info	✅ [THRESHOLD] WRI01 - pixel_size_mismatch: minImpressions=0, minClicks=0
+Oct 20, 2025, 5:41:17 PM	Info	✅ [THRESHOLD] WRI01 - default_ad_serving: minImpressions=20, minClicks=0
+Oct 20, 2025, 5:41:17 PM	Info	✅ [THRESHOLD] WRI01 - clicks_greater_than_impressions: minImpressions=20, minClicks=20
+Oct 20, 2025, 5:41:17 PM	Info	🔍 [THRESHOLD CHECK] WRI01 - Row p363hyc_impossible foods_general_hx_the trade desk_programmatic_display_banner_cross_dcpm_third party served_300x50_category_3p_na_ntb_na_na_na_target offsite_frozen_xd_digital/delivery shoppers: impressions=3, clicks=0, dominant=impressions, dominantValue=3, appliedThreshold=20, meetsThreshold=false, clicks>impressions=false
+Oct 20, 2025, 5:41:17 PM	Info	✅ [THRESHOLD] WRI01 - out_of_flight_dates: minImpressions=50, minClicks=0
+Oct 20, 2025, 5:41:17 PM	Info	✅ [THRESHOLD] WRI01 - pixel_size_mismatch: minImpressions=0, minClicks=0
+Oct 20, 2025, 5:41:17 PM	Info	✅ [THRESHOLD] WRI01 - default_ad_serving: minImpressions=20, minClicks=0
+Oct 20, 2025, 5:41:17 PM	Info	✅ [THRESHOLD] WRI01 - clicks_greater_than_impressions: minImpressions=20, minClicks=20
+Oct 20, 2025, 5:41:17 PM	Info	🔍 [THRESHOLD CHECK] WRI01 - Row p363hy7_impossible foods_general_hx_the trade desk_programmatic_display_banner_cross_dcpm_third party served_320x50_category_3p_na_ntb_na_na_na_target offsite_frozen_xd_digital/delivery shoppers: impressions=3, clicks=0, dominant=impressions, dominantValue=3, appliedThreshold=20, meetsThreshold=false, clicks>impressions=false
+Oct 20, 2025, 5:41:17 PM	Info	✅ [THRESHOLD] WRI01 - out_of_flight_dates: minImpressions=50, minClicks=0
+Oct 20, 2025, 5:41:17 PM	Info	✅ [THRESHOLD] WRI01 - pixel_size_mismatch: minImpressions=0, minClicks=0
+Oct 20, 2025, 5:41:17 PM	Info	✅ [THRESHOLD] WRI01 - default_ad_serving: minImpressions=20, minClicks=0
+Oct 20, 2025, 5:41:17 PM	Info	✅ [THRESHOLD] WRI01 - clicks_greater_than_impressions: minImpressions=20, minClicks=20
+Oct 20, 2025, 5:41:17 PM	Info	🔍 [THRESHOLD CHECK] WRI01 - Row p363j80_impossible foods_general_hx_the trade desk_programmatic_display_banner_cross_dcpm_third party served_300x50_category_3p_na_ntb_na_na_na_target offsite_fresh_xd_noncategory: impressions=1, clicks=0, dominant=impressions, dominantValue=1, appliedThreshold=20, meetsThreshold=false, clicks>impressions=false
+Oct 20, 2025, 5:41:17 PM	Info	✅ [THRESHOLD] WRI01 - out_of_flight_dates: minImpressions=50, minClicks=0
+Oct 20, 2025, 5:41:17 PM	Info	✅ [THRESHOLD] WRI01 - pixel_size_mismatch: minImpressions=0, minClicks=0
+Oct 20, 2025, 5:41:17 PM	Info	✅ [THRESHOLD] WRI01 - default_ad_serving: minImpressions=20, minClicks=0
+Oct 20, 2025, 5:41:17 PM	Info	✅ [THRESHOLD] WRI01 - clicks_greater_than_impressions: minImpressions=20, minClicks=20
+Oct 20, 2025, 5:41:17 PM	Info	🔍 [THRESHOLD CHECK] WRI01 - Row p363hsb_impossible foods_general_hx_the trade desk_programmatic_display_banner_cross_dcpm_third party served_728x90_category_3p_na_ntb_na_na_na_target offsite_frozen_xd_brand purchasers: impressions=67, clicks=0, dominant=impressions, dominantValue=67, appliedThreshold=20, meetsThreshold=true, clicks>impressions=false
+Oct 20, 2025, 5:41:17 PM	Info	✅ [THRESHOLD] WRI01 - out_of_flight_dates: minImpressions=50, minClicks=0
+Oct 20, 2025, 5:41:17 PM	Info	✅ [THRESHOLD] WRI01 - pixel_size_mismatch: minImpressions=0, minClicks=0
+Oct 20, 2025, 5:41:17 PM	Info	✅ [THRESHOLD] WRI01 - default_ad_serving: minImpressions=20, minClicks=0
+Oct 20, 2025, 5:41:17 PM	Info	✅ [THRESHOLD] WRI01 - clicks_greater_than_impressions: minImpressions=20, minClicks=20
+Oct 20, 2025, 5:41:17 PM	Info	🔍 [THRESHOLD CHECK] WRI01 - Row p363jn7_impossible foods_general_hx_the trade desk_programmatic_display_banner_cross_dcpm_third party served_300x600_category_3p_na_ntb_na_na_na_target offsite_fresh_xd_brand purchasers: impressions=1, clicks=0, dominant=impressions, dominantValue=1, appliedThreshold=20, meetsThreshold=false, clicks>impressions=false
+Oct 20, 2025, 5:41:17 PM	Info	✅ [THRESHOLD] WRI01 - out_of_flight_dates: minImpressions=50, minClicks=0
+Oct 20, 2025, 5:41:17 PM	Info	✅ [THRESHOLD] WRI01 - pixel_size_mismatch: minImpressions=0, minClicks=0
+Oct 20, 2025, 5:41:17 PM	Info	✅ [THRESHOLD] WRI01 - default_ad_serving: minImpressions=20, minClicks=0
+Oct 20, 2025, 5:41:17 PM	Info	✅ [THRESHOLD] WRI01 - clicks_greater_than_impressions: minImpressions=20, minClicks=20
+Oct 20, 2025, 5:41:17 PM	Info	🔍 [THRESHOLD CHECK] WRI01 - Row p363hy4_impossible foods_general_hx_the trade desk_programmatic_display_banner_cross_dcpm_third party served_728x90_category_3p_na_ntb_na_na_na_target offsite_frozen_xd_digital/delivery shoppers: impressions=8, clicks=0, dominant=impressions, dominantValue=8, appliedThreshold=20, meetsThreshold=false, clicks>impressions=false
+Oct 20, 2025, 5:41:17 PM	Info	✅ [THRESHOLD] WRI01 - out_of_flight_dates: minImpressions=50, minClicks=0
+Oct 20, 2025, 5:41:17 PM	Info	✅ [THRESHOLD] WRI01 - pixel_size_mismatch: minImpressions=0, minClicks=0
+Oct 20, 2025, 5:41:17 PM	Info	✅ [THRESHOLD] WRI01 - default_ad_serving: minImpressions=20, minClicks=0
+Oct 20, 2025, 5:41:17 PM	Info	✅ [THRESHOLD] WRI01 - clicks_greater_than_impressions: minImpressions=20, minClicks=20
+Oct 20, 2025, 5:41:17 PM	Info	🔍 [THRESHOLD CHECK] WRI01 - Row p363j7w_impossible foods_general_hx_the trade desk_programmatic_display_banner_cross_dcpm_third party served_320x50_category_3p_na_ntb_na_na_na_target offsite_fresh_xd_noncategory: impressions=1, clicks=0, dominant=impressions, dominantValue=1, appliedThreshold=20, meetsThreshold=false, clicks>impressions=false
+Oct 20, 2025, 5:41:17 PM	Info	✅ [THRESHOLD] WRI01 - out_of_flight_dates: minImpressions=50, minClicks=0
+Oct 20, 2025, 5:41:17 PM	Info	✅ [THRESHOLD] WRI01 - pixel_size_mismatch: minImpressions=0, minClicks=0
+Oct 20, 2025, 5:41:17 PM	Info	✅ [THRESHOLD] WRI01 - default_ad_serving: minImpressions=20, minClicks=0
+Oct 20, 2025, 5:41:17 PM	Info	✅ [THRESHOLD] WRI01 - clicks_greater_than_impressions: minImpressions=20, minClicks=20
+Oct 20, 2025, 5:41:17 PM	Info	🔍 [THRESHOLD CHECK] WRI01 - Row p363jn2_impossible foods_general_hx_the trade desk_programmatic_display_banner_cross_dcpm_third party served_728x90_category_3p_na_ntb_na_na_na_target offsite_fresh_xd_brand purchasers: impressions=9, clicks=0, dominant=impressions, dominantValue=9, appliedThreshold=20, meetsThreshold=false, clicks>impressions=false
+Oct 20, 2025, 5:41:17 PM	Info	✅ [THRESHOLD] WRI01 - out_of_flight_dates: minImpressions=50, minClicks=0
+Oct 20, 2025, 5:41:17 PM	Info	✅ [THRESHOLD] WRI01 - pixel_size_mismatch: minImpressions=0, minClicks=0
+Oct 20, 2025, 5:41:17 PM	Info	✅ [THRESHOLD] WRI01 - default_ad_serving: minImpressions=20, minClicks=0
+Oct 20, 2025, 5:41:17 PM	Info	✅ [THRESHOLD] WRI01 - clicks_greater_than_impressions: minImpressions=20, minClicks=20
+Oct 20, 2025, 5:41:17 PM	Info	🔍 [THRESHOLD CHECK] WRI01 - Row p363hy5_impossible foods_general_hx_the trade desk_programmatic_display_banner_cross_dcpm_third party served_300x600_category_3p_na_ntb_na_na_na_target offsite_frozen_xd_digital/delivery shoppers: impressions=9, clicks=0, dominant=impressions, dominantValue=9, appliedThreshold=20, meetsThreshold=false, clicks>impressions=false
+Oct 20, 2025, 5:41:17 PM	Info	✅ [THRESHOLD] WRI01 - out_of_flight_dates: minImpressions=50, minClicks=0
+Oct 20, 2025, 5:41:17 PM	Info	✅ [THRESHOLD] WRI01 - pixel_size_mismatch: minImpressions=0, minClicks=0
+Oct 20, 2025, 5:41:17 PM	Info	✅ [THRESHOLD] WRI01 - default_ad_serving: minImpressions=20, minClicks=0
+Oct 20, 2025, 5:41:17 PM	Info	✅ [THRESHOLD] WRI01 - clicks_greater_than_impressions: minImpressions=20, minClicks=20
+Oct 20, 2025, 5:41:17 PM	Info	🔍 [THRESHOLD CHECK] WRI01 - Row p363hy9_impossible foods_general_hx_the trade desk_programmatic_display_banner_cross_dcpm_third party served_300x250_category_3p_na_ntb_na_na_na_target offsite_frozen_xd_digital/delivery shoppers: impressions=30, clicks=0, dominant=impressions, dominantValue=30, appliedThreshold=20, meetsThreshold=true, clicks>impressions=false
+Oct 20, 2025, 5:41:17 PM	Info	✅ [THRESHOLD] WRI01 - out_of_flight_dates: minImpressions=50, minClicks=0
+Oct 20, 2025, 5:41:17 PM	Info	✅ [THRESHOLD] WRI01 - pixel_size_mismatch: minImpressions=0, minClicks=0
+Oct 20, 2025, 5:41:17 PM	Info	✅ [THRESHOLD] WRI01 - default_ad_serving: minImpressions=20, minClicks=0
+Oct 20, 2025, 5:41:17 PM	Info	✅ [THRESHOLD] WRI01 - clicks_greater_than_impressions: minImpressions=20, minClicks=20
+Oct 20, 2025, 5:41:17 PM	Info	🔍 [THRESHOLD CHECK] WRI01 - Row p363jrs_impossible foods_general_hx_the trade desk_programmatic_display_banner_cross_dcpm_third party served_728x90_category_3p_na_ntb_na_na_na_target offsite_fresh_xd_digital/delivery shoppers: impressions=1, clicks=0, dominant=impressions, dominantValue=1, appliedThreshold=20, meetsThreshold=false, clicks>impressions=false
+Oct 20, 2025, 5:41:17 PM	Info	✅ [THRESHOLD] WRI01 - out_of_flight_dates: minImpressions=50, minClicks=0
+Oct 20, 2025, 5:41:17 PM	Info	✅ [THRESHOLD] WRI01 - pixel_size_mismatch: minImpressions=0, minClicks=0
+Oct 20, 2025, 5:41:17 PM	Info	✅ [THRESHOLD] WRI01 - default_ad_serving: minImpressions=20, minClicks=0
+Oct 20, 2025, 5:41:17 PM	Info	✅ [THRESHOLD] WRI01 - clicks_greater_than_impressions: minImpressions=20, minClicks=20
+Oct 20, 2025, 5:41:17 PM	Info	🔍 [THRESHOLD CHECK] WRI01 - Row p363jry_impossible foods_general_hx_the trade desk_programmatic_display_banner_cross_dcpm_third party served_300x600_category_3p_na_ntb_na_na_na_target offsite_fresh_xd_digital/delivery shoppers: impressions=1, clicks=0, dominant=impressions, dominantValue=1, appliedThreshold=20, meetsThreshold=false, clicks>impressions=false
+Oct 20, 2025, 5:41:17 PM	Info	✅ [THRESHOLD] WRI01 - out_of_flight_dates: minImpressions=50, minClicks=0
+Oct 20, 2025, 5:41:17 PM	Info	✅ [THRESHOLD] WRI01 - pixel_size_mismatch: minImpressions=0, minClicks=0
+Oct 20, 2025, 5:41:17 PM	Info	✅ [THRESHOLD] WRI01 - default_ad_serving: minImpressions=20, minClicks=0
+Oct 20, 2025, 5:41:17 PM	Info	✅ [THRESHOLD] WRI01 - clicks_greater_than_impressions: minImpressions=20, minClicks=20
+Oct 20, 2025, 5:41:17 PM	Info	🔍 [THRESHOLD CHECK] WRI01 - Row p363h8h_impossible foods_general_hx_the trade desk_programmatic_display_banner_cross_dcpm_third party served_300x600_category_3p_na_ntb_na_na_na_target offsite_frozen_xd_noncategory: impressions=9, clicks=0, dominant=impressions, dominantValue=9, appliedThreshold=20, meetsThreshold=false, clicks>impressions=false
+Oct 20, 2025, 5:41:17 PM	Info	✅ [THRESHOLD] WRI01 - out_of_flight_dates: minImpressions=50, minClicks=0
+Oct 20, 2025, 5:41:17 PM	Info	✅ [THRESHOLD] WRI01 - pixel_size_mismatch: minImpressions=0, minClicks=0
+Oct 20, 2025, 5:41:17 PM	Info	✅ [THRESHOLD] WRI01 - default_ad_serving: minImpressions=20, minClicks=0
+Oct 20, 2025, 5:41:17 PM	Info	✅ [THRESHOLD] WRI01 - clicks_greater_than_impressions: minImpressions=20, minClicks=20
+Oct 20, 2025, 5:41:17 PM	Info	🔍 [THRESHOLD CHECK] WRI01 - Row p37s29w_impossible foods_general_hx_the trade desk_programmatic_display_banner_cross_dcpm_third party served_300x600_category_3p_na_ntb_na_na_na_target offsite_xd_retargeting: impressions=4, clicks=0, dominant=impressions, dominantValue=4, appliedThreshold=20, meetsThreshold=false, clicks>impressions=false
+Oct 20, 2025, 5:41:17 PM	Info	✅ [THRESHOLD] WRI01 - out_of_flight_dates: minImpressions=50, minClicks=0
+Oct 20, 2025, 5:41:17 PM	Info	✅ [THRESHOLD] WRI01 - pixel_size_mismatch: minImpressions=0, minClicks=0
+Oct 20, 2025, 5:41:17 PM	Info	✅ [THRESHOLD] WRI01 - default_ad_serving: minImpressions=20, minClicks=0
+Oct 20, 2025, 5:41:17 PM	Info	✅ [THRESHOLD] WRI01 - clicks_greater_than_impressions: minImpressions=20, minClicks=20
+Oct 20, 2025, 5:41:17 PM	Info	🔍 [THRESHOLD CHECK] WRI01 - Row p37s29w_impossible foods_general_hx_the trade desk_programmatic_display_banner_cross_dcpm_third party served_300x600_category_3p_na_ntb_na_na_na_target offsite_xd_retargeting: impressions=3, clicks=0, dominant=impressions, dominantValue=3, appliedThreshold=20, meetsThreshold=false, clicks>impressions=false
+Oct 20, 2025, 5:41:17 PM	Info	✅ [THRESHOLD] WRI01 - out_of_flight_dates: minImpressions=50, minClicks=0
+Oct 20, 2025, 5:41:17 PM	Info	✅ [THRESHOLD] WRI01 - pixel_size_mismatch: minImpressions=0, minClicks=0
+Oct 20, 2025, 5:41:17 PM	Info	✅ [THRESHOLD] WRI01 - default_ad_serving: minImpressions=20, minClicks=0
+Oct 20, 2025, 5:41:17 PM	Info	✅ [THRESHOLD] WRI01 - clicks_greater_than_impressions: minImpressions=20, minClicks=20
+Oct 20, 2025, 5:41:17 PM	Info	🔍 [THRESHOLD CHECK] WRI01 - Row p37s29t_impossible foods_general_hx_the trade desk_programmatic_display_banner_cross_dcpm_third party served_300x250_category_3p_na_ntb_na_na_na_target offsite_xd_retargeting: impressions=22, clicks=0, dominant=impressions, dominantValue=22, appliedThreshold=20, meetsThreshold=true, clicks>impressions=false
+Oct 20, 2025, 5:41:17 PM	Info	✅ [THRESHOLD] WRI01 - out_of_flight_dates: minImpressions=50, minClicks=0
+Oct 20, 2025, 5:41:17 PM	Info	✅ [THRESHOLD] WRI01 - pixel_size_mismatch: minImpressions=0, minClicks=0
+Oct 20, 2025, 5:41:17 PM	Info	✅ [THRESHOLD] WRI01 - default_ad_serving: minImpressions=20, minClicks=0
+Oct 20, 2025, 5:41:17 PM	Info	✅ [THRESHOLD] WRI01 - clicks_greater_than_impressions: minImpressions=20, minClicks=20
+Oct 20, 2025, 5:41:17 PM	Info	🔍 [THRESHOLD CHECK] WRI01 - Row p37s29t_impossible foods_general_hx_the trade desk_programmatic_display_banner_cross_dcpm_third party served_300x250_category_3p_na_ntb_na_na_na_target offsite_xd_retargeting: impressions=18, clicks=0, dominant=impressions, dominantValue=18, appliedThreshold=20, meetsThreshold=false, clicks>impressions=false
+Oct 20, 2025, 5:41:17 PM	Info	✅ [THRESHOLD] WRI01 - out_of_flight_dates: minImpressions=50, minClicks=0
+Oct 20, 2025, 5:41:17 PM	Info	✅ [THRESHOLD] WRI01 - pixel_size_mismatch: minImpressions=0, minClicks=0
+Oct 20, 2025, 5:41:17 PM	Info	✅ [THRESHOLD] WRI01 - default_ad_serving: minImpressions=20, minClicks=0
+Oct 20, 2025, 5:41:17 PM	Info	✅ [THRESHOLD] WRI01 - clicks_greater_than_impressions: minImpressions=20, minClicks=20
+Oct 20, 2025, 5:41:17 PM	Info	🔍 [THRESHOLD CHECK] WRI01 - Row p37s29s_impossible foods_general_hx_the trade desk_programmatic_display_banner_cross_dcpm_third party served_320x50_category_3p_na_ntb_na_na_na_target offsite_xd_retargeting: impressions=2, clicks=0, dominant=impressions, dominantValue=2, appliedThreshold=20, meetsThreshold=false, clicks>impressions=false
+Oct 20, 2025, 5:41:17 PM	Info	✅ [THRESHOLD] WRI01 - out_of_flight_dates: minImpressions=50, minClicks=0
+Oct 20, 2025, 5:41:17 PM	Info	✅ [THRESHOLD] WRI01 - pixel_size_mismatch: minImpressions=0, minClicks=0
+Oct 20, 2025, 5:41:17 PM	Info	✅ [THRESHOLD] WRI01 - default_ad_serving: minImpressions=20, minClicks=0
+Oct 20, 2025, 5:41:17 PM	Info	✅ [THRESHOLD] WRI01 - clicks_greater_than_impressions: minImpressions=20, minClicks=20
+Oct 20, 2025, 5:41:17 PM	Info	🔍 [THRESHOLD CHECK] WRI01 - Row p37s29r_impossible foods_general_hx_the trade desk_programmatic_display_banner_cross_dcpm_third party served_300x50_category_3p_na_ntb_na_na_na_target offsite_xd_retargeting: impressions=2, clicks=0, dominant=impressions, dominantValue=2, appliedThreshold=20, meetsThreshold=false, clicks>impressions=false
+Oct 20, 2025, 5:41:17 PM	Info	✅ [THRESHOLD] WRI01 - out_of_flight_dates: minImpressions=50, minClicks=0
+Oct 20, 2025, 5:41:17 PM	Info	✅ [THRESHOLD] WRI01 - pixel_size_mismatch: minImpressions=0, minClicks=0
+Oct 20, 2025, 5:41:17 PM	Info	✅ [THRESHOLD] WRI01 - default_ad_serving: minImpressions=20, minClicks=0
+Oct 20, 2025, 5:41:17 PM	Info	✅ [THRESHOLD] WRI01 - clicks_greater_than_impressions: minImpressions=20, minClicks=20
+Oct 20, 2025, 5:41:17 PM	Info	🔍 [THRESHOLD CHECK] WRI01 - Row p37x9sj_impossible foods_general_hx_the trade desk_programmatic_display_banner_cross_dcpm_third party served_320x50_category_3p_na_ntb_na_na_na_kroger offsite_frozen food buyers: impressions=10378, clicks=1, dominant=impressions, dominantValue=10378, appliedThreshold=20, meetsThreshold=true, clicks>impressions=false
+Oct 20, 2025, 5:41:17 PM	Info	✅ [THRESHOLD] WRI01 - out_of_flight_dates: minImpressions=50, minClicks=0
+Oct 20, 2025, 5:41:17 PM	Info	✅ [THRESHOLD] WRI01 - pixel_size_mismatch: minImpressions=0, minClicks=0
+Oct 20, 2025, 5:41:17 PM	Info	✅ [THRESHOLD] WRI01 - default_ad_serving: minImpressions=20, minClicks=0
+Oct 20, 2025, 5:41:17 PM	Info	✅ [THRESHOLD] WRI01 - clicks_greater_than_impressions: minImpressions=20, minClicks=20
+Oct 20, 2025, 5:41:17 PM	Info	🔍 [THRESHOLD CHECK] WRI01 - Row p37x9sj_impossible foods_general_hx_the trade desk_programmatic_display_banner_cross_dcpm_third party served_320x50_category_3p_na_ntb_na_na_na_kroger offsite_frozen food buyers: impressions=5645, clicks=5, dominant=impressions, dominantValue=5645, appliedThreshold=20, meetsThreshold=true, clicks>impressions=false
+Oct 20, 2025, 5:41:17 PM	Info	✅ [THRESHOLD] WRI01 - out_of_flight_dates: minImpressions=50, minClicks=0
+Oct 20, 2025, 5:41:17 PM	Info	✅ [THRESHOLD] WRI01 - pixel_size_mismatch: minImpressions=0, minClicks=0
+Oct 20, 2025, 5:41:17 PM	Info	✅ [THRESHOLD] WRI01 - default_ad_serving: minImpressions=20, minClicks=0
+Oct 20, 2025, 5:41:17 PM	Info	✅ [THRESHOLD] WRI01 - clicks_greater_than_impressions: minImpressions=20, minClicks=20
+Oct 20, 2025, 5:41:17 PM	Info	🔍 [THRESHOLD CHECK] WRI01 - Row p37x9sj_impossible foods_general_hx_the trade desk_programmatic_display_banner_cross_dcpm_third party served_320x50_category_3p_na_ntb_na_na_na_kroger offsite_frozen food buyers: impressions=9143, clicks=4, dominant=impressions, dominantValue=9143, appliedThreshold=20, meetsThreshold=true, clicks>impressions=false
+Oct 20, 2025, 5:41:17 PM	Info	✅ [THRESHOLD] WRI01 - out_of_flight_dates: minImpressions=50, minClicks=0
+Oct 20, 2025, 5:41:17 PM	Info	✅ [THRESHOLD] WRI01 - pixel_size_mismatch: minImpressions=0, minClicks=0
+Oct 20, 2025, 5:41:17 PM	Info	✅ [THRESHOLD] WRI01 - default_ad_serving: minImpressions=20, minClicks=0
+Oct 20, 2025, 5:41:17 PM	Info	✅ [THRESHOLD] WRI01 - clicks_greater_than_impressions: minImpressions=20, minClicks=20
+Oct 20, 2025, 5:41:17 PM	Info	🔍 [THRESHOLD CHECK] WRI01 - Row p37x9sp_impossible foods_general_hx_the trade desk_programmatic_display_banner_cross_dcpm_third party served_300x50_category_3p_na_ntb_na_na_na_kroger offsite_frozen food buyers: impressions=546, clicks=1, dominant=impressions, dominantValue=546, appliedThreshold=20, meetsThreshold=true, clicks>impressions=false
+Oct 20, 2025, 5:41:17 PM	Info	✅ [THRESHOLD] WRI01 - out_of_flight_dates: minImpressions=50, minClicks=0
+Oct 20, 2025, 5:41:17 PM	Info	✅ [THRESHOLD] WRI01 - pixel_size_mismatch: minImpressions=0, minClicks=0
+Oct 20, 2025, 5:41:17 PM	Info	✅ [THRESHOLD] WRI01 - default_ad_serving: minImpressions=20, minClicks=0
+Oct 20, 2025, 5:41:17 PM	Info	✅ [THRESHOLD] WRI01 - clicks_greater_than_impressions: minImpressions=20, minClicks=20
+Oct 20, 2025, 5:41:17 PM	Info	🔍 [THRESHOLD CHECK] WRI01 - Row p37x9sp_impossible foods_general_hx_the trade desk_programmatic_display_banner_cross_dcpm_third party served_300x50_category_3p_na_ntb_na_na_na_kroger offsite_frozen food buyers: impressions=3451, clicks=1, dominant=impressions, dominantValue=3451, appliedThreshold=20, meetsThreshold=true, clicks>impressions=false
+Oct 20, 2025, 5:41:17 PM	Info	✅ [THRESHOLD] WRI01 - out_of_flight_dates: minImpressions=50, minClicks=0
+Oct 20, 2025, 5:41:17 PM	Info	✅ [THRESHOLD] WRI01 - pixel_size_mismatch: minImpressions=0, minClicks=0
+Oct 20, 2025, 5:41:17 PM	Info	✅ [THRESHOLD] WRI01 - default_ad_serving: minImpressions=20, minClicks=0
+Oct 20, 2025, 5:41:17 PM	Info	✅ [THRESHOLD] WRI01 - clicks_greater_than_impressions: minImpressions=20, minClicks=20
+Oct 20, 2025, 5:41:17 PM	Info	🔍 [THRESHOLD CHECK] WRI01 - Row p37x9sp_impossible foods_general_hx_the trade desk_programmatic_display_banner_cross_dcpm_third party served_300x50_category_3p_na_ntb_na_na_na_kroger offsite_frozen food buyers: impressions=2387, clicks=3, dominant=impressions, dominantValue=2387, appliedThreshold=20, meetsThreshold=true, clicks>impressions=false
+Oct 20, 2025, 5:41:17 PM	Info	✅ [THRESHOLD] WRI01 - out_of_flight_dates: minImpressions=50, minClicks=0
+Oct 20, 2025, 5:41:17 PM	Info	✅ [THRESHOLD] WRI01 - pixel_size_mismatch: minImpressions=0, minClicks=0
+Oct 20, 2025, 5:41:17 PM	Info	✅ [THRESHOLD] WRI01 - default_ad_serving: minImpressions=20, minClicks=0
+Oct 20, 2025, 5:41:17 PM	Info	✅ [THRESHOLD] WRI01 - clicks_greater_than_impressions: minImpressions=20, minClicks=20
+Oct 20, 2025, 5:41:17 PM	Info	🔍 [THRESHOLD CHECK] WRI01 - Row p37x9sh_impossible foods_general_hx_the trade desk_programmatic_display_banner_cross_dcpm_third party served_970x250_category_3p_na_ntb_na_na_na_kroger offsite_frozen food buyers: impressions=406, clicks=0, dominant=impressions, dominantValue=406, appliedThreshold=20, meetsThreshold=true, clicks>impressions=false
+Oct 20, 2025, 5:41:17 PM	Info	✅ [THRESHOLD] WRI01 - out_of_flight_dates: minImpressions=50, minClicks=0
+Oct 20, 2025, 5:41:17 PM	Info	✅ [THRESHOLD] WRI01 - pixel_size_mismatch: minImpressions=0, minClicks=0
+Oct 20, 2025, 5:41:17 PM	Info	✅ [THRESHOLD] WRI01 - default_ad_serving: minImpressions=20, minClicks=0
+Oct 20, 2025, 5:41:17 PM	Info	✅ [THRESHOLD] WRI01 - clicks_greater_than_impressions: minImpressions=20, minClicks=20
+Oct 20, 2025, 5:41:17 PM	Info	🔍 [THRESHOLD CHECK] WRI01 - Row p37x9sh_impossible foods_general_hx_the trade desk_programmatic_display_banner_cross_dcpm_third party served_970x250_category_3p_na_ntb_na_na_na_kroger offsite_frozen food buyers: impressions=739, clicks=0, dominant=impressions, dominantValue=739, appliedThreshold=20, meetsThreshold=true, clicks>impressions=false
+Oct 20, 2025, 5:41:17 PM	Info	✅ [THRESHOLD] WRI01 - out_of_flight_dates: minImpressions=50, minClicks=0
+Oct 20, 2025, 5:41:17 PM	Info	✅ [THRESHOLD] WRI01 - pixel_size_mismatch: minImpressions=0, minClicks=0
+Oct 20, 2025, 5:41:17 PM	Info	✅ [THRESHOLD] WRI01 - default_ad_serving: minImpressions=20, minClicks=0
+Oct 20, 2025, 5:41:18 PM	Info	✅ [THRESHOLD] WRI01 - clicks_greater_than_impressions: minImpressions=20, minClicks=20
+Oct 20, 2025, 5:41:18 PM	Info	🔍 [THRESHOLD CHECK] WRI01 - Row p37x9sh_impossible foods_general_hx_the trade desk_programmatic_display_banner_cross_dcpm_third party served_970x250_category_3p_na_ntb_na_na_na_kroger offsite_frozen food buyers: impressions=225, clicks=0, dominant=impressions, dominantValue=225, appliedThreshold=20, meetsThreshold=true, clicks>impressions=false
+Oct 20, 2025, 5:41:18 PM	Info	✅ [THRESHOLD] WRI01 - out_of_flight_dates: minImpressions=50, minClicks=0
+Oct 20, 2025, 5:41:18 PM	Info	✅ [THRESHOLD] WRI01 - pixel_size_mismatch: minImpressions=0, minClicks=0
+Oct 20, 2025, 5:41:18 PM	Info	✅ [THRESHOLD] WRI01 - default_ad_serving: minImpressions=20, minClicks=0
+Oct 20, 2025, 5:41:18 PM	Info	✅ [THRESHOLD] WRI01 - clicks_greater_than_impressions: minImpressions=20, minClicks=20
+Oct 20, 2025, 5:41:18 PM	Info	🔍 [THRESHOLD CHECK] WRI01 - Row p37s29q_impossible foods_general_hx_the trade desk_programmatic_display_banner_cross_dcpm_third party served_160x600_category_3p_na_ntb_na_na_na_target offsite_xd_retargeting: impressions=1, clicks=0, dominant=impressions, dominantValue=1, appliedThreshold=20, meetsThreshold=false, clicks>impressions=false
+Oct 20, 2025, 5:41:18 PM	Info	✅ [THRESHOLD] WRI01 - out_of_flight_dates: minImpressions=50, minClicks=0
+Oct 20, 2025, 5:41:18 PM	Info	✅ [THRESHOLD] WRI01 - pixel_size_mismatch: minImpressions=0, minClicks=0
+Oct 20, 2025, 5:41:18 PM	Info	✅ [THRESHOLD] WRI01 - default_ad_serving: minImpressions=20, minClicks=0
+Oct 20, 2025, 5:41:18 PM	Info	✅ [THRESHOLD] WRI01 - clicks_greater_than_impressions: minImpressions=20, minClicks=20
+Oct 20, 2025, 5:41:18 PM	Info	🔍 [THRESHOLD CHECK] WRI01 - Row p37s2b2_impossible foods_general_hx_the trade desk_programmatic_display_banner_cross_dcpm_third party served_728x90_category_3p_na_ntb_na_na_na_target offsite_xd_retargeting: impressions=4, clicks=0, dominant=impressions, dominantValue=4, appliedThreshold=20, meetsThreshold=false, clicks>impressions=false
+Oct 20, 2025, 5:41:18 PM	Info	✅ [THRESHOLD] WRI01 - out_of_flight_dates: minImpressions=50, minClicks=0
+Oct 20, 2025, 5:41:18 PM	Info	✅ [THRESHOLD] WRI01 - pixel_size_mismatch: minImpressions=0, minClicks=0
+Oct 20, 2025, 5:41:18 PM	Info	✅ [THRESHOLD] WRI01 - default_ad_serving: minImpressions=20, minClicks=0
+Oct 20, 2025, 5:41:18 PM	Info	✅ [THRESHOLD] WRI01 - clicks_greater_than_impressions: minImpressions=20, minClicks=20
+Oct 20, 2025, 5:41:18 PM	Info	🔍 [THRESHOLD CHECK] WRI01 - Row p37s2b2_impossible foods_general_hx_the trade desk_programmatic_display_banner_cross_dcpm_third party served_728x90_category_3p_na_ntb_na_na_na_target offsite_xd_retargeting: impressions=3, clicks=0, dominant=impressions, dominantValue=3, appliedThreshold=20, meetsThreshold=false, clicks>impressions=false
+Oct 20, 2025, 5:41:18 PM	Info	✅ [THRESHOLD] WRI01 - out_of_flight_dates: minImpressions=50, minClicks=0
+Oct 20, 2025, 5:41:18 PM	Info	✅ [THRESHOLD] WRI01 - pixel_size_mismatch: minImpressions=0, minClicks=0
+Oct 20, 2025, 5:41:18 PM	Info	✅ [THRESHOLD] WRI01 - default_ad_serving: minImpressions=20, minClicks=0
+Oct 20, 2025, 5:41:18 PM	Info	✅ [THRESHOLD] WRI01 - clicks_greater_than_impressions: minImpressions=20, minClicks=20
+Oct 20, 2025, 5:41:18 PM	Info	🔍 [THRESHOLD CHECK] WRI01 - Row p37x9sn_impossible foods_general_hx_the trade desk_programmatic_display_banner_cross_dcpm_third party served_160x600_category_3p_na_ntb_na_na_na_kroger offsite_frozen food buyers: impressions=89, clicks=0, dominant=impressions, dominantValue=89, appliedThreshold=20, meetsThreshold=true, clicks>impressions=false
+Oct 20, 2025, 5:41:18 PM	Info	✅ [THRESHOLD] WRI01 - out_of_flight_dates: minImpressions=50, minClicks=0
+Oct 20, 2025, 5:41:18 PM	Info	✅ [THRESHOLD] WRI01 - pixel_size_mismatch: minImpressions=0, minClicks=0
+Oct 20, 2025, 5:41:18 PM	Info	✅ [THRESHOLD] WRI01 - default_ad_serving: minImpressions=20, minClicks=0
+Oct 20, 2025, 5:41:18 PM	Info	✅ [THRESHOLD] WRI01 - clicks_greater_than_impressions: minImpressions=20, minClicks=20
+Oct 20, 2025, 5:41:18 PM	Info	🔍 [THRESHOLD CHECK] WRI01 - Row p37x9sn_impossible foods_general_hx_the trade desk_programmatic_display_banner_cross_dcpm_third party served_160x600_category_3p_na_ntb_na_na_na_kroger offsite_frozen food buyers: impressions=421, clicks=0, dominant=impressions, dominantValue=421, appliedThreshold=20, meetsThreshold=true, clicks>impressions=false
+Oct 20, 2025, 5:41:18 PM	Info	✅ [THRESHOLD] WRI01 - out_of_flight_dates: minImpressions=50, minClicks=0
+Oct 20, 2025, 5:41:18 PM	Info	✅ [THRESHOLD] WRI01 - pixel_size_mismatch: minImpressions=0, minClicks=0
+Oct 20, 2025, 5:41:18 PM	Info	✅ [THRESHOLD] WRI01 - default_ad_serving: minImpressions=20, minClicks=0
+Oct 20, 2025, 5:41:18 PM	Info	✅ [THRESHOLD] WRI01 - clicks_greater_than_impressions: minImpressions=20, minClicks=20
+Oct 20, 2025, 5:41:18 PM	Info	🔍 [THRESHOLD CHECK] WRI01 - Row p37x9sn_impossible foods_general_hx_the trade desk_programmatic_display_banner_cross_dcpm_third party served_160x600_category_3p_na_ntb_na_na_na_kroger offsite_frozen food buyers: impressions=224, clicks=0, dominant=impressions, dominantValue=224, appliedThreshold=20, meetsThreshold=true, clicks>impressions=false
+Oct 20, 2025, 5:41:18 PM	Info	✅ [THRESHOLD] WRI01 - out_of_flight_dates: minImpressions=50, minClicks=0
+Oct 20, 2025, 5:41:18 PM	Info	✅ [THRESHOLD] WRI01 - pixel_size_mismatch: minImpressions=0, minClicks=0
+Oct 20, 2025, 5:41:18 PM	Info	✅ [THRESHOLD] WRI01 - default_ad_serving: minImpressions=20, minClicks=0
+Oct 20, 2025, 5:41:18 PM	Info	✅ [THRESHOLD] WRI01 - clicks_greater_than_impressions: minImpressions=20, minClicks=20
+Oct 20, 2025, 5:41:18 PM	Info	🔍 [THRESHOLD CHECK] WRI01 - Row p37x9sm_impossible foods_general_hx_the trade desk_programmatic_display_banner_cross_dcpm_third party served_300x600_category_3p_na_ntb_na_na_na_kroger offsite_frozen food buyers: impressions=137, clicks=0, dominant=impressions, dominantValue=137, appliedThreshold=20, meetsThreshold=true, clicks>impressions=false
+Oct 20, 2025, 5:41:18 PM	Info	✅ [THRESHOLD] WRI01 - out_of_flight_dates: minImpressions=50, minClicks=0
+Oct 20, 2025, 5:41:18 PM	Info	✅ [THRESHOLD] WRI01 - pixel_size_mismatch: minImpressions=0, minClicks=0
+Oct 20, 2025, 5:41:18 PM	Info	✅ [THRESHOLD] WRI01 - default_ad_serving: minImpressions=20, minClicks=0
+Oct 20, 2025, 5:41:18 PM	Info	✅ [THRESHOLD] WRI01 - clicks_greater_than_impressions: minImpressions=20, minClicks=20
+Oct 20, 2025, 5:41:18 PM	Info	🔍 [THRESHOLD CHECK] WRI01 - Row p37x9sm_impossible foods_general_hx_the trade desk_programmatic_display_banner_cross_dcpm_third party served_300x600_category_3p_na_ntb_na_na_na_kroger offsite_frozen food buyers: impressions=37, clicks=0, dominant=impressions, dominantValue=37, appliedThreshold=20, meetsThreshold=true, clicks>impressions=false
+Oct 20, 2025, 5:41:18 PM	Info	✅ [THRESHOLD] WRI01 - out_of_flight_dates: minImpressions=50, minClicks=0
+Oct 20, 2025, 5:41:18 PM	Info	✅ [THRESHOLD] WRI01 - pixel_size_mismatch: minImpressions=0, minClicks=0
+Oct 20, 2025, 5:41:18 PM	Info	✅ [THRESHOLD] WRI01 - default_ad_serving: minImpressions=20, minClicks=0
+Oct 20, 2025, 5:41:18 PM	Info	✅ [THRESHOLD] WRI01 - clicks_greater_than_impressions: minImpressions=20, minClicks=20
+Oct 20, 2025, 5:41:18 PM	Info	🔍 [THRESHOLD CHECK] WRI01 - Row p37x9sm_impossible foods_general_hx_the trade desk_programmatic_display_banner_cross_dcpm_third party served_300x600_category_3p_na_ntb_na_na_na_kroger offsite_frozen food buyers: impressions=208, clicks=0, dominant=impressions, dominantValue=208, appliedThreshold=20, meetsThreshold=true, clicks>impressions=false
+Oct 20, 2025, 5:41:18 PM	Info	✅ [THRESHOLD] WRI01 - out_of_flight_dates: minImpressions=50, minClicks=0
+Oct 20, 2025, 5:41:18 PM	Info	✅ [THRESHOLD] WRI01 - pixel_size_mismatch: minImpressions=0, minClicks=0
+Oct 20, 2025, 5:41:18 PM	Info	✅ [THRESHOLD] WRI01 - default_ad_serving: minImpressions=20, minClicks=0
+Oct 20, 2025, 5:41:18 PM	Info	✅ [THRESHOLD] WRI01 - clicks_greater_than_impressions: minImpressions=20, minClicks=20
+Oct 20, 2025, 5:41:18 PM	Info	🔍 [THRESHOLD CHECK] WRI01 - Row p37x9sk_impossible foods_general_hx_the trade desk_programmatic_display_banner_cross_dcpm_third party served_728x90_category_3p_na_ntb_na_na_na_kroger offsite_frozen food buyers: impressions=2099, clicks=0, dominant=impressions, dominantValue=2099, appliedThreshold=20, meetsThreshold=true, clicks>impressions=false
+Oct 20, 2025, 5:41:18 PM	Info	✅ [THRESHOLD] WRI01 - out_of_flight_dates: minImpressions=50, minClicks=0
+Oct 20, 2025, 5:41:18 PM	Info	✅ [THRESHOLD] WRI01 - pixel_size_mismatch: minImpressions=0, minClicks=0
+Oct 20, 2025, 5:41:18 PM	Info	✅ [THRESHOLD] WRI01 - default_ad_serving: minImpressions=20, minClicks=0
+Oct 20, 2025, 5:41:18 PM	Info	✅ [THRESHOLD] WRI01 - clicks_greater_than_impressions: minImpressions=20, minClicks=20
+Oct 20, 2025, 5:41:18 PM	Info	🔍 [THRESHOLD CHECK] WRI01 - Row p37x9sk_impossible foods_general_hx_the trade desk_programmatic_display_banner_cross_dcpm_third party served_728x90_category_3p_na_ntb_na_na_na_kroger offsite_frozen food buyers: impressions=4247, clicks=7, dominant=impressions, dominantValue=4247, appliedThreshold=20, meetsThreshold=true, clicks>impressions=false
+Oct 20, 2025, 5:41:18 PM	Info	✅ [THRESHOLD] WRI01 - out_of_flight_dates: minImpressions=50, minClicks=0
+Oct 20, 2025, 5:41:18 PM	Info	✅ [THRESHOLD] WRI01 - pixel_size_mismatch: minImpressions=0, minClicks=0
+Oct 20, 2025, 5:41:18 PM	Info	✅ [THRESHOLD] WRI01 - default_ad_serving: minImpressions=20, minClicks=0
+Oct 20, 2025, 5:41:18 PM	Info	✅ [THRESHOLD] WRI01 - clicks_greater_than_impressions: minImpressions=20, minClicks=20
+Oct 20, 2025, 5:41:18 PM	Info	🔍 [THRESHOLD CHECK] WRI01 - Row p37x9sk_impossible foods_general_hx_the trade desk_programmatic_display_banner_cross_dcpm_third party served_728x90_category_3p_na_ntb_na_na_na_kroger offsite_frozen food buyers: impressions=1223, clicks=3, dominant=impressions, dominantValue=1223, appliedThreshold=20, meetsThreshold=true, clicks>impressions=false
+Oct 20, 2025, 5:41:18 PM	Info	✅ [THRESHOLD] WRI01 - out_of_flight_dates: minImpressions=50, minClicks=0
+Oct 20, 2025, 5:41:18 PM	Info	✅ [THRESHOLD] WRI01 - pixel_size_mismatch: minImpressions=0, minClicks=0
+Oct 20, 2025, 5:41:18 PM	Info	✅ [THRESHOLD] WRI01 - default_ad_serving: minImpressions=20, minClicks=0
+Oct 20, 2025, 5:41:18 PM	Info	✅ [THRESHOLD] WRI01 - clicks_greater_than_impressions: minImpressions=20, minClicks=20
+Oct 20, 2025, 5:41:18 PM	Info	🔍 [THRESHOLD CHECK] WRI01 - Row p37x9sg_impossible foods_general_hx_the trade desk_programmatic_display_banner_cross_dcpm_third party served_300x250_category_3p_na_ntb_na_na_na_kroger offsite_frozen food buyers: impressions=6547, clicks=0, dominant=impressions, dominantValue=6547, appliedThreshold=20, meetsThreshold=true, clicks>impressions=false
+Oct 20, 2025, 5:41:18 PM	Info	✅ [THRESHOLD] WRI01 - out_of_flight_dates: minImpressions=50, minClicks=0
+Oct 20, 2025, 5:41:18 PM	Info	✅ [THRESHOLD] WRI01 - pixel_size_mismatch: minImpressions=0, minClicks=0
+Oct 20, 2025, 5:41:18 PM	Info	✅ [THRESHOLD] WRI01 - default_ad_serving: minImpressions=20, minClicks=0
+Oct 20, 2025, 5:41:18 PM	Info	✅ [THRESHOLD] WRI01 - clicks_greater_than_impressions: minImpressions=20, minClicks=20
+Oct 20, 2025, 5:41:18 PM	Info	🔍 [THRESHOLD CHECK] WRI01 - Row p37x9sg_impossible foods_general_hx_the trade desk_programmatic_display_banner_cross_dcpm_third party served_300x250_category_3p_na_ntb_na_na_na_kroger offsite_frozen food buyers: impressions=346, clicks=0, dominant=impressions, dominantValue=346, appliedThreshold=20, meetsThreshold=true, clicks>impressions=false
+Oct 20, 2025, 5:41:18 PM	Info	✅ [THRESHOLD] WRI01 - out_of_flight_dates: minImpressions=50, minClicks=0
+Oct 20, 2025, 5:41:18 PM	Info	✅ [THRESHOLD] WRI01 - pixel_size_mismatch: minImpressions=0, minClicks=0
+Oct 20, 2025, 5:41:18 PM	Info	✅ [THRESHOLD] WRI01 - default_ad_serving: minImpressions=20, minClicks=0
+Oct 20, 2025, 5:41:18 PM	Info	✅ [THRESHOLD] WRI01 - clicks_greater_than_impressions: minImpressions=20, minClicks=20
+Oct 20, 2025, 5:41:18 PM	Info	🔍 [THRESHOLD CHECK] WRI01 - Row p37x9sg_impossible foods_general_hx_the trade desk_programmatic_display_banner_cross_dcpm_third party served_300x250_category_3p_na_ntb_na_na_na_kroger offsite_frozen food buyers: impressions=3082, clicks=0, dominant=impressions, dominantValue=3082, appliedThreshold=20, meetsThreshold=true, clicks>impressions=false
+Oct 20, 2025, 5:41:18 PM	Info	✅ [THRESHOLD] WRI01 - out_of_flight_dates: minImpressions=50, minClicks=0
+Oct 20, 2025, 5:41:18 PM	Info	✅ [THRESHOLD] WRI01 - pixel_size_mismatch: minImpressions=0, minClicks=0
+Oct 20, 2025, 5:41:18 PM	Info	✅ [THRESHOLD] WRI01 - default_ad_serving: minImpressions=20, minClicks=0
+Oct 20, 2025, 5:41:20 PM	Info	sendNoIssueEmail error: STAGING_MODE is not defined
+Oct 20, 2025, 5:41:20 PM	Info	
+=== AUDIT COMPLETE ===
+Oct 20, 2025, 5:41:20 PM	Info	Status: Completed (no issues, email failed to send)
+Oct 20, 2025, 5:41:20 PM	Info	Flagged count: 0
+Oct 20, 2025, 5:41:20 PM	Info	Email sent: false
