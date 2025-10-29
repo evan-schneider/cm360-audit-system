@@ -757,42 +757,71 @@ The External Config Spreadsheet contains 4 configuration sheets:
 
 #### 2. Audit Thresholds
 
-**Purpose:** Define flagging criteria for discrepancies
+**Purpose:** Define minimum volume thresholds for flagging issues
 
 **Columns:**
 
 | Column | Description | Example |
 |--------|-------------|---------|
 | Config Name | Must match Recipients sheet | `ACMECorp` |
-| Impressions Threshold | % tolerance for impression differences | `10` (= 10% variance allowed) |
-| Clicks Threshold | % tolerance for click differences | `20` |
-| Pixel Size Mode | `Exact`, `Fuzzy`, or `Ignore` | `Exact` |
-| [Other threshold columns] | Various metrics | (varies by report) |
+| Flag Type | Type of issue to flag | `clicks_greater_than_impressions` |
+| Min Impressions | Minimum impressions required to flag | `100` |
+| Min Clicks | Minimum clicks required to flag | `20` |
+| Active | TRUE to enable, FALSE to disable | `TRUE` |
+
+**Flag Types:**
+- `clicks_greater_than_impressions` - Flags rows where clicks > impressions (data quality issue)
+- `out_of_flight_dates` - Flags rows with dates outside placement flight dates
+- `pixel_size_mismatch` - Flags rows where placement pixel ≠ creative pixel
+- `default_ad_serving` - Flags rows with "default" ad type
+
+**Each config needs 4 threshold rows** (one per flag type) for complete coverage.
 
 **How Thresholds Work:**
 
-**Impressions Example:**
-- Report shows: 1,000 impressions
-- Creative shows: 1,150 impressions
-- Difference: 150 / 1,000 = 15%
-- Threshold: 10%
-- Result: **FLAGGED** (15% > 10%)
+Thresholds are **minimum volume requirements**, not percentage tolerances. A row is only flagged if:
+1. The issue exists (e.g., clicks > impressions, pixel mismatch, etc.)
+2. The row meets the minimum volume threshold
 
-**Pixel Size Modes:**
-- `Exact` - Must match exactly (300x250 ≠ 300x600)
-- `Fuzzy` - Allows minor variations
-- `Ignore` - Don't flag pixel size differences
+**Minimum Volume Threshold Logic:**
+- System checks whether **clicks or impressions** is higher
+- Uses the higher metric's threshold (minClicks if clicks > impressions, minImpressions if impressions > clicks)
+- Only flags the row if the higher volume meets/exceeds the threshold
+
+**Example 1: Clicks > Impressions (High Volume)**
+- Row data: 1,000 clicks, 500 impressions
+- Threshold: minClicks = 100, minImpressions = 50
+- Evaluation: Clicks (1,000) > Impressions (500), so check minClicks threshold
+- Result: **FLAGGED** (1,000 >= 100 threshold met, and clicks > impressions is an issue)
+
+**Example 2: Clicks > Impressions (Low Volume - Not Flagged)**
+- Row data: 50 clicks, 25 impressions  
+- Threshold: minClicks = 100, minImpressions = 50
+- Evaluation: Clicks (50) > Impressions (25), so check minClicks threshold
+- Result: **NOT FLAGGED** (50 < 100 threshold not met, even though clicks > impressions)
+
+**Example 3: Pixel Mismatch (High Volume)**
+- Row data: 800 impressions, 20 clicks, placement pixel = 300x250, creative pixel = 300x600
+- Threshold: minImpressions = 100, minClicks = 10
+- Evaluation: Impressions (800) > Clicks (20), so check minImpressions threshold
+- Result: **FLAGGED** (800 >= 100 threshold met, and pixel mismatch exists)
+
+**Purpose of Volume Thresholds:**
+- Prevents flagging low-volume noise (e.g., 2 clicks, 1 impression)
+- Focuses attention on issues that impact significant traffic
+- Different configs may need different thresholds based on typical volumes
 
 **Best Practices:**
-- Start conservative (lower thresholds)
-- Monitor for false positives
-- Adjust based on client tolerance
-- Document reasoning for unusual thresholds
+- Set thresholds based on what volume level matters for your client
+- Lower thresholds = more sensitive (flag smaller issues)
+- Higher thresholds = less sensitive (only flag high-volume issues)
+- Typical range: minImpressions 50-500, minClicks 10-100
+- Adjust based on client's typical daily volumes
 
 **Common Settings:**
-- Impressions: 10-20% (standard)
-- Clicks: 20-30% (more volatile)
-- Pixel Sizes: Exact (usually critical)
+- High-volume configs: minImpressions 500, minClicks 50
+- Medium-volume configs: minImpressions 100, minClicks 20
+- Low-volume configs: minImpressions 50, minClicks 10
 
 ---
 
@@ -817,7 +846,7 @@ The External Config Spreadsheet contains 4 configuration sheets:
 - Leave Placement Name blank
 - Run: Admin Controls > 🔁 Update Placement Names
 - System reads latest audit reports
-- Fills in Placement Name automatically
+- Fills in Placement Name automatically (function runs nightly)
 
 **Match Modes:**
 - `Exact` - Must match exactly (default)
