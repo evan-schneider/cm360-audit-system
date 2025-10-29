@@ -62,7 +62,9 @@ The CM360 Daily Audit System automatically:
 - ✅ No disruption to automated processes
 - ✅ No need to reinstall triggers or transfer spreadsheet ownership
 
-**What DOES need to be updated:** Only the ADMIN_EMAIL for error notifications
+**What DOES need to be updated:** ADMIN_EMAIL for error notifications and staging mode
+
+**Critical:** ADMIN_EMAIL is used for ALL system communications when staging mode is active, plus error/diagnostic emails in production.
 
 ---
 
@@ -88,12 +90,16 @@ The current admin email is **evschneider@horizonmedia.com**. This should be chan
 7. **Deploy**: Click the blue Deploy button or use existing deployment
 
 **What uses ADMIN_EMAIL:**
-- Error alerts and failure notifications
-- Staging mode email redirects
-- Health check reports
-- System diagnostic emails
+- **Staging Mode:** ALL audit emails redirected to ADMIN_EMAIL when staging mode enabled
+- **Error alerts** and failure notifications
+- **Health check** reports (daily at 5:04 AM EST)
+- **Watchdog alerts** (timeout/stuck batch notifications)
+- **System diagnostic** emails
+- **Admin BCC** on production audit emails (optional)
+- **Summary email** (included in distribution list)
+- **Test emails** from Admin Controls menu
 
-**Note:** Summary emails and audit emails are NOT affected by ADMIN_EMAIL - they continue going to configured recipients.
+**Note:** In STAGING mode, ADMIN_EMAIL receives ALL emails (audit + system). In PRODUCTION mode, ADMIN_EMAIL only receives system/error emails.
 
 ---
 
@@ -1092,23 +1098,187 @@ unNightlyExternalSync | Daily 2:00 AM | Sync External Config  Admin spreadsheet 
 | Nightly Maintenance | 
 unNightlyMaintenance | Daily 2:20 AM | Cleanup, rebalancing, email deletion |
 
-### Delivery Modes
+### Staging Mode: Complete Guide
 
-**Production Mode (Normal):**
-- Emails sent to configured recipients
-- Admin BCC'd on audit emails
-- Summary sent to distribution list
+#### What is Staging Mode?
 
-**Staging Mode (Testing):**
-- ALL emails redirected to ADMIN_EMAIL only
-- No CC/BCC preserved
-- Use for testing changes
+**Purpose:**
+- Test environment that prevents emails from reaching stakeholders during testing
+- Routes ALL system emails (audit reports, error notifications, summaries, health checks, etc.) to ADMIN_EMAIL only
+- Allows safe testing of configuration changes, code deployments, and troubleshooting
 
-**To Toggle:**
-1. Extensions > Apps Script > Project Settings
-2. Script Properties
-3. Find/Add STAGING_MODE property
-4. Value: Y (staging) or N (production)
+**Critical Behavior:**
+- When STAGING_MODE = Y: Every email goes to ADMIN_EMAIL, no exceptions
+- When STAGING_MODE = N: Emails go to configured recipients (production mode)
+- This affects audit reports, daily summaries, error alerts, health checks, watchdog notifications, test emails - everything
+
+#### When to Use Staging Mode
+
+**✅ USE STAGING MODE FOR:**
+- Testing new threshold configurations before rolling to production
+- Validating External Config changes (new recipients, exclusions, etc.)
+- Testing code deployments or script modifications
+- Troubleshooting issues without spamming stakeholders
+- Training new team members on the system
+- Debugging email delivery problems
+- Verifying audit logic changes
+
+**❌ DO NOT USE STAGING MODE FOR:**
+- Normal daily operations
+- When stakeholders need audit reports delivered
+- Extended periods (prevents stakeholders from receiving notifications)
+
+#### How to Check Current Mode
+
+**Method 1: Admin Spreadsheet (Fastest)**
+- Open Admin Spreadsheet (Instructions tab)
+- Check Row 1: `🟢 PRODUCTION MODE` or `🟡 STAGING MODE`
+- This indicator updates automatically via triggers
+
+**Method 2: Script Properties (Authoritative)**
+1. Open Admin Spreadsheet
+2. Extensions > Apps Script
+3. Project Settings (gear icon) > Script Properties
+4. Look for STAGING_MODE property:
+   - Value = `Y` → Staging Mode ACTIVE
+   - Value = `N` → Production Mode ACTIVE
+   - Missing → Defaults to Production Mode (`N`)
+
+**Method 3: Admin Controls Menu**
+- Admin Controls > Debug Email Delivery
+- Opens dialog showing current delivery mode and ADMIN_EMAIL
+- Useful for quick verification
+
+#### How to Enable Staging Mode
+
+**Step 1: Set Script Property**
+1. Admin Spreadsheet > Extensions > Apps Script
+2. Project Settings (gear icon) > Script Properties
+3. If STAGING_MODE exists: Click edit, change value to `Y`
+4. If STAGING_MODE missing: Click "Add script property"
+   - Property: `STAGING_MODE`
+   - Value: `Y`
+5. Click Save
+
+**Step 2: Update Delivery Mode Indicator**
+1. Return to Admin Spreadsheet
+2. Admin Controls > Sync Delivery Mode Now
+3. Row 1 should now show: `🟡 STAGING MODE - All emails to ADMIN_EMAIL`
+4. Verify ADMIN_EMAIL is correct (should appear in instruction line)
+
+**Step 3: Verify Staging Mode Active**
+1. Admin Controls > Debug Email Delivery
+2. Confirm dialog shows: "Current Mode: STAGING"
+3. Confirm ADMIN_EMAIL address is correct
+4. Optionally: Admin Controls > Send Test Email (should arrive at ADMIN_EMAIL only)
+
+#### How to Disable Staging Mode (Return to Production)
+
+**Step 1: Set Script Property**
+1. Admin Spreadsheet > Extensions > Apps Script
+2. Project Settings > Script Properties
+3. Find STAGING_MODE property
+4. Change value to `N`
+5. Click Save
+
+**Step 2: Update Delivery Mode Indicator**
+1. Return to Admin Spreadsheet
+2. Admin Controls > Sync Delivery Mode Now
+3. Row 1 should now show: `🟢 PRODUCTION MODE - Live email delivery`
+
+**Step 3: Verify Production Mode Active**
+1. Admin Controls > Debug Email Delivery
+2. Confirm dialog shows: "Current Mode: PRODUCTION"
+3. Optionally: Send test email to confirm proper delivery
+
+**⚠️ IMPORTANT:** Always disable staging mode after testing is complete! Leaving staging mode enabled prevents stakeholders from receiving audit reports.
+
+#### Staging Mode Testing Workflow
+
+**Recommended Process:**
+
+1. **Before Making Changes:**
+   - Enable staging mode (set STAGING_MODE = Y)
+   - Sync delivery mode indicator
+   - Verify staging active via Debug Email Delivery
+
+2. **Make Your Changes:**
+   - Update External Config Spreadsheet (thresholds, recipients, etc.)
+   - Modify code if needed
+   - Update configurations
+
+3. **Test Changes:**
+   - If testing config changes: Admin Controls > Run Single Config Audit
+   - If testing full system: Wait for next scheduled batch (8-9 AM EST)
+   - If testing code changes: Admin Controls > Send Test Email
+   - Check ADMIN_EMAIL inbox for results
+
+4. **Verify Results:**
+   - Review audit reports at ADMIN_EMAIL
+   - Check for errors or unexpected behavior
+   - Validate thresholds triggered correctly
+   - Confirm email formatting looks good
+
+5. **Return to Production:**
+   - Disable staging mode (set STAGING_MODE = N)
+   - Sync delivery mode indicator
+   - Verify production mode active
+   - Monitor first production email for correctness
+
+6. **Document:**
+   - Note what was tested in changelog or notes
+   - Record any issues discovered
+   - Update team on changes if needed
+
+#### Production vs Staging Mode Email Behavior
+
+**Production Mode (STAGING_MODE = N):**
+- **Audit Reports:** Sent to configured recipients from External Config Recipients sheet
+- **CC/BCC:** Honored as configured; ADMIN_EMAIL typically BCC'd on audit emails
+- **Daily Summary:** Sent to distribution list in code
+- **Error Notifications:** Sent to ADMIN_EMAIL
+- **Health Checks:** Sent to ADMIN_EMAIL
+- **Watchdog Alerts:** Sent to ADMIN_EMAIL
+- **Test Emails:** Sent to ADMIN_EMAIL
+
+**Staging Mode (STAGING_MODE = Y):**
+- **Everything:** ALL emails (audit, summary, error, health, watchdog, test) redirect to ADMIN_EMAIL only
+- **No CC/BCC:** Original recipients never receive emails
+- **No Distribution List:** Summary emails go to ADMIN_EMAIL only
+- **Complete Isolation:** Stakeholders receive nothing while staging mode is active
+
+#### Safety Considerations
+
+**Risk Management:**
+- Staging mode completely silences stakeholder communications
+- If left enabled during business hours, stakeholders miss audit reports
+- Always disable staging mode before leaving for the day
+- Set calendar reminder if enabling staging mode for extended testing
+
+**Best Practices:**
+1. Use staging mode only when actively testing
+2. Minimize staging mode duration (hours, not days)
+3. Notify team if staging mode will be active during normal audit hours (8-9 AM EST)
+4. Double-check production mode restored before end of business day
+5. Document staging mode usage (what was tested, when, results)
+
+**Recovery:**
+- If you accidentally leave staging mode enabled overnight, stakeholders miss morning audit reports
+- Resolution: Disable staging mode, consider running manual audits if time-sensitive
+- Next day's scheduled audits will resume normal delivery automatically
+
+#### Code Reference
+
+**Key Functions:**
+- `getStagingMode_()` (Code.js line ~12): Reads STAGING_MODE property, defaults to 'N'
+- `safeSendEmail()` (Code.js line ~755): Checks staging mode, redirects emails if Y
+- Email routing logic (Code.js line ~5272-5273): Returns ADMIN_EMAIL when staging mode active
+
+**Script Property:**
+- Property Name: `STAGING_MODE`
+- Valid Values: `Y` (staging) or `N` (production)
+- Default: `N` if property missing
+- Location: Project Settings > Script Properties
 
 ### Batch Configuration
 
