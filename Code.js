@@ -277,6 +277,7 @@ function appendDeletionLogRows_(logFolder, adminLogName, rows, sheetName) {
 			initialSheet.setName('Temp Daily Reports');
 			ensureDeletionLogSheet_(ss, 'Temp Daily Reports', true);
 			ensureDeletionLogSheet_(ss, 'Merged Reports', true);
+			ensureDeletionLogSheet_(ss, 'Gmail Emails', true);
 			logFile = DriveApp.getFileById(ss.getId());
 			logFolder.addFile(logFile);
 			try {
@@ -295,6 +296,7 @@ function appendDeletionLogRows_(logFolder, adminLogName, rows, sheetName) {
 		if (sheet1) sheet1.setName('Temp Daily Reports');
 		ensureDeletionLogSheet_(ss, 'Temp Daily Reports');
 		ensureDeletionLogSheet_(ss, 'Merged Reports');
+		ensureDeletionLogSheet_(ss, 'Gmail Emails');
 		const sheet = ensureDeletionLogSheet_(ss, targetSheetName);
 		const startRow = sheet.getLastRow() + 1;
 		sheet.getRange(startRow, 1, rows.length, rows[0].length).setValues(rows);
@@ -307,7 +309,11 @@ function appendDeletionLogRows_(logFolder, adminLogName, rows, sheetName) {
 }
 
 function ensureDeletionLogSheet_(spreadsheet, sheetName, initializing) {
-	const header = ['File Name', 'Folder Path', 'Date Created', 'Deleted On'];
+	// Different headers for Gmail Emails sheet vs file deletion sheets
+	const header = (sheetName === 'Gmail Emails')
+		? ['Thread Subject', 'Gmail Label', 'Thread Date', 'Message Count', 'Deleted On']
+		: ['File Name', 'Folder Path', 'Date Created', 'Deleted On'];
+	
 	let sheet = spreadsheet.getSheetByName(sheetName);
 	if (!sheet) {
 		sheet = spreadsheet.insertSheet(sheetName);
@@ -340,6 +346,7 @@ function ensureDeletionLogWorkbookStructure_(logFolder, adminLogName) {
 			if (sheet1) sheet1.setName('Temp Daily Reports');
 			ensureDeletionLogSheet_(ss, 'Temp Daily Reports');
 			ensureDeletionLogSheet_(ss, 'Merged Reports');
+			ensureDeletionLogSheet_(ss, 'Gmail Emails');
 			return;
 		}
 		const ss = SpreadsheetApp.create(adminLogName);
@@ -347,6 +354,7 @@ function ensureDeletionLogWorkbookStructure_(logFolder, adminLogName) {
 		initialSheet.setName('Temp Daily Reports');
 		ensureDeletionLogSheet_(ss, 'Temp Daily Reports', true);
 		ensureDeletionLogSheet_(ss, 'Merged Reports', true);
+		ensureDeletionLogSheet_(ss, 'Gmail Emails', true);
 		const logFile = DriveApp.getFileById(ss.getId());
 		logFolder.addFile(logFile);
 		try {
@@ -7425,6 +7433,7 @@ function runNightlyExternalSync() {
  * Delete Gmail emails older than 90 days from all CM360 audit labels.
  * This function searches for emails in the "Daily Audits/CM360" label hierarchy
  * that are older than 90 days and permanently deletes them to manage storage.
+ * Logs all deletions to the CM360 Deletion Log spreadsheet.
  * 
  * @returns {Object} Statistics object with counts of deleted emails per label
  */
@@ -7434,14 +7443,26 @@ function deleteOldAuditEmails() {
 	const stats = {
 		totalDeleted: 0,
 		byLabel: {},
-		errors: []
+		errors: [],
+		loggedRows: []
 	};
 	
 	try {
+		// Get deletion log folder
+		const logFolder = getDriveFolderByPath_(DELETION_LOG_PATH);
+		if (!logFolder) {
+			throw new Error('Deletion log folder not found');
+		}
+		
+		// Ensure the deletion log workbook structure exists
+		ensureDeletionLogWorkbookStructure_(logFolder, ADMIN_LOG_NAME);
+		
 		// Calculate cutoff date (90 days ago)
 		const cutoffDate = new Date();
 		cutoffDate.setDate(cutoffDate.getDate() - 90);
 		const cutoffStr = Utilities.formatDate(cutoffDate, Session.getScriptTimeZone(), 'yyyy/MM/dd');
+		const deletionTimestamp = Utilities.formatDate(new Date(), Session.getScriptTimeZone(), 'yyyy-MM-dd HH:mm:ss');
+		const tz = Session.getScriptTimeZone();
 		
 		Logger.log(`[Gmail Cleanup] Cutoff date: ${cutoffStr}`);
 		
@@ -7477,11 +7498,28 @@ function deleteOldAuditEmails() {
 						break;
 					}
 					
-					// Move threads to trash (Gmail API limitation - can't permanently delete via Apps Script)
+					// Move threads to trash and log each one
 					for (const thread of threads) {
 						try {
+							// Get thread details before deletion
+							const firstMessage = thread.getMessages()[0];
+							const threadSubject = thread.getFirstMessageSubject() || '(No Subject)';
+							const threadDate = firstMessage.getDate();
+							const messageCount = thread.getMessageCount();
+							
+							// Move to trash
 							thread.moveToTrash();
 							labelDeleteCount++;
+							
+							// Log the deletion: [Subject, Label, Thread Date, Message Count, Deleted On]
+							stats.loggedRows.push([
+								threadSubject,
+								labelName,
+								Utilities.formatDate(threadDate, tz, 'yyyy-MM-dd HH:mm:ss'),
+								messageCount,
+								deletionTimestamp
+							]);
+							
 						} catch (threadErr) {
 							Logger.log(`[Gmail Cleanup] Error deleting thread in ${labelName}: ${threadErr.message}`);
 							stats.errors.push(`${labelName}: ${threadErr.message}`);
@@ -7533,8 +7571,25 @@ function deleteOldAuditEmails() {
 					
 					for (const thread of threads) {
 						try {
+							// Get thread details before deletion
+							const firstMessage = thread.getMessages()[0];
+							const threadSubject = thread.getFirstMessageSubject() || '(No Subject)';
+							const threadDate = firstMessage.getDate();
+							const messageCount = thread.getMessageCount();
+							
+							// Move to trash
 							thread.moveToTrash();
 							parentDeleteCount++;
+							
+							// Log the deletion
+							stats.loggedRows.push([
+								threadSubject,
+								'Daily Audits/CM360',
+								Utilities.formatDate(threadDate, tz, 'yyyy-MM-dd HH:mm:ss'),
+								messageCount,
+								deletionTimestamp
+							]);
+							
 						} catch (threadErr) {
 							Logger.log(`[Gmail Cleanup] Error deleting thread in parent label: ${threadErr.message}`);
 							stats.errors.push(`Daily Audits/CM360: ${threadErr.message}`);
@@ -7563,6 +7618,20 @@ function deleteOldAuditEmails() {
 			stats.errors.push(`Parent label: ${parentErr.message}`);
 		}
 		
+		// Write deletions to log spreadsheet
+		let logUrl = null;
+		if (stats.loggedRows.length > 0) {
+			try {
+				logUrl = appendDeletionLogRows_(logFolder, ADMIN_LOG_NAME, stats.loggedRows, 'Gmail Emails');
+				if (logUrl) {
+					Logger.log(`[Gmail Cleanup] Logged ${stats.loggedRows.length} deletions to: ${logUrl}`);
+				}
+			} catch (logErr) {
+				Logger.log(`[Gmail Cleanup] Error logging to spreadsheet: ${logErr.message}`);
+				stats.errors.push(`Logging error: ${logErr.message}`);
+			}
+		}
+		
 		Logger.log(`[Gmail Cleanup] Completed. Total threads deleted: ${stats.totalDeleted}`);
 		
 		// Send summary email to admin if any deletions occurred or errors happened
@@ -7581,6 +7650,10 @@ function deleteOldAuditEmails() {
 				summaryLines.push('</ul>');
 			}
 			
+			if (logUrl) {
+				summaryLines.push(`<p style="font-family:Arial,sans-serif;font-size:13px;"><strong>Deletion log:</strong> <a href="${escapeHtml(logUrl)}">View spreadsheet</a></p>`);
+			}
+			
 			if (stats.errors.length > 0) {
 				summaryLines.push(`<p style="font-family:Arial,sans-serif;font-size:13px;color:#b00020;"><strong>Errors encountered:</strong> ${stats.errors.length}</p>`);
 				summaryLines.push('<ul style="font-family:Arial,sans-serif;font-size:12px;color:#b00020;">');
@@ -7596,7 +7669,7 @@ function deleteOldAuditEmails() {
 				to: ADMIN_EMAIL,
 				subject: `CM360: Gmail Cleanup Summary (${stats.totalDeleted} threads deleted)`,
 				htmlBody: summaryLines.join('\n'),
-				plainBody: `Gmail cleanup completed. ${stats.totalDeleted} threads deleted from CM360 audit labels.`
+				plainBody: `Gmail cleanup completed. ${stats.totalDeleted} threads deleted from CM360 audit labels.${logUrl ? '\n\nDeletion log: ' + logUrl : ''}`
 			}, 'deleteOldAuditEmails');
 		}
 		
