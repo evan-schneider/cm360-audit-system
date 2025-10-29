@@ -1011,44 +1011,52 @@ Thresholds are **minimum volume requirements**, not percentage tolerances. A row
 
 ### Normal Daily Flow
 
-**6:00 AM - 4:00 PM** (Every ~2 hours)
-1. 
-unBatchedDailyAudits trigger fires
-2. Fetches CM360 reports from Gmail labels
-3. Merges reports per configuration
-4. Flags discrepancies based on thresholds
-5. Sends individual audit emails to configured recipients
-6. Accumulates results in cache
+**8:00 AM EST** (Morning audit run)
+1. All 12 batch triggers fire simultaneously (`runDailyAuditsBatch1` through `runDailyAuditsBatch12`)
+2. Each batch processes 2 configs independently
+3. For each config in batch:
+   - Fetches CM360 reports from Gmail labels
+   - Merges multiple report files into consolidated spreadsheet
+   - Flags issues based on volume thresholds (clicks > impressions, pixel mismatches, etc.)
+   - Sends individual audit email to configured recipients
+4. Accumulates results in cache for daily summary
+5. Typical execution: All 12 batches complete within 8:00-9:00 AM EST window
 
-**6:30 PM**
-1. sendDailySummaryFailover trigger fires
+**9:25 AM EST**
+1. `sendDailySummaryFailover` trigger fires
 2. Sends consolidated summary email to:
    - evschneider@horizonmedia.com (UPDATE THIS!)
    - bmuller@horizonmedia.com
    - bkaufman@horizonmedia.com
    - ewarburton@horizonmedia.com
 
-**2:00 AM** (Next day)
-1. 
-unNightlyExternalSync syncs External Config  Admin spreadsheet
-2. Copies Recipients, Thresholds, Exclusions sheets
-3. Preserves formatting, validations, dimensions
-
-**2:20 AM**
-1. 
-unNightlyMaintenance performs housekeeping:
-   - Rebalances audit batches
-   - Updates placement names from reports
+**2:24 AM EST** (Next day - Nightly maintenance)
+1. `runNightlyMaintenance` performs comprehensive housekeeping:
+   - **Syncs External Config → Admin spreadsheet** (Recipients, Thresholds, Exclusions)
+   - Rebalances audit batches for even distribution
+   - Updates placement names in Exclusions from latest reports
    - Cleans up Drive files older than 60 days
    - Deletes Gmail emails older than 90 days
-   - Clears daily script properties
+   - Clears daily script properties (cache reset)
+2. Typical execution: ~6 minutes
+
+**5:04 AM EST**
+1. `runHealthCheckAndEmail` performs system diagnostics
+2. Checks config validity, Gmail labels, Drive folders, trigger status, email quota
+3. Sends health report to ADMIN_EMAIL
+
+**Continuous (Every 1-4 hours)**
+- **Every hour:** `forwardGASFailureNotificationsToAdmin` forwards script failures to ADMIN_EMAIL
+- **Every 3 hours:** `auditWatchdogCheck` detects stuck/timed-out batch runs
+- **Every 3 hours:** `runDeliveryModeSync` updates staging/production mode indicators
+- **Every 4 hours:** `autoFixRequestsSheet_` maintains Audit Requests sheet integrity
 
 ### What to Monitor Daily
 
-**Morning Checks (9:00 AM):**
-- Check your inbox for summary email (subject: "CM360 Daily Audit Summary")
+**Morning Checks (9:30 AM EST):**
+- Check your inbox for summary email (subject: "CM360 Daily Audit Summary") - arrives ~9:25-9:30 AM
 - Verify no error alerts from system
-- Spot-check a few audit emails were received by clients
+- Spot-check a few audit emails were received by clients (sent 8:00-9:00 AM)
 
 **If Summary Email Missing:**
 - Check spam/trash folders
@@ -1102,7 +1110,7 @@ unNightlyMaintenance performs housekeeping:
 3. Run: syncFromExternalConfig()
 4. Changes take effect on next audit run
 
-**Changes Apply Automatically:** After 2:00 AM nightly sync
+**Changes Apply Automatically:** After 2:24 AM EST nightly maintenance (includes external config sync)
 
 ### Removing an Audit Configuration
 
@@ -1119,13 +1127,14 @@ unNightlyMaintenance performs housekeeping:
 
 | Trigger | Function | Frequency | Purpose |
 |---------|----------|-----------|---------|
-| Batched Audits | 
-unBatchedDailyAudits | Every 2 hours (6am-4pm) | Process audit reports in batches of 2 configs |
-| Summary Failover | sendDailySummaryFailover | Daily 6:30 PM | Send consolidated summary email |
-| External Sync | 
-unNightlyExternalSync | Daily 2:00 AM | Sync External Config  Admin spreadsheet |
-| Nightly Maintenance | 
-unNightlyMaintenance | Daily 2:20 AM | Cleanup, rebalancing, email deletion |
+| Morning Audits | `runDailyAuditsBatch1-12` | Daily 8:00 AM EST | 12 batches run simultaneously, each processes 2 configs |
+| Daily Summary | `sendDailySummaryFailover` | Daily 9:25 AM EST | Send consolidated summary email |
+| Nightly Maintenance | `runNightlyMaintenance` | Daily 2:24 AM EST | External Config sync, cleanup, rebalancing, email deletion |
+| Health Check | `runHealthCheckAndEmail` | Daily 5:04 AM EST | System diagnostics report to ADMIN_EMAIL |
+| Watchdog | `auditWatchdogCheck` | Every 3 hours | Detect stuck/timed-out batch runs |
+| Delivery Mode Sync | `runDeliveryModeSync` | Every 3 hours | Update staging/production mode indicators |
+| Requests Sheet Fix | `autoFixRequestsSheet_` | Every 4 hours | Maintain Audit Requests sheet integrity |
+| Failure Forwarder | `forwardGASFailureNotificationsToAdmin` | Every 1 hour | Forward script failures to ADMIN_EMAIL |
 
 ### Staging Mode: Complete Guide
 
