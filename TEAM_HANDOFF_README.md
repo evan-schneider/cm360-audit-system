@@ -457,12 +457,13 @@ getCombinedAuditResults_()
 
 ### Daily (Automated - Monitor Only)
 
-**Audit Batch Runs (6:00 AM - 4:00 PM):**
+**Audit Batch Runs (8:00 AM - 9:00 AM EST):**
 - ✅ `runDailyAuditsBatch1` through `runDailyAuditsBatch12` (12 batches total)
-- Each batch processes 2 configs, staggered throughout the day
+- All batches run within 1-hour window in the morning
+- Each batch processes 2 configs
 - Typical execution: 1-4 minutes per batch
 
-**Nightly Maintenance (2:00 AM - 3:00 AM):**
+**Nightly Maintenance (2:00 AM - 3:00 AM EST):**
 - ✅ `runNightlyMaintenance` @ 2:24 AM (~6 minutes)
   - Rebalances audit batches
   - Updates placement names
@@ -475,16 +476,16 @@ getCombinedAuditResults_()
 **Monitoring & Alerting:**
 - ✅ `auditWatchdogCheck` - Every 3 hours (checks for stuck audits)
 - ✅ `forwardGASFailureNotificationsToAdmin` - Hourly (forwards script failures)
-- ✅ `sendDailySummaryFailover` @ 9:25 AM (sends consolidated daily summary)
+- ✅ `sendDailySummaryFailover` @ 9:25 AM EST (sends consolidated daily summary)
 
 **Configuration Sync:**
 - ✅ `runDeliveryModeSync` - Every 3 hours (syncs staging/production mode)
 - ✅ `autoFixRequestsSheet_` - Every 4 hours (maintenance for requests sheet)
 
 **Health Checks:**
-- ✅ `runHealthCheckAndEmail` @ 5:04 AM (system health report)
+- ✅ `runHealthCheckAndEmail` @ 5:04 AM EST (system health report)
 
-**Your Task:** Review summary email, respond to errors, monitor execution logs for failures
+**Your Task:** Review summary email (arrives ~9:30 AM), respond to errors, monitor execution logs for failures
 
 ### Weekly (Manual)
 
