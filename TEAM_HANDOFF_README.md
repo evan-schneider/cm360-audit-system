@@ -1011,8 +1011,11 @@ Thresholds are **minimum volume requirements**, not percentage tolerances. A row
 
 ### Normal Daily Flow
 
-**8:00 AM EST** (Morning audit run)
-1. All 12 batch triggers fire simultaneously (`runDailyAuditsBatch1` through `runDailyAuditsBatch12`)
+**8:00 AM - 9:00 AM EST** (Morning audit run)
+1. All 12 batch triggers fire **during the 8 AM hour** (`runDailyAuditsBatch1` through `runDailyAuditsBatch12`)
+   - Google Apps Script distributes triggers throughout the hour (not simultaneously)
+   - Batches typically start between 8:05 AM - 8:58 AM
+   - This prevents system overload and spreads execution load
 2. Each batch processes 2 configs independently
 3. For each config in batch:
    - Fetches CM360 reports from Gmail labels
@@ -1127,7 +1130,7 @@ Thresholds are **minimum volume requirements**, not percentage tolerances. A row
 
 | Trigger | Function | Frequency | Purpose |
 |---------|----------|-----------|---------|
-| Morning Audits | `runDailyAuditsBatch1-12` | Daily 8:00 AM EST | 12 batches run simultaneously, each processes 2 configs |
+| Morning Audits | `runDailyAuditsBatch1-12` | Daily during 8 AM hour EST | 12 batches distributed throughout hour (8:05-8:58 AM), each processes 2 configs |
 | Daily Summary | `sendDailySummaryFailover` | Daily 9:25 AM EST | Send consolidated summary email |
 | Nightly Maintenance | `runNightlyMaintenance` | Daily 2:24 AM EST | External Config sync, cleanup, rebalancing, email deletion |
 | Health Check | `runHealthCheckAndEmail` | Daily 5:04 AM EST | System diagnostics report to ADMIN_EMAIL |
@@ -1538,7 +1541,8 @@ getCombinedAuditResults_()
 
 **Audit Batch Runs (8:00 AM - 9:00 AM EST):**
 - ✅ `runDailyAuditsBatch1` through `runDailyAuditsBatch12` (12 batches total)
-- All batches run within 1-hour window in the morning
+- Batches distributed throughout 8 AM hour (typically 8:05-8:58 AM start times)
+- Google Apps Script spreads triggers to prevent simultaneous load
 - Each batch processes 2 configs
 - Typical execution: 1-4 minutes per batch
 
