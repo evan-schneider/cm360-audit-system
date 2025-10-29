@@ -51,9 +51,24 @@ The CM360 Daily Audit System automatically:
 
 ## Critical First Steps
 
-### 1. Update Admin Email (URGENT)
+### System Ownership Structure
 
-The current admin email is **evschneider@horizonmedia.com**. This MUST be changed before my departure.
+**IMPORTANT:** This system runs under the shared service account **platformsolutionshmi@gmail.com**, NOT under Evan's personal account.
+
+**What this means:**
+- ✅ Triggers will continue working after Evan leaves
+- ✅ CM360 report emails go to platformsolutionshmi@gmail.com
+- ✅ All Drive files stored in platformsolutionshmi@gmail.com Drive
+- ✅ No disruption to automated processes
+- ✅ No need to reinstall triggers or transfer spreadsheet ownership
+
+**What DOES need to be updated:** Only the ADMIN_EMAIL for error notifications
+
+---
+
+### 1. Update Admin Email (ONLY Required Change)
+
+The current admin email is **evschneider@horizonmedia.com**. This should be changed before Evan's departure.
 
 **Where to Update:**
 
@@ -63,54 +78,98 @@ The current admin email is **evschneider@horizonmedia.com**. This MUST be change
 3. Click **Project Settings** (gear icon) in left sidebar
 4. Scroll to **Script Properties**
 5. Find ADMIN_EMAIL property
-6. Update value to new admin email: 
-ewadmin@horizonmedia.com
+6. Update value to new admin email (e.g., new team lead)
 7. Click **Save**
 
 #### Code.js Fallback (Secondary Location)
 1. In Apps Script editor, open **Code.js**
-2. Find line ~29: 
-eturn 'evschneider@horizonmedia.com';
-3. Change to: 
-eturn 'newadmin@horizonmedia.com';
+2. Find line ~29: `return 'evschneider@horizonmedia.com';`
+3. Change to: `return 'newadmin@horizonmedia.com';`
 4. Save and deploy
 
-**Why This Matters:**
-- All error alerts go to admin email
-- Staging mode redirects go to admin
-- Summary emails are sent to admin
-- Failure notifications go to admin
+**What uses ADMIN_EMAIL:**
+- Error alerts and failure notifications
+- Staging mode email redirects
+- Health check reports
+- System diagnostic emails
 
-### 2. Transfer Ownership of Key Spreadsheets
+**Note:** Summary emails and audit emails are NOT affected by ADMIN_EMAIL - they continue going to configured recipients.
 
-**Admin Spreadsheet** (bound to script):
-- File > Share > Make [new admin] owner
-- Current location: Likely in my Drive
+---
 
-**External Config Spreadsheet**:
-- ID: 1-566gqkyZRNDeNtXWUjKDB_H8A9XbhCu8zL-uaZdGT8
-- Direct URL: https://docs.google.com/spreadsheets/d/1-566gqkyZRNDeNtXWUjKDB_H8A9XbhCu8zL-uaZdGT8
-- File > Share > Make [new admin] owner
+### 2. Understand Service Account Setup
 
-### 3. Update Trigger Ownership
+**platformsolutionshmi@gmail.com is the system owner:**
 
-**All triggers will STOP working when I leave the company.**
+**What it owns:**
+- Apps Script project and all triggers
+- Admin Spreadsheet (bound to Apps Script)
+- External Config Spreadsheet
+- All Drive folders (Project Log Files/CM360 Daily Audits/*)
+- All Gmail labels (Daily Audits/CM360/*)
+- Deletion Log spreadsheet
 
-To reinstall triggers under new admin:
-1. Open Admin Spreadsheet
-2. Go to Extensions > Apps Script
-3. Run function: installAllAutomationTriggers()
-4. Authorize when prompted
-5. Verify in **Triggers** (clock icon) that all triggers are created
+**Access control:**
+- Evan currently has access to platformsolutionshmi@gmail.com
+- Before departure: Evan transfers platformsolutionshmi@gmail.com credentials to team
+- Team gains access to service account (password, 2FA recovery)
+- Recommended: Multiple team members should have recovery access
 
-**Expected Triggers:**
-- 
-unBatchedDailyAudits - Multiple times daily (6am-4pm)
-- 
-unNightlyMaintenance - Daily at 2:20 AM
-- 
-unNightlyExternalSync - Daily at 2:00 AM
-- sendDailySummaryFailover - Daily at 6:30 PM
+**Why this design:**
+- Prevents disruption when individuals leave
+- Centralizes system ownership
+- No trigger reinstallation needed
+- Cleaner access management
+
+---
+
+### 3. Pre-Departure Handoff Checklist
+
+**For Evan to complete before leaving:**
+
+- [ ] Update ADMIN_EMAIL in Script Properties to new team lead
+- [ ] Update ADMIN_EMAIL fallback in Code.js (line ~29)
+- [ ] Transfer platformsolutionshmi@gmail.com credentials to team:
+  - [ ] Password (via secure method)
+  - [ ] 2FA backup codes
+  - [ ] Recovery email/phone access
+- [ ] Update summary email distribution list (Code.js line ~1061) if needed
+- [ ] Document platformsolutionshmi@gmail.com access with IT/Leadership
+- [ ] Verify new admin can:
+  - [ ] Access platformsolutionshmi@gmail.com Gmail
+  - [ ] Open Admin Spreadsheet
+  - [ ] Open Apps Script editor
+  - [ ] View Drive folders
+- [ ] Test ADMIN_EMAIL receives error notifications
+- [ ] Remove Evan's direct access to spreadsheets (if separate from service account)
+
+**For new team lead:**
+
+- [ ] Verify receipt of error notifications at new ADMIN_EMAIL
+- [ ] Bookmark Admin Spreadsheet URL
+- [ ] Bookmark External Config Spreadsheet URL
+- [ ] Bookmark this README
+- [ ] Test manual operations (run single audit)
+- [ ] Monitor first week of automated runs
+
+---
+
+### 4. Emergency Access
+
+**If platformsolutionshmi@gmail.com credentials lost:**
+
+**Immediate actions:**
+1. Contact IT/DevOps to reset password
+2. Check with Evan (if still available) for recovery info
+3. Check internal password manager/vault
+4. Review Google Workspace admin console (if IT has access)
+
+**Worst case recovery:**
+- System will continue running (triggers still work)
+- But cannot modify configurations or access Drive files
+- IT must reset account or create new service account
+- May require spreadsheet ownership transfer
+- Contact Platform Solutions leadership immediately
 
 ---
 
@@ -118,6 +177,7 @@ unNightlyExternalSync - Daily at 2:00 AM
 
 ### Admin Spreadsheet (Bound Script)
 
+**Owner:** platformsolutionshmi@gmail.com  
 **Location:** Extensions > Apps Script attached to this spreadsheet
 
 **Critical Sheets:**
@@ -125,10 +185,14 @@ unNightlyExternalSync - Daily at 2:00 AM
 - Audit Thresholds - Flagging criteria per config
 - Audit Exclusions - Items to ignore per config
 
-**Access:** Must have edit access to run manual functions
+**Access:** 
+- Shared with team members (edit access)
+- Must have access to platformsolutionshmi@gmail.com to modify Apps Script
+- All team members can view/edit sheets
 
 ### External Config Spreadsheet
 
+**Owner:** platformsolutionshmi@gmail.com  
 **ID:** 1-566gqkyZRNDeNtXWUjKDB_H8A9XbhCu8zL-uaZdGT8  
 **URL:** https://docs.google.com/spreadsheets/d/1-566gqkyZRNDeNtXWUjKDB_H8A9XbhCu8zL-uaZdGT8
 
@@ -139,10 +203,15 @@ unNightlyExternalSync - Daily at 2:00 AM
 - Audit Thresholds
 - Audit Exclusions
 
-**Best Practice:** Edit this spreadsheet, not the Admin spreadsheet. Changes sync automatically at 2:00 AM daily.
+**Best Practice:** Edit this spreadsheet, not the Admin spreadsheet. Changes sync automatically at 2:00 AM EST daily.
+
+**Access:**
+- Shared with team members who need to edit configurations
+- No Apps Script access required
 
 ### CM360 Deletion Log
 
+**Owner:** platformsolutionshmi@gmail.com  
 **Location:** Google Drive at Project Log Files > CM360 Daily Audits > Deletion Log  
 **File Name:** CM360 Deletion Log
 
@@ -384,10 +453,12 @@ The Admin Controls menu is organized into functional groups:
   - Health checks
 
 **When to use:**
-- **CRITICAL:** After new admin takes over ownership
-- After trigger corruption
-- If audits stop running
-- After code deployment
+- **CRITICAL:** If triggers accidentally deleted or disabled
+- After service account authorization expires (rare)
+- If system stops running and logs show "trigger not found"
+- After major Google Workspace changes
+
+**Note:** Under normal circumstances, triggers do NOT need reinstallation when team members change, since they belong to platformsolutionshmi@gmail.com service account.
 
 ---
 
@@ -833,12 +904,13 @@ The External Config Spreadsheet contains 4 configuration sheets:
 - **Edit Access:** AdOps team, Platform Solutions, managers who update configs
 - **View Access:** Leadership, auditors, anyone who needs visibility
 
-**Current Owner:** evschneider@horizonmedia.com (UPDATE before departure!)
+**Owner:** platformsolutionshmi@gmail.com (system service account)
 
-**Transfer Ownership:**
-1. File > Share
-2. Add new admin with "Owner" role
-3. Remove Evan as owner
+**Sharing:**
+- Already shared with team members
+- Add new team members: File > Share > Add people
+- Grant "Editor" role for config management
+- No ownership transfer needed when people leave
 
 ---
 
@@ -856,17 +928,20 @@ The External Config Spreadsheet contains 4 configuration sheets:
 **Recovery Scenarios:**
 
 **If External Config accidentally deleted:**
-1. Check Google Drive trash
-2. If not in trash, use Admin Spreadsheet as temporary source
-3. Create new External Config Spreadsheet
-4. Update EXTERNAL_CONFIG_SHEET_ID in Code.js
-5. Run Admin Controls > 📤 Sync TO External Config
+1. Check Google Drive trash (in platformsolutionshmi@gmail.com Drive)
+2. Restore from trash if within 30 days
+3. If not recoverable, use Admin Spreadsheet as temporary source
+4. Create new External Config Spreadsheet (as platformsolutionshmi@gmail.com)
+5. Update EXTERNAL_CONFIG_SHEET_ID in Code.js Script Properties
+6. Run Admin Controls > 📤 Sync TO External Config
 
 **If External Config corrupted:**
 1. File > Version history > See version history
 2. Restore last known good version
-3. Run manual sync
+3. Run manual sync (Admin Controls > 📥 Sync FROM External Config)
 4. Verify configs
+
+**Note:** All file operations happen in platformsolutionshmi@gmail.com account, so recovery requires access to that account.
 
 ---
 
@@ -1076,14 +1151,17 @@ unNightlyMaintenance | Daily 2:20 AM | Cleanup, rebalancing, email deletion |
 
 #### 3. Triggers Not Firing
 
-**Cause:** Trigger ownership issue (likely after my departure)
+**Cause:** Rare scenario - service account issue or authorization problem
 
 **Resolution:**
-1. Extensions > Apps Script > Triggers (clock icon)
-2. Delete ALL existing triggers
-3. Run: installAllAutomationTriggers()
-4. Authorize when prompted
-5. Verify new triggers appear
+1. Log into platformsolutionshmi@gmail.com
+2. Open Admin Spreadsheet
+3. Extensions > Apps Script > Triggers (clock icon)
+4. Verify triggers exist and are enabled
+5. If missing: Run installAllAutomationTriggers()
+6. If authorization errors: Re-authorize all scopes
+
+**Note:** Since system runs under service account, triggers should persist across team member changes. Only service account issues would cause trigger failures.
 
 #### 4. "Script timeout" Errors
 
@@ -1456,33 +1534,51 @@ Daily Audits
    - Set STAGING_MODE to N
    - Run installAllAutomationTriggers()
 
-### Scenario 6: Migration to New Admin
+### Scenario 6: Transition When Evan Leaves
 
-**Context:** Evan leaving, new admin taking over
+**Context:** Evan leaving, team taking over system
+
+**Key Point:** System runs under platformsolutionshmi@gmail.com, so **no disruption** to automated processes.
 
 **Steps:**
+
 1. **Update ADMIN_EMAIL** (see Critical First Steps)
-2. **Transfer spreadsheet ownership:**
-   - Admin Spreadsheet  new admin
-   - External Config Spreadsheet  new admin
-3. **Delete all triggers** (they're tied to Evan's account)
-4. **New admin reinstalls triggers:**
-   - Open Admin Spreadsheet as new admin
-   - Extensions > Apps Script
-   - Run: installAllAutomationTriggers()
-   - Authorize all permissions
-5. **Update summary email distribution:**
-   - Code.js line ~1061: Update recipient list
-   - Deploy changes
-6. **Test in staging mode:**
-   - Set STAGING_MODE to Y
-   - Run a manual audit
-   - Verify email routing
-   - Set STAGING_MODE back to N
-7. **Monitor for 1 week:**
-   - Daily checks by new admin
-   - Verify all triggers firing
-   - Confirm emails routing correctly
+   - Script Properties: Change to new team lead email
+   - Code.js line ~29: Update fallback email
+
+2. **Transfer platformsolutionshmi@gmail.com access:**
+   - Evan provides credentials to team (secure handoff)
+   - Team lead stores credentials securely
+   - Update recovery email/phone if needed
+   - Document 2FA backup codes
+
+3. **Update summary email distribution (optional):**
+   - Code.js line ~1061: Update recipient list if needed
+   - Deploy changes if modified
+
+4. **Test as new admin:**
+   - Log into platformsolutionshmi@gmail.com
+   - Open Admin Spreadsheet
+   - Open Apps Script editor
+   - Run a manual audit (Admin Controls > ▶️ Run Audit for...)
+   - Verify error notifications go to new ADMIN_EMAIL
+
+5. **Monitor first week:**
+   - Check daily summary emails arrive (~9:30 AM EST)
+   - Verify audit emails sending to clients
+   - Review execution logs for errors
+   - Confirm nightly maintenance runs
+
+**What does NOT need to happen:**
+- ❌ No trigger reinstallation required
+- ❌ No spreadsheet ownership transfer required
+- ❌ No Drive folder migration required
+- ❌ No Gmail label recreation required
+
+**Why it's seamless:**
+- All resources owned by service account
+- Triggers belong to platformsolutionshmi@gmail.com
+- Only admin notification email changes
 
 ---
 
@@ -1506,10 +1602,12 @@ Daily Audits
 ### Summary Email Recipients (Update These!)
 
 Current distribution list (Code.js line ~1061):
-- evschneider@horizonmedia.com (UPDATE TO NEW ADMIN!)
+- evschneider@horizonmedia.com (Consider updating to new team lead)
 - bmuller@horizonmedia.com
 - bkaufman@horizonmedia.com
 - ewarburton@horizonmedia.com
+
+**Note:** This is separate from ADMIN_EMAIL. These are recipients of the daily summary, while ADMIN_EMAIL receives error notifications.
 
 ### Escalation Path
 
