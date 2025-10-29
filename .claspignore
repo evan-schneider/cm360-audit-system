@@ -10,3 +10,22 @@
 !AdminRefreshPrompt.html
 !ConfigPicker.html
 !Dashboard.html
+!ThresholdTestPicker.html
+
+# Ignore local documentation and repository files
+TEAM_HANDOFF_README.md
+README.md
+.git/
+.gitignore
+package.json
+node_modules/
+archive/
+helper/
+tools/
+*.drawio
+*.py
+*.txt
+CONTRIBUTING.md
+SECURITY.md
+LICENSE
+DIAGRAM_*.md
