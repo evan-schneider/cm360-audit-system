@@ -12,15 +12,17 @@
 1. [System Overview](#system-overview)
 2. [Critical First Steps](#critical-first-steps)
 3. [Key Spreadsheets](#key-spreadsheets)
-4. [Daily Operations](#daily-operations)
-5. [Configuration Management](#configuration-management)
-6. [Automated Processes](#automated-processes)
-7. [Troubleshooting](#troubleshooting)
-8. [Manual Operations](#manual-operations)
-9. [Maintenance Tasks](#maintenance-tasks)
-10. [Technical Architecture](#technical-architecture)
-11. [Common Scenarios](#common-scenarios)
-12. [Emergency Contacts](#emergency-contacts)
+4. [Admin Controls Menu Reference](#admin-controls-menu-reference)
+5. [External Config Spreadsheet Guide](#external-config-spreadsheet-guide)
+6. [Daily Operations](#daily-operations)
+7. [Configuration Management](#configuration-management)
+8. [Automated Processes](#automated-processes)
+9. [Troubleshooting](#troubleshooting)
+10. [Manual Operations](#manual-operations)
+11. [Maintenance Tasks](#maintenance-tasks)
+12. [Technical Architecture](#technical-architecture)
+13. [Common Scenarios](#common-scenarios)
+14. [Emergency Contacts](#emergency-contacts)
 
 ---
 
@@ -150,6 +152,748 @@ unNightlyExternalSync - Daily at 2:00 AM
 - Gmail Emails - Email threads deleted after 90 days
 
 **Purpose:** Audit trail for all automated deletions
+
+---
+
+## Admin Controls Menu Reference
+
+### How to Access
+
+The **Admin Controls** menu appears at the top of the Admin Spreadsheet when you open it.
+
+**Location:** Top menu bar > **Admin Controls**
+
+If you don't see the menu:
+1. Refresh the page (Ctrl+R / Cmd+R)
+2. If still missing: Admin Controls > **⚙️ Prepare Environment**
+3. Last resort: Extensions > Apps Script > Run > `forceCreateMenu`
+
+### Menu Categories
+
+The Admin Controls menu is organized into functional groups:
+
+---
+
+### Setup & Configuration
+
+#### ⚙️ Prepare Environment
+**Purpose:** Initial setup for new configurations  
+**What it does:**
+- Creates missing Gmail labels for all configs
+- Creates missing Drive folders
+- Summarizes labels without recent mail
+- Verifies folder structure
+
+**When to use:**
+- After adding a new client configuration
+- After system restore/migration
+- When troubleshooting "folder not found" errors
+
+---
+
+#### 📄 Thresholds (create/open)
+**Purpose:** Manage threshold configuration sheet  
+**What it does:**
+- Opens existing Audit Thresholds sheet
+- Creates sheet if missing
+- Applies formatting and data validations
+- Sets up column headers
+
+**Sheet columns:**
+- Config Name - Unique identifier
+- Various threshold fields (Impressions, Clicks, etc.)
+- Tolerance percentages for flagging discrepancies
+
+---
+
+#### 🚫 Exclusions (create/open)
+**Purpose:** Manage exclusions configuration sheet  
+**What it does:**
+- Opens existing Audit Exclusions sheet
+- Creates sheet if missing
+- Protects Placement Name column (read-only)
+- Applies data validations
+
+**Sheet columns:**
+- Config Name - Which audit this exclusion applies to
+- Placement ID - ID from CM360
+- Placement Name - Auto-populated (protected)
+- Match Mode - Exact/Contains/Regex
+- Reason - Why this is excluded
+
+---
+
+#### 📧 Recipients (create/open)
+**Purpose:** Manage email recipients sheet  
+**What it does:**
+- Opens existing Audit Recipients sheet
+- Creates sheet if missing
+- Sets up email distribution columns
+- Applies formatting
+
+**Sheet columns:**
+- Config Name - Unique identifier
+- To - Primary recipients (comma-separated)
+- CC - Carbon copy recipients
+- Gmail Label - Where to find reports
+- Withhold Mode - Silent/Normal (controls email sending)
+
+---
+
+#### 🧩 CM360 Config Builder…
+**Purpose:** Guided wizard for adding new configurations  
+**What it does:**
+- Opens interactive sidebar
+- Guides through config creation
+- Provides next steps checklist
+- Shows admin hints
+
+**Use this when:** Adding a brand new client to the system
+
+---
+
+### External Config Sync
+
+#### 📤 Sync TO External Config
+**Purpose:** Push Admin spreadsheet changes to External Config  
+**What it does:**
+- Copies Recipients, Thresholds, Exclusions, Requests sheets
+- FROM: Admin Spreadsheet
+- TO: External Config Spreadsheet
+- Preserves formatting and validations
+
+**When to use:**
+- Rarely needed (External Config is the source of truth)
+- Only if you made changes in Admin and want to preserve them
+- Emergency backup scenario
+
+**Warning:** Overwrites External Config - use with caution!
+
+---
+
+#### 📥 Sync FROM External Config
+**Purpose:** Pull latest configuration from External Config  
+**What it does:**
+- Copies Recipients, Thresholds, Exclusions, Requests sheets
+- FROM: External Config Spreadsheet
+- TO: Admin Spreadsheet
+- Updates configurations used by audit runs
+- Preserves formatting, validations, dimensions
+
+**When to use:**
+- After editing External Config (to apply changes immediately)
+- When testing configuration changes
+- To force-sync before automated nightly sync
+
+**This runs automatically at 2:00 AM EST daily**
+
+---
+
+### Audit Requests
+
+#### 📝 Create Audit Request...
+**Purpose:** Submit one-off audit request  
+**What it does:**
+- Opens config picker sidebar
+- Adds request to Audit Requests sheet
+- Request gets processed on next trigger
+
+**Use case:** Run audit for specific date/config outside normal schedule
+
+---
+
+#### ▶️ Process Audit Requests
+**Purpose:** Execute pending one-off requests manually  
+**What it does:**
+- Reads Audit Requests sheet
+- Processes unexecuted requests
+- Updates request status
+- Sends audit emails
+
+**When to use:** Process requests immediately without waiting for trigger
+
+---
+
+#### 🛠️ Fix Audit Requests Sheet
+**Purpose:** Repair corrupted Requests sheet  
+**What it does:**
+- Reapplies headers
+- Fixes data validations
+- Repairs formatting
+
+**When to use:** If Requests sheet becomes corrupted or malformed
+
+---
+
+### Tools & Diagnostics
+
+#### 🔁 Update Placement Names
+**Purpose:** Auto-populate placement names in Exclusions  
+**What it does:**
+- Reads latest merged audit reports
+- Finds Placement IDs
+- Fills Placement Name column in EXTERNAL Exclusions sheet
+- Only updates rows with IDs but missing names
+
+**When to use:**
+- After adding new Placement IDs to Exclusions
+- Monthly maintenance to keep names current
+
+---
+
+#### 🔐 Check Authorization
+**Purpose:** Verify script permissions  
+**What it does:**
+- Tests Gmail access
+- Tests Drive access
+- Tests Spreadsheet access
+- Sends result email to current user
+
+**When to use:**
+- After new admin takes over
+- Troubleshooting "authorization required" errors
+- Verifying scope grants
+
+---
+
+#### 🧾 Validate Configs
+**Purpose:** Check configuration integrity  
+**What it does:**
+- Validates all audit configs
+- Checks for missing Gmail labels
+- Checks for duplicate config names
+- Logs findings to console
+
+**When to use:**
+- After bulk config changes
+- Troubleshooting audit failures
+- Monthly maintenance
+
+---
+
+#### ⏱️ Install All Triggers
+**Purpose:** Reinstall automation triggers  
+**What it does:**
+- Deletes existing triggers (except batch stubs)
+- Creates new triggers:
+  - Daily audit batches (8-9 AM EST)
+  - Nightly maintenance (2:24 AM EST)
+  - External sync (2:00 AM EST)
+  - Daily summary (9:25 AM EST)
+  - Watchdog monitoring
+  - Health checks
+
+**When to use:**
+- **CRITICAL:** After new admin takes over ownership
+- After trigger corruption
+- If audits stop running
+- After code deployment
+
+---
+
+#### 🔄 Sync Delivery Mode Now
+**Purpose:** Update delivery mode indicator  
+**What it does:**
+- Reads STAGING_MODE from Script Properties
+- Updates "Delivery Mode" instruction line
+- Updates both Admin and External Recipients sheets
+
+**When to use:**
+- After changing STAGING_MODE property
+- To verify current mode
+
+---
+
+#### 📮 Debug Email Delivery
+**Purpose:** Check email system status  
+**What it does:**
+- Logs delivery mode (STAGING/PRODUCTION)
+- Shows admin email
+- Shows remaining daily email quota (limit: ~1,500)
+
+**When to use:**
+- Troubleshooting email sending issues
+- Checking if quota exhausted
+
+---
+
+#### ✉️ Send Test Admin Email
+**Purpose:** Verify email plumbing works  
+**What it does:**
+- Sends simple test message to ADMIN_EMAIL
+- Confirms email sending functional
+
+**When to use:**
+- After admin email change
+- Verifying email delivery works
+- Testing after authorization changes
+
+---
+
+#### 👀 Preview Daily Summary
+**Purpose:** See daily summary without sending  
+**What it does:**
+- Builds daily summary email HTML
+- Shows preview in modal dialog
+- Does NOT send email
+
+**When to use:**
+- Checking what would be in summary
+- Verifying summary formatting
+- Debugging summary content
+
+---
+
+#### 🔎 Silent Withhold Check…
+**Purpose:** Test email withhold logic  
+**What it does:**
+- Pick a config
+- Simulates audit email decision
+- Shows whether email would be sent or withheld
+- Does NOT run actual audit or send emails
+
+**When to use:**
+- Testing withhold mode settings
+- Verifying silent mode behavior
+- Debugging why emails not sending
+
+---
+
+#### 🩺 Run Health Check (Admin)
+**Purpose:** System health diagnostic  
+**What it does:**
+- Fast read-only checks:
+  - Config validity
+  - Gmail label existence
+  - Drive folder accessibility
+  - Trigger status
+  - Email quota
+- Emails report to admin
+
+**When to use:**
+- Daily/weekly proactive monitoring
+- Before deployments
+- After system changes
+- Troubleshooting
+
+**Runs automatically at 5:04 AM EST daily**
+
+---
+
+#### 🧪 Test Thresholds…
+**Purpose:** Debug threshold flagging  
+**What it does:**
+- Pick a config
+- Runs full audit
+- Logs detailed threshold evaluation for each row
+- Shows what was flagged and why
+
+**When to use:**
+- Debugging why items flagged/not flagged
+- Tuning threshold values
+- Understanding threshold logic
+
+---
+
+### Manual Audit Execution
+
+#### 🧪 [TEST] Run Batch or Config
+**Purpose:** Test batch execution  
+**What it does:**
+- Opens picker: select batch (1-12) or specific config
+- Runs selected batch/config immediately
+- Use for testing without waiting for scheduled triggers
+
+**When to use:**
+- Testing new configurations
+- Debugging batch issues
+- Verifying fixes
+
+---
+
+#### ▶️ Run Audit for...
+**Purpose:** Run single config on demand  
+**What it does:**
+- Opens config picker
+- Runs full audit for selected config
+- Fetches reports, merges, flags, sends emails
+
+**When to use:**
+- One-off audit runs
+- Re-running failed audit
+- Testing configuration changes
+
+---
+
+### Monitoring & Access
+
+#### 📦 Batch Assignments
+**Purpose:** View batch distribution  
+**What it does:**
+- Shows which configs assigned to each batch (1-12)
+- Displays batch balance
+- Modal dialog view
+
+**When to use:**
+- Understanding batch distribution
+- Troubleshooting why config not running
+- Verifying batch rebalancing
+
+---
+
+#### ⏰ Install Health Check Trigger
+**Purpose:** Enable daily health reports  
+**What it does:**
+- Installs daily trigger (5:04 AM EST)
+- Runs health check and emails admin
+- Only needed if trigger deleted
+
+**When to use:** After trigger deletion or new admin setup
+
+---
+
+#### 🛡️ Install Audit Watchdog Trigger
+**Purpose:** Enable timeout monitoring  
+**What it does:**
+- Installs 3-hour interval trigger
+- Detects stuck/timed-out batch runs
+- Sends alert emails
+
+**When to use:** After trigger deletion or new admin setup
+
+---
+
+#### ℹ️ About Admin Controls…
+**Purpose:** Help documentation  
+**What it does:**
+- Shows this reference guide
+- Lists all menu items with descriptions
+
+**When to use:** Quick reference for menu functions
+
+---
+
+## External Config Spreadsheet Guide
+
+### Overview
+
+**Spreadsheet ID:** `1-566gqkyZRNDeNtXWUjKDB_H8A9XbhCu8zL-uaZdGT8`  
+**Direct URL:** https://docs.google.com/spreadsheets/d/1-566gqkyZRNDeNtXWUjKDB_H8A9XbhCu8zL-uaZdGT8
+
+**Purpose:** Centralized configuration storage that multiple people can edit without needing Apps Script access.
+
+**Key Principle:** External Config is the **SOURCE OF TRUTH** for all configuration.
+
+### Why External Config Exists
+
+**Problem:** Not everyone needs/should have Apps Script access, but many people need to edit configurations.
+
+**Solution:** 
+- Configuration stored in separate spreadsheet (External Config)
+- Anyone with edit access can change configs
+- Changes sync automatically to Admin Spreadsheet nightly
+- Audit system reads from Admin Spreadsheet (synced copy)
+
+**Benefit:** 
+- Team members can manage configs without Apps Script permissions
+- Reduces risk of accidental code changes
+- Cleaner access control
+
+---
+
+### How Configuration Updates Work
+
+#### The Update Flow
+
+```
+1. You edit External Config Spreadsheet
+   ↓
+2. Wait for nightly sync (2:00 AM EST automatic)
+   OR
+   Run sync manually (Admin Controls > 📥 Sync FROM External Config)
+   ↓
+3. Changes copied to Admin Spreadsheet
+   ↓
+4. Next audit run (8-9 AM EST) uses updated configuration
+```
+
+#### Timing Examples
+
+**Example 1: Automatic Sync**
+- 3:00 PM Monday: You add new threshold to External Config
+- 2:00 AM Tuesday: Automatic sync copies change to Admin
+- 8:00 AM Tuesday: Morning audits use new threshold ✅
+
+**Example 2: Immediate Sync (Manual)**
+- 3:00 PM Monday: You add new threshold to External Config
+- 3:05 PM Monday: You run Admin Controls > 📥 Sync FROM External Config
+- 3:10 PM Monday: You run test audit - uses new threshold ✅
+- 2:00 AM Tuesday: Automatic sync runs (no changes, already synced)
+- 8:00 AM Tuesday: Morning audits continue using threshold ✅
+
+**Example 3: Same-Day Updates**
+- 7:00 AM Tuesday: You update External Config
+- 8:00 AM Tuesday: Morning audits run - **uses OLD config** ❌ (sync hasn't run)
+- 2:00 AM Wednesday: Automatic sync copies change
+- 8:00 AM Wednesday: Morning audits use NEW config ✅
+
+**Solution for same-day:** Run manual sync immediately after editing
+
+---
+
+### External Config Sheets
+
+The External Config Spreadsheet contains 4 configuration sheets:
+
+#### 1. Audit Recipients
+
+**Purpose:** Define who receives audit emails for each configuration
+
+**Columns:**
+
+| Column | Required | Description | Example |
+|--------|----------|-------------|---------|
+| Config Name | ✅ Yes | Unique identifier (no spaces recommended) | `ACMECorp` |
+| To | ✅ Yes | Primary recipients (comma-separated emails) | `client@acme.com,am@horizonmedia.com` |
+| CC | No | Carbon copy recipients | `manager@acme.com` |
+| Gmail Label | ✅ Yes | Where to find reports in Gmail | `Daily Audits/CM360/ACMECorp` |
+| Withhold Mode | No | `Silent` or leave blank for normal | `Silent` |
+
+**Special Features:**
+
+**Delivery Mode Instruction (Row 1):**
+- First row shows current delivery mode
+- Updates automatically when mode changes
+- Format: `🟢 PRODUCTION MODE` or `🟡 STAGING MODE`
+
+**Withhold Mode (Silent):**
+- Set to `Silent` to suppress emails unless discrepancies found
+- Blank or any other value = Normal (always send)
+- Use for high-volume configs where "all clear" emails not needed
+
+**Best Practices:**
+- Always include at least one Horizon email in To/CC
+- Test new configs with single recipient first
+- Use Config Names without spaces (easier debugging)
+
+---
+
+#### 2. Audit Thresholds
+
+**Purpose:** Define flagging criteria for discrepancies
+
+**Columns:**
+
+| Column | Description | Example |
+|--------|-------------|---------|
+| Config Name | Must match Recipients sheet | `ACMECorp` |
+| Impressions Threshold | % tolerance for impression differences | `10` (= 10% variance allowed) |
+| Clicks Threshold | % tolerance for click differences | `20` |
+| Pixel Size Mode | `Exact`, `Fuzzy`, or `Ignore` | `Exact` |
+| [Other threshold columns] | Various metrics | (varies by report) |
+
+**How Thresholds Work:**
+
+**Impressions Example:**
+- Report shows: 1,000 impressions
+- Creative shows: 1,150 impressions
+- Difference: 150 / 1,000 = 15%
+- Threshold: 10%
+- Result: **FLAGGED** (15% > 10%)
+
+**Pixel Size Modes:**
+- `Exact` - Must match exactly (300x250 ≠ 300x600)
+- `Fuzzy` - Allows minor variations
+- `Ignore` - Don't flag pixel size differences
+
+**Best Practices:**
+- Start conservative (lower thresholds)
+- Monitor for false positives
+- Adjust based on client tolerance
+- Document reasoning for unusual thresholds
+
+**Common Settings:**
+- Impressions: 10-20% (standard)
+- Clicks: 20-30% (more volatile)
+- Pixel Sizes: Exact (usually critical)
+
+---
+
+#### 3. Audit Exclusions
+
+**Purpose:** Define items to ignore in audits (known discrepancies, test placements, etc.)
+
+**Columns:**
+
+| Column | Required | Description | Example |
+|--------|----------|-------------|---------|
+| Config Name | ✅ Yes | Which audit this applies to | `ACMECorp` |
+| Placement ID | ✅ Yes | CM360 Placement ID | `123456789` |
+| Placement Name | ⚠️ Auto-filled | Populated by system (read-only) | `Homepage Banner` |
+| Match Mode | No | `Exact`, `Contains`, `Regex` | `Exact` |
+| Reason | Recommended | Why excluded (for documentation) | `Test placement` |
+
+**Special Features:**
+
+**Auto-Population of Placement Names:**
+- Add Placement ID
+- Leave Placement Name blank
+- Run: Admin Controls > 🔁 Update Placement Names
+- System reads latest audit reports
+- Fills in Placement Name automatically
+
+**Match Modes:**
+- `Exact` - Must match exactly (default)
+- `Contains` - Partial match (e.g., "Test" matches "Test Banner 123")
+- `Regex` - Regular expression pattern (advanced)
+
+**Use Cases:**
+- Test placements (not live)
+- Known discrepancies (can't fix)
+- Rotational creatives (expected differences)
+- Seasonal campaigns (temporary)
+
+**Best Practices:**
+- Always document Reason
+- Review exclusions quarterly
+- Remove obsolete exclusions
+- Use specific IDs, not broad patterns
+
+---
+
+#### 4. Audit Requests
+
+**Purpose:** One-off audit requests outside normal schedule
+
+**Columns:**
+
+| Column | Description | Example |
+|--------|-------------|---------|
+| Request Date | When request was made | `2025-10-29` |
+| Config Name | Which config to audit | `ACMECorp` |
+| Audit Date | Date of data to audit | `2025-10-28` |
+| Status | Pending/Completed/Failed | `Pending` |
+| Requested By | Who submitted request | `evschneider@horizonmedia.com` |
+
+**How It Works:**
+1. Add row to Requests sheet (or use Admin Controls > 📝 Create Audit Request)
+2. Set Status to `Pending`
+3. System processes on next trigger OR run Admin Controls > ▶️ Process Audit Requests
+4. Status updates to `Completed` or `Failed`
+
+**Use Cases:**
+- Re-run failed audit
+- Audit specific past date
+- On-demand client request
+
+---
+
+### External Config Best Practices
+
+#### Editing Workflow
+
+**Recommended:**
+1. ✅ Edit External Config Spreadsheet
+2. ✅ Run manual sync if urgent (Admin Controls > 📥 Sync FROM)
+3. ✅ Test with single config before broad deployment
+4. ✅ Monitor first few audit runs after change
+
+**Not Recommended:**
+1. ❌ Editing Admin Spreadsheet directly (changes overwritten at 2 AM)
+2. ❌ Making changes at 7-8 AM without manual sync (won't apply same day)
+3. ❌ Deleting rows (breaks array formulas - clear cells instead)
+
+#### Change Management
+
+**For Small Changes** (single threshold adjustment):
+- Edit External Config
+- Run manual sync
+- Test with single config
+- Monitor next audit
+
+**For Large Changes** (new client, restructuring):
+- Edit External Config
+- Enable STAGING_MODE (redirects all emails to admin)
+- Run manual sync
+- Test thoroughly
+- Disable STAGING_MODE
+- Monitor closely
+
+**For Emergency Changes**:
+- Edit External Config
+- Run manual sync immediately
+- Test relevant config
+- Document in change log
+
+---
+
+### Access Control
+
+**Who needs access:**
+- **Edit Access:** AdOps team, Platform Solutions, managers who update configs
+- **View Access:** Leadership, auditors, anyone who needs visibility
+
+**Current Owner:** evschneider@horizonmedia.com (UPDATE before departure!)
+
+**Transfer Ownership:**
+1. File > Share
+2. Add new admin with "Owner" role
+3. Remove Evan as owner
+
+---
+
+### Backup & Recovery
+
+**Automatic Backups:**
+- Google Sheets has version history (File > Version history)
+- Can restore previous versions if needed
+
+**Manual Backup:**
+- File > Download > Microsoft Excel (.xlsx)
+- Store in secure location
+- Do monthly for critical configs
+
+**Recovery Scenarios:**
+
+**If External Config accidentally deleted:**
+1. Check Google Drive trash
+2. If not in trash, use Admin Spreadsheet as temporary source
+3. Create new External Config Spreadsheet
+4. Update EXTERNAL_CONFIG_SHEET_ID in Code.js
+5. Run Admin Controls > 📤 Sync TO External Config
+
+**If External Config corrupted:**
+1. File > Version history > See version history
+2. Restore last known good version
+3. Run manual sync
+4. Verify configs
+
+---
+
+### Troubleshooting External Config
+
+**Problem:** Changes not applying to audits
+
+**Solutions:**
+1. Verify you edited External Config (not Admin)
+2. Check sync ran: Admin Controls > 📥 Sync FROM External Config
+3. Check audit used synced config (timing issue if before 2 AM)
+4. Verify Config Name matches exactly (case-sensitive)
+
+**Problem:** "External Config not found" error
+
+**Solutions:**
+1. Verify EXTERNAL_CONFIG_SHEET_ID in Script Properties
+2. Check spreadsheet still exists
+3. Verify script has access to spreadsheet
+4. Check spreadsheet not deleted/renamed
+
+**Problem:** Sync taking very long or timing out
+
+**Solutions:**
+1. Check spreadsheet size (very large = slow sync)
+2. Remove obsolete configs
+3. Reduce complexity (heavy formulas slow sync)
 
 ---
 
