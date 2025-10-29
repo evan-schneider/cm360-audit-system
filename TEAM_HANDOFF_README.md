@@ -2055,10 +2055,10 @@ Use this format when documenting system changes:
 - Excel import sometimes flaky with formatting
 - Large files (>50MB) can cause memory issues
 
-### Future Improvements (Backlog)
+### Future Improvement Ideas (Backlog)
 
 - [ ] Web dashboard for real-time monitoring
-- [ ] Slack integration for alerts
+- [ ] Teams chatbot integration for alerts and prompting (interactive notifications, on-demand queries, config updates via chat)
 - [ ] Configurable retention periods per config
 - [ ] Automatic threshold tuning based on historical data
 - [ ] Multi-region support for international clients
