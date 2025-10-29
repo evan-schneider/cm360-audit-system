@@ -1327,6 +1327,54 @@ Thresholds are **minimum volume requirements**, not percentage tolerances. A row
 - Spreads load throughout the day
 - Allows retry logic for failed configs
 
+**How Batches Are Compiled:**
+
+The system automatically rebalances batches **every night at 2:24 AM EST** during nightly maintenance to distribute workload evenly across the 12 batches.
+
+**Rebalancing Algorithm (High-Low Pairing):**
+
+1. **Collect Metrics:** System reads previous day's flagged counts for each config
+2. **Sort Configs:** Sorts configs by flagged counts (highest to lowest)
+3. **Pair High with Low:** Uses alternating pattern to distribute load evenly:
+   - Batch 1: Highest flagged config + Lowest flagged config
+   - Batch 2: 2nd highest + 2nd lowest
+   - Batch 3: 3rd highest + 3rd lowest
+   - ... continues until all configs assigned
+
+**Example:**
+- If you have 24 configs with flagged counts: [500, 450, 400, 350, 300, 250, 200, 150, 100, 90, 80, 70, ...]
+- Batch assignments:
+  - Batch 1: Config with 500 flags + Config with 70 flags
+  - Batch 2: Config with 450 flags + Config with 80 flags
+  - Batch 3: Config with 400 flags + Config with 90 flags
+  - And so on...
+
+**Why This Matters:**
+- Configs with more flags take longer to process (more rows to evaluate, larger emails)
+- Pairing high-volume with low-volume configs balances execution time across batches
+- Prevents any single batch from taking significantly longer than others
+- Reduces risk of timeout errors
+
+**When Rebalancing Happens:**
+- **Automatic:** Every night at 2:24 AM EST as part of `runNightlyMaintenance`
+- **Manual:** Admin Controls > Install All Triggers (reinstalls triggers and rebalances)
+- **Fallback:** If all configs have same flagged counts (or no previous data), uses alphabetical order
+
+**Special Cases:**
+- **New configs:** Assigned metric value of 100 (mid-range) until first run completes
+- **All metrics tied:** System retains existing custom order if available, otherwise uses alphabetical
+- **Config added/removed:** Next nightly rebalance redistributes all configs
+
+**To View Current Batch Assignments:**
+- Admin Controls > 📦 Batch Assignments
+- Shows which configs are in each batch (1-12)
+- Displays balance across batches
+
+**Code Reference:**
+- Function: `rebalanceAuditBatchesUsingSummary()` (Code.js line 6015)
+- Called by: `runNightlyMaintenance()` (Code.js line 7709)
+- Stores order in: Script Properties > `CM360_CUSTOM_CONFIG_ORDER`
+
 **To Change Batch Size:**
 1. Edit Code.js line ~68: const BATCH_SIZE = 2;
 2. Deploy changes
